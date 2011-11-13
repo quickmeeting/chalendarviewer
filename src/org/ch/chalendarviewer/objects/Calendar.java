@@ -17,7 +17,30 @@
 
 package org.ch.chalendarviewer.objects;
 
+import android.graphics.Color;
+
+import java.util.TimeZone;
+
 //TODO populate this class
 public class Calendar {
+    
+    private String mId;
+    
+    private String mTitle;
+    
+    private String mEventFeedLik;
+    
+    private String mSelfLink;
+    
+    private boolean mCanEdit;
 
+    private User mAuthor;
+    
+    private String mAccessLevel;
+    
+    private Color mColor;
+    
+    private TimeZone mTimeZone;
+    
+    
 }

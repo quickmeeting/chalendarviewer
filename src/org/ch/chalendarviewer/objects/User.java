@@ -17,7 +17,87 @@
 
 package org.ch.chalendarviewer.objects;
 
-//TODO populate this class
-public class User {
 
+/**
+ * User class stores logged user information like name, family_name, e-mail
+ *
+ * @since 13/Nov/2011
+ * @version 1.0
+ */
+public class User {
+    
+    /**
+     * User's name
+     */
+    private String mName;
+    
+    /**
+     * User's family name
+     */
+    private String mFamilyName;
+    
+    /**
+     * User's email
+     */
+    private String mEmail;
+    
+    /**
+     * User's constructor
+     * Initializes all fields as null
+     */
+    public User() {
+        this(null, null, null);
+    }
+    
+    
+    /**
+     * User's Constructor
+     * Initializes the fields with the given values
+     * @param name User's name
+     * @param familyName User's Family Name
+     * @param email User's logged email
+     */
+    public User(String name, String familyName, String email) {
+        setName(name);
+        setFamilyName(familyName);
+        setEmail(email);
+    }
+
+
+    /**
+     * @return User's name
+     */
+    public String getName() {
+        return mName;
+    }
+    /**
+     * @param mName name to set
+     */
+    public void setName(String mName) {
+        this.mName = mName;
+    }
+    /**
+     * @return User's family Name
+     */
+    public String getFamilyName() {
+        return mFamilyName;
+    }
+    /**
+     * @param familyName Family Name to set
+     */
+    public void setFamilyName(String familyName) {
+        this.mFamilyName = mFamilyName;
+    }
+    /**
+     * @return the Email
+     */
+    public String getEmail() {
+        return mEmail;
+    }
+    /**
+     * @param email the mEmail to set
+     */
+    public void setEmail(String email) {
+        this.mEmail = email;
+    }
 }
