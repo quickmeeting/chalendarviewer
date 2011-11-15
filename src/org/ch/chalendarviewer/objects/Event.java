@@ -17,7 +17,35 @@
 
 package org.ch.chalendarviewer.objects;
 
+import java.util.ArrayList;
+
 //TODO populate this class
 public class Event {
 
+    private String mId;
+    
+    private String mSelfLink;
+    
+    private String mAlternateLink;
+    
+    private boolean mCanEdit;
+
+    private String mTitle;
+    
+    private String mDetails;
+    
+    private String mStatus;
+    
+    private User mCreator;
+    
+    private String mWhere;
+    
+    private ArrayList<User> mAttendees;
+    
+    private ArrayList<Calendar> mResources;
+    
+    private Date mBegin;
+    
+    private Date mEnd;    
+    
 }

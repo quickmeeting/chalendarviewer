@@ -21,8 +21,31 @@ import android.graphics.Color;
 
 import java.util.TimeZone;
 
-//TODO populate this class
+/**
+ * Calendar class stores calendar information
+ *
+ * @since 15/Nov/2011
+ * @version 1.0
+ */
+// TODO comment code
 public class Calendar {
+    
+     
+    public final String FIELD_ID = "id";
+    public final String FIELD_TITLE = "title";
+    public final String FIELD_EVENT_FEED_LINK = "eventFeedLink";
+    public final String FIELD_SELF_LINK = "selfLink";
+    public final String FIELD_CAN_EDIT = "canEdit";
+    public final String FIELD_AUTHOR = "author";
+    public final String FIELD_ACCESS_LEVEL = "accessLevel";
+    public final String FIELD_COLOR = "color";
+    public final String FIELD_TIMEZONE = "timeZone";
+    
+    public final int CALENDAR_TYPE_RESOURCE = 0;
+    public final int CALENDAR_TYPE_PERSONAL = 1;
+    public final int CALENDAR_TYPE_GOOGLE   = 2;
+    
+    private int mType;
     
     private String mId;
     
@@ -41,6 +64,79 @@ public class Calendar {
     private Color mColor;
     
     private TimeZone mTimeZone;
+
+    public String getmId() {
+        return mId;
+    }
+
+    public void setmId(String mId) {
+        this.mId = mId;
+    }
+
+    public String getmTitle() {
+        return mTitle;
+    }
+
+    public void setmTitle(String mTitle) {
+        this.mTitle = mTitle;
+    }
+
+    public String getmEventFeedLik() {
+        return mEventFeedLik;
+    }
+
+    public void setmEventFeedLik(String mEventFeedLik) {
+        this.mEventFeedLik = mEventFeedLik;
+    }
+
+    public String getmSelfLink() {
+        return mSelfLink;
+    }
+
+    public void setmSelfLink(String mSelfLink) {
+        this.mSelfLink = mSelfLink;
+    }
+
+    public boolean ismCanEdit() {
+        return mCanEdit;
+    }
+
+    public void setmCanEdit(boolean mCanEdit) {
+        this.mCanEdit = mCanEdit;
+    }
+
+    public User getmAuthor() {
+        return mAuthor;
+    }
+
+    public void setmAuthor(User mAuthor) {
+        this.mAuthor = mAuthor;
+    }
+
+    public String getmAccessLevel() {
+        return mAccessLevel;
+    }
+
+    public void setmAccessLevel(String mAccessLevel) {
+        this.mAccessLevel = mAccessLevel;
+    }
+
+    public Color getmColor() {
+        return mColor;
+    }
+
+    public void setmColor(Color mColor) {
+        this.mColor = mColor;
+    }
+
+    public TimeZone getmTimeZone() {
+        return mTimeZone;
+    }
+
+    public void setmTimeZone(TimeZone mTimeZone) {
+        this.mTimeZone = mTimeZone;
+    }   
+    
     
     
 }
