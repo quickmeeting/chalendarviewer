@@ -18,6 +18,7 @@
 package org.ch.chalendarviewer.objects;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 //TODO populate this class
 public class Event {
