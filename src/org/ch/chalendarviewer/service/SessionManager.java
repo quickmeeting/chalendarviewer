@@ -20,4 +20,9 @@ package org.ch.chalendarviewer.service;
 // TODO populate this class
 public class SessionManager {
 
+    public String getAccessToken() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

@@ -17,6 +17,12 @@
 
 package org.ch.chalendarviewer.service;
 
+import android.util.Log;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.ch.chalendarviewer.objects.Calendar;
 import org.ch.chalendarviewer.objects.Event;
 import org.ch.chalendarviewer.objects.User;
@@ -34,6 +40,7 @@ import java.util.List;
  */
 public class GoogleApiConnector {
 
+    private static final String URL_USER_INFO = "https://www.googleapis.com/oauth2/v1/userinfo";
    
     private static GoogleApiConnector _instance;
     
@@ -52,6 +59,7 @@ public class GoogleApiConnector {
     
     public User getUserInformation(){
         User user = new User();
+        
         return user;
     }
     
