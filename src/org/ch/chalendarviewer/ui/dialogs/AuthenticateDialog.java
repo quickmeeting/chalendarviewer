@@ -24,11 +24,14 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.ch.chalendarviewer.ui.R;
+
 /**
- * Display Foursquare authentication dialog.
+ * Display Google Authentication dialog.
  * 
- * @author Lorensius W. L. T <lorenz@londatiga.net>
- * http://www.londatiga.net/featured-articles/how-to-use-foursquare-api-on-android-application/
+ * Based on class created by Lorensius W. L. T <lorenz@londatiga.net>
+ * (http://www.londatiga.net/featured-articles/how-to-use-foursquare-api-on-android-application/)
+ * 
  * TODO review this class
  */
 public class AuthenticateDialog extends Dialog {
@@ -46,7 +49,7 @@ public class AuthenticateDialog extends Dialog {
     private LinearLayout mContent;
     private TextView mTitle;
  
-    private static final String TAG = "CalendarAuthenticateDialog";
+    private static final String TAG = "AuthenticateDialog";
     
 	public AuthenticateDialog(Context context, String url, AuthenticateDialogListener listener) {
 		super(context);
@@ -59,13 +62,13 @@ public class AuthenticateDialog extends Dialog {
 	    Log.d(TAG, "onCreate");
 	    super.onCreate(savedInstanceState);
         
+	    // Create Spinner Dialog
         mSpinner = new ProgressDialog(getContext());
-        
         mSpinner.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mSpinner.setMessage("Loading...");
+        mSpinner.setMessage("load");
 
-        mContent = new LinearLayout(getContext());
         
+        mContent = new LinearLayout(getContext());
         mContent.setOrientation(LinearLayout.VERTICAL);
         
         setUpTitle();
@@ -92,7 +95,7 @@ public class AuthenticateDialog extends Dialog {
 	        
 	        mTitle = new TextView(getContext());
 	        
-	        mTitle.setText("Foursquare");
+	        mTitle.setText(R.string.loading);
 	        mTitle.setTextColor(Color.WHITE);
 	        mTitle.setTypeface(Typeface.DEFAULT_BOLD);
 	        mTitle.setBackgroundColor(0xFF0cbadf);

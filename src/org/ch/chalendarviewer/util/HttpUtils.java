@@ -21,4 +21,5 @@ package org.ch.chalendarviewer.util;
 // TODO populate this class
 public class HttpUtils {
 
+    
 }

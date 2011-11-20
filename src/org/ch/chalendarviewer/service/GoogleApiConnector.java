@@ -17,7 +17,51 @@
 
 package org.ch.chalendarviewer.service;
 
-//TODO populate this class
+import org.ch.chalendarviewer.objects.Calendar;
+import org.ch.chalendarviewer.objects.Event;
+import org.ch.chalendarviewer.objects.User;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * GoogleApiConnector implements the connection between Google Api
+ * and the service
+ * 
+ *@since 20/Nov/2011
+ *TODO comment this class
+ */
 public class GoogleApiConnector {
 
+   
+    private static GoogleApiConnector _instance;
+    
+    private SessionManager mSessionManager;
+    
+    private GoogleApiConnector() {
+        mSessionManager = new SessionManager();
+    }
+
+    public static synchronized GoogleApiConnector getInstance() {
+        if (null == _instance) {
+            _instance = new GoogleApiConnector();
+        }
+        return _instance;
+    }
+    
+    public User getUserInformation(){
+        User user = new User();
+        return user;
+    }
+    
+    public List<Calendar> getCalendars(){
+        ArrayList<Calendar> calendars = new ArrayList<Calendar>();
+        return calendars;
+    }
+    
+    public List<Event> getEvents (Calendar calendar, Date Begin, Date end) {
+        ArrayList<Event> events = new ArrayList<Event>();
+        return events;
+    }    
 }
