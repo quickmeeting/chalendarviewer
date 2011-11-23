@@ -31,15 +31,12 @@ import java.util.TimeZone;
 public class Calendar {
     
      
-    public final String FIELD_ID = "id";
-    public final String FIELD_TITLE = "title";
-    public final String FIELD_EVENT_FEED_LINK = "eventFeedLink";
-    public final String FIELD_SELF_LINK = "selfLink";
-    public final String FIELD_CAN_EDIT = "canEdit";
-    public final String FIELD_AUTHOR = "author";
-    public final String FIELD_ACCESS_LEVEL = "accessLevel";
-    public final String FIELD_COLOR = "color";
-    public final String FIELD_TIMEZONE = "timeZone";
+    static public final String FIELD_ID = "id";
+    static public final String FIELD_TITLE = "title";
+    static public final String FIELD_EVENT_FEED_LINK = "eventFeedLink";
+    static public final String FIELD_SELF_LINK = "selfLink";
+    static public final String FIELD_COLOR = "color";
+    static public final String FIELD_TIMEZONE = "timeZone";
     
     public final int CALENDAR_TYPE_RESOURCE = 0;
     public final int CALENDAR_TYPE_PERSONAL = 1;
@@ -54,87 +51,57 @@ public class Calendar {
     private String mEventFeedLik;
     
     private String mSelfLink;
-    
-    private boolean mCanEdit;
-
-    private User mAuthor;
-    
-    private String mAccessLevel;
-    
-    private Color mColor;
+        
+    private String mColor;
     
     private TimeZone mTimeZone;
 
-    public String getmId() {
+    public String getId() {
         return mId;
     }
 
-    public void setmId(String mId) {
-        this.mId = mId;
+    public void setId(String id) {
+        this.mId = id;
     }
 
-    public String getmTitle() {
+    public String getTitle() {
         return mTitle;
     }
 
-    public void setmTitle(String mTitle) {
-        this.mTitle = mTitle;
+    public void setTitle(String title) {
+        this.mTitle = title;
     }
 
-    public String getmEventFeedLik() {
+    public String getEventFeedLik() {
         return mEventFeedLik;
     }
 
-    public void setmEventFeedLik(String mEventFeedLik) {
-        this.mEventFeedLik = mEventFeedLik;
+    public void setEventFeedLik(String eventFeedLik) {
+        this.mEventFeedLik = eventFeedLik;
     }
 
-    public String getmSelfLink() {
+    public String getSelfLink() {
         return mSelfLink;
     }
 
-    public void setmSelfLink(String mSelfLink) {
-        this.mSelfLink = mSelfLink;
+    public void setSelfLink(String selfLink) {
+        this.mSelfLink = selfLink;
     }
 
-    public boolean ismCanEdit() {
-        return mCanEdit;
-    }
-
-    public void setmCanEdit(boolean mCanEdit) {
-        this.mCanEdit = mCanEdit;
-    }
-
-    public User getmAuthor() {
-        return mAuthor;
-    }
-
-    public void setmAuthor(User mAuthor) {
-        this.mAuthor = mAuthor;
-    }
-
-    public String getmAccessLevel() {
-        return mAccessLevel;
-    }
-
-    public void setmAccessLevel(String mAccessLevel) {
-        this.mAccessLevel = mAccessLevel;
-    }
-
-    public Color getmColor() {
+    public String getColor() {
         return mColor;
     }
 
-    public void setmColor(Color mColor) {
-        this.mColor = mColor;
+    public void setColor(String color) {
+        this.mColor = color;
     }
 
-    public TimeZone getmTimeZone() {
+    public TimeZone getTimeZone() {
         return mTimeZone;
     }
 
-    public void setmTimeZone(TimeZone mTimeZone) {
-        this.mTimeZone = mTimeZone;
+    public void setTimeZone(TimeZone timeZone) {
+        this.mTimeZone = timeZone;
     }   
     
     

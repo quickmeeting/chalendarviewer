@@ -26,6 +26,12 @@ package org.ch.chalendarviewer.objects;
  */
 public class User {
     
+    public static final String FIELD_EMAIL = "email";
+
+    public static final String FIELD_FAMILYNAME = "family_name";
+
+    public static final String FIELD_NAME = "given_name";
+    
     /**
      * User's name
      */
