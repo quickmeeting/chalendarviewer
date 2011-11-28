@@ -28,7 +28,7 @@ import java.util.TimeZone;
  * @version 1.0
  */
 // TODO comment code
-public class Calendar {
+public class GoogleCalendar {
     
      
     static public final String FIELD_ID = "id";

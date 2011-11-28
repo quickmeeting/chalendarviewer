@@ -28,19 +28,15 @@ public class User {
     
     public static final String FIELD_EMAIL = "email";
 
-    public static final String FIELD_FAMILYNAME = "family_name";
+    public static final String FIELD_NAME = "name";
 
-    public static final String FIELD_NAME = "given_name";
+    public static final String FIELD_DISPLAY_NAME = "displayName";
     
     /**
      * User's name
      */
     private String mName;
     
-    /**
-     * User's family name
-     */
-    private String mFamilyName;
     
     /**
      * User's email
@@ -52,7 +48,7 @@ public class User {
      * Initializes all fields as null
      */
     public User() {
-        this(null, null, null);
+        this(null, null);
     }
     
     
@@ -60,12 +56,10 @@ public class User {
      * User's Constructor
      * Initializes the fields with the given values
      * @param name User's name
-     * @param familyName User's Family Name
      * @param email User's logged email
      */
-    public User(String name, String familyName, String email) {
-        setName(name);
-        setFamilyName(familyName);
+    public User(String name, String email) {
+        setName(name);       
         setEmail(email);
     }
 
@@ -82,18 +76,7 @@ public class User {
     public void setName(String mName) {
         this.mName = mName;
     }
-    /**
-     * @return User's family Name
-     */
-    public String getFamilyName() {
-        return mFamilyName;
-    }
-    /**
-     * @param familyName Family Name to set
-     */
-    public void setFamilyName(String familyName) {
-        this.mFamilyName = mFamilyName;
-    }
+    
     /**
      * @return the Email
      */
