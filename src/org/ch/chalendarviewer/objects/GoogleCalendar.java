@@ -37,6 +37,7 @@ public class GoogleCalendar {
     static public final String FIELD_SELF_LINK = "selfLink";
     static public final String FIELD_COLOR = "color";
     static public final String FIELD_TIMEZONE = "timeZone";
+    public static final String FIELD_RESOURCE =  "resource";
     
     public final int CALENDAR_TYPE_RESOURCE = 0;
     public final int CALENDAR_TYPE_PERSONAL = 1;

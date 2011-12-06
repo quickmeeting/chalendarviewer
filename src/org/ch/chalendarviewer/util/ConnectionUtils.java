@@ -23,6 +23,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.BufferedReader;
@@ -61,7 +62,7 @@ public class ConnectionUtils {
         
         Log.d(TAG,"Response code is " + returnCode);
         
-        if (returnCode != 200) {
+        if (returnCode != 200 || returnCode != 201) {
             Log.e(TAG,"There was an error " + returnCode + " processing the url " + url);
             throw new HttpException("There was an error " + returnCode + " processing the url " + url);
         }
@@ -72,7 +73,7 @@ public class ConnectionUtils {
         
         return htmlResult;
     }
-    
+
     static private String streamToString(final InputStream is) throws IOException {
         Log.d(TAG,"streamToString Begin");
         String str  = "";
@@ -97,5 +98,5 @@ public class ConnectionUtils {
        
         Log.d(TAG,"streamToString End");
         return str;
-    }    
+    }  
 }

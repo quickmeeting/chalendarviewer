@@ -37,6 +37,7 @@ public class GoogleEvent {
     static public final String FIELD_BEGIN = "start";
     static public final String FIELD_END = "end";
     public static final String FIELD_WHEN_LIST = "when";
+
     
     private String mId;
     

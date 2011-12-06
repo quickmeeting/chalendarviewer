@@ -22,11 +22,15 @@ import android.util.Log;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.ch.chalendarviewer.objects.GoogleEvent;
 import org.ch.chalendarviewer.objects.GoogleCalendar;
 import org.ch.chalendarviewer.objects.User;
+import org.ch.chalendarviewer.ui.R;
 import org.ch.chalendarviewer.util.ConnectionUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,6 +38,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -51,16 +56,27 @@ import java.util.TimeZone;
  */
 public class GoogleApiConnector {
 
+    private static final String TAG = "GoogleApiConnector";
+    
     private static final String URL_USER_INFO = "https://www.googleapis.com/oauth2/v1/userinfo";
     
     private static final String URL_ALL_CALENDARS = "https://www.google.com/calendar/feeds/default/allcalendars/full?alt=jsonc";
    
+    private static final String URL_INSERT_EVENT =  "https://www.google.com/calendar/feeds/default/private/full";
+
+    
     private static GoogleApiConnector _instance;
     
     private SessionManager mSessionManager;
     
+    private SimpleDateFormat mFormatter;
+
+
+    
     private GoogleApiConnector() {
         mSessionManager = new SessionManager();
+        
+        mFormatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
     }
 
     public static synchronized GoogleApiConnector getInstance() {
@@ -164,8 +180,8 @@ public class GoogleApiConnector {
         end.setTimeZone(calendar.getTimeZone());
         
         //pattern 2011-11-23T00:00:00
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
-        String url = calendar.getEventFeedLik() +  "?alt=jsonc&start-min=" + formatter.format(begin.getTime()) + "&start-max="+ formatter.format(end.getTime());
+       
+        String url = calendar.getEventFeedLik() +  "?alt=jsonc&start-min=" + mFormatter.format(begin.getTime()) + "&start-max="+ mFormatter.format(end.getTime());
                 
         String[] paramsKey =  {"Authorization"};
         String[] paramsValue = {"Bearer " + mSessionManager.getAccessToken()};
@@ -212,8 +228,8 @@ public class GoogleApiConnector {
                 ev.setTitle(jsonEvent.getString(GoogleEvent.FIELD_TITLE));
                
                 JSONArray listWhen  = (JSONArray) jsonEvent.getJSONArray(GoogleEvent.FIELD_WHEN_LIST);
-                begin.setTime(formatter.parse(((JSONObject)listWhen.get(0)).getString(GoogleEvent.FIELD_BEGIN)));
-                end.setTime(formatter.parse(((JSONObject)listWhen.get(0)).getString(GoogleEvent.FIELD_END)));
+                begin.setTime(mFormatter.parse(((JSONObject)listWhen.get(0)).getString(GoogleEvent.FIELD_BEGIN)));
+                end.setTime(mFormatter.parse(((JSONObject)listWhen.get(0)).getString(GoogleEvent.FIELD_END)));
                 ev.setBegin(begin);
                 ev.setEnd(end);
                 
@@ -236,8 +252,64 @@ public class GoogleApiConnector {
             e.printStackTrace();
         }
         
-      
-        
         return events;
-    }    
+    }
+    
+    public boolean setEvent(GoogleCalendar calendar, GoogleEvent event) {
+        
+        JSONObject data = new JSONObject();
+        JSONObject attendee = new JSONObject();
+        JSONArray attendeeList = new JSONArray();
+        JSONObject when = new JSONObject();
+        JSONArray whenList = new JSONArray();
+        boolean retValue = true;
+        
+        try {
+            attendee.put(GoogleCalendar.FIELD_RESOURCE, true);
+            attendee.put(User.FIELD_DISPLAY_NAME,calendar.getTitle());
+            attendee.put(User.FIELD_EMAIL, calendar.getId().replace("http://www.google.com/calendar/feeds/default/allcalendars/full/",""));
+            attendeeList.put(attendee);
+            
+            when.put(GoogleEvent.FIELD_BEGIN, mFormatter.format(event.getBegin().getTime()));
+            when.put(GoogleEvent.FIELD_END,   mFormatter.format(event.getEnd().getTime()));
+            whenList.put(when);
+            
+            data.put(GoogleEvent.FIELD_TITLE, event.getTitle());
+            data.put(GoogleEvent.FIELD_DETAILS, event.getDetails());
+            data.put(GoogleEvent.FIELD_STATUS, event.getStatus());
+            data.put(GoogleEvent.FIELD_LOCATION, calendar.getTitle());
+            data.put(GoogleEvent.FIELD_ATTENDEES, attendeeList);
+            data.put(GoogleEvent.FIELD_WHEN_LIST, whenList);
+            data = new JSONObject().put("data", data);
+    
+            HttpPost httpPost = new HttpPost(GoogleApiConnector.URL_INSERT_EVENT);
+            httpPost.setHeader("Authorization", "Bearer " + mSessionManager.getAccessToken());
+            httpPost.setHeader("Content-type",  "application/json");
+            httpPost.setEntity(new StringEntity(data.toString()));
+      
+      
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+                
+            Log.d(TAG,"Response code is " + httpResponse.getStatusLine().getStatusCode());
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            retValue = false;
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            retValue = false;
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            retValue = false;
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            retValue = false;
+        }
+            
+        return retValue;
+    }
 }
