@@ -29,16 +29,20 @@ import android.provider.BaseColumns;
 public class AuthUser implements BaseColumns{
     
     /** Column name: authorization_code */
-    public static final String AUTH_CODE = "authorization_code";
+    public static final String REFRESH_TOKEN = "refresh_token";
     /** Column name: access token */
     public static final String ACCESS_TOKEN = "access_token";
     /** Column name: email */
     public static final String EMAIL = "email";
+    /** Column name: active_user */
+    public static final String ACTIVE_USER =  "active_user";
+    /** Column name: expiration_date */
+    public static final String EXPIRATION_DATE = "expiration_date";
     
     /** Content type */
     public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.auth_users";
     
     /** Content URI */
-    public static final Uri CONTENT_URI = Uri.parse("content://" + ChalendarContentProvider.AUTHORITY + "/auth_users");
+    public static final Uri CONTENT_URI = Uri.parse("content://" + ChalendarContentProvider.AUTHORITY + "/auth_users");   
 
 }

@@ -48,10 +48,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + AUTH_USER_TABLE_NAME + " (" 
-                        + AuthUser._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," 
-                        + AuthUser.ACCESS_TOKEN + " VARCHAR(255)," 
-                        + AuthUser.AUTH_CODE + " VARCHAR(255)," 
-                        + AuthUser.EMAIL + " VARCHAR(255) );");
+                        + AuthUser._ID             + " INTEGER PRIMARY KEY AUTOINCREMENT," 
+                        + AuthUser.ACCESS_TOKEN    + " VARCHAR(255)," 
+                        + AuthUser.REFRESH_TOKEN   + " VARCHAR(255)," 
+                        + AuthUser.EMAIL           + " VARCHAR(255),"
+                        + AuthUser.ACTIVE_USER     + " BOOLEAN,"
+                        + AuthUser.EXPIRATION_DATE + " DATETIME);");
     }
 
     @Override

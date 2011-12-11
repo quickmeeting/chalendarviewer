@@ -22,16 +22,31 @@ import android.util.Log;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.SingleClientConnManager;
+import org.apache.http.message.BasicNameValuePair;
+import org.ch.chalendarviewer.service.GoogleCalendarApiConnector;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
 
@@ -41,6 +56,9 @@ public class ConnectionUtils {
 
     static private final String TAG = "ConnectionUtils";
     
+    static private final int HTTP_OK      = 200;
+    static private final int HTTP_CREATED = 201;
+    
     static public String getHttpsGetConnection(String url, String[] paramsKey, String[] paramsValue) throws IllegalStateException, IOException, HttpException {
         Log.d(TAG,"getHttpsGetConnection Begin");
         
@@ -49,7 +67,9 @@ public class ConnectionUtils {
         HttpGet httpGetConn = new HttpGet(url);
         
         for (int index = 0; index < paramsKey.length; index++ ){
-            httpGetConn.setHeader(paramsKey[index], (paramsValue.length > index ? "" : paramsValue[index])); 
+            Log.d(TAG,"param = " + paramsKey[index]);
+            Log.d(TAG,"value = " + (index < paramsValue.length ? paramsValue[index] : ""));
+            httpGetConn.setHeader(paramsKey[index], (index < paramsValue.length ? paramsValue[index] : ""));
         }
         
         DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -62,7 +82,7 @@ public class ConnectionUtils {
         
         Log.d(TAG,"Response code is " + returnCode);
         
-        if (returnCode != 200 || returnCode != 201) {
+        if (returnCode != HTTP_OK && returnCode != HTTP_CREATED) {
             Log.e(TAG,"There was an error " + returnCode + " processing the url " + url);
             throw new HttpException("There was an error " + returnCode + " processing the url " + url);
         }
@@ -98,5 +118,79 @@ public class ConnectionUtils {
        
         Log.d(TAG,"streamToString End");
         return str;
-    }  
+    }
+
+    public static String doHttpsPost(final String url, final String[] paramsKey, final String[] paramsValue, final StringEntity stringEntity) throws  HttpException, ClientProtocolException, IOException {
+        Log.d(TAG,"doHttpsPost Begin");
+        
+        Log.d(TAG,"url = "+ url);
+                
+        HttpPost httpPost = new HttpPost(url);
+        for (int index = 0; index < paramsKey.length; index++ ){
+            Log.d(TAG,"param = " + paramsKey[index]);
+            Log.d(TAG,"value = " + (index < paramsValue.length ? paramsValue[index] : ""));
+            httpPost.setHeader(paramsKey[index], (index < paramsValue.length ? paramsValue[index] : ""));
+        }        
+        httpPost.setEntity(stringEntity);
+  
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        HttpResponse response = httpClient.execute(httpPost);
+        
+        HttpEntity entity = response.getEntity();
+        
+        int returnCode = response.getStatusLine().getStatusCode();
+        
+        Log.d(TAG,"Response code is " + returnCode);
+        
+        if (returnCode != HTTP_OK && returnCode != HTTP_CREATED) {
+            Log.e(TAG,"There was an error " + returnCode + " processing the url " + url);
+            throw new HttpException("There was an error " + returnCode + " processing the url " + url);
+        }
+    
+        String htmlResult = streamToString(entity.getContent());
+        
+        Log.d(TAG,"getHttpsGetConnection End");
+        
+        return htmlResult;
+    }
+    
+    
+    public static String doHttpsPostFormUrlEncoded(final String url, final String[] paramsKey, final String[] paramsValue) throws ClientProtocolException, IOException, HttpException {
+        Log.d(TAG,"doHttpsPostFormUrlEncoded Begin");
+        
+        // Http Client
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        
+        // Post URL
+        HttpPost httpPost = new HttpPost(url);
+       
+       // Add your data
+       List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+       for (int index = 0; index < paramsKey.length; index++ ){
+           Log.d(TAG,"param = " + paramsKey[index]);
+           Log.d(TAG,"value = " + (index < paramsValue.length ? paramsValue[index] : ""));
+           nameValuePairs.add(new BasicNameValuePair(paramsKey[index], (index < paramsValue.length ? paramsValue[index] : "")));
+       }
+       httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+       
+       // Execute HTTP Post Request
+       HttpResponse response = httpClient.execute(httpPost);
+       HttpEntity   entity   = response.getEntity();
+        
+       int returnCode = response.getStatusLine().getStatusCode();
+        
+       Log.d(TAG,"Response code is " + returnCode);
+        
+       if (returnCode != HTTP_OK && returnCode != HTTP_CREATED) {
+           Log.e(TAG,"There was an error " + returnCode + " processing the url " + url);
+           throw new HttpException("There was an error " + returnCode + " processing the url " + url);
+       }
+    
+       String htmlResult = streamToString(entity.getContent());
+        
+       Log.d(TAG,"getHttpsGetConnection End");
+        
+       return htmlResult;
+    }
+    
 }

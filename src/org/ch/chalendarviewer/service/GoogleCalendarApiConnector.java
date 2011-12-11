@@ -54,80 +54,40 @@ import java.util.TimeZone;
  *@since 20/Nov/2011
  *TODO comment this class
  */
-public class GoogleApiConnector {
+public class GoogleCalendarApiConnector {
 
-    private static final String TAG = "GoogleApiConnector";
+    private static final String TAG = GoogleCalendarApiConnector.class.getName();
+       
+    private static GoogleCalendarApiConnector _instance;
     
-    private static final String URL_USER_INFO = "https://www.googleapis.com/oauth2/v1/userinfo";
-    
-    private static final String URL_ALL_CALENDARS = "https://www.google.com/calendar/feeds/default/allcalendars/full?alt=jsonc";
-   
-    private static final String URL_INSERT_EVENT =  "https://www.google.com/calendar/feeds/default/private/full";
-
-    
-    private static GoogleApiConnector _instance;
-    
-    private SessionManager mSessionManager;
+    private UserManager mSessionManager;
     
     private SimpleDateFormat mFormatter;
 
 
     
-    private GoogleApiConnector() {
-        mSessionManager = new SessionManager();
+    private GoogleCalendarApiConnector() {
+        mSessionManager = UserManager.getInstance();
         
         mFormatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
     }
 
-    public static synchronized GoogleApiConnector getInstance() {
+    public static synchronized GoogleCalendarApiConnector getInstance() {
         if (null == _instance) {
-            _instance = new GoogleApiConnector();
+            _instance = new GoogleCalendarApiConnector();
         }
         return _instance;
-    }
-    
-    public User getUserInformation(){
-        User user = new User();
-        
-        String[] paramsKey =  {"Authorization"};
-        String[] paramsValue = {"Bearer " + mSessionManager.getAccessToken()};
-        
-        String googleResponse = null;
-        try {
-            googleResponse = ConnectionUtils.getHttpsGetConnection(URL_USER_INFO, paramsKey, paramsValue);
-        } catch (IllegalStateException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (HttpException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        
-        JSONObject jsonUserObj;
-        try {
-            jsonUserObj = (JSONObject) new JSONTokener(googleResponse).nextValue();
-            user.setEmail(jsonUserObj.getString(User.FIELD_EMAIL));           
-            user.setName(jsonUserObj.getString(User.FIELD_NAME));
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        
-        return user;
     }
     
     public List<GoogleCalendar> getCalendars(){
         ArrayList<GoogleCalendar> calendarsList = new ArrayList<GoogleCalendar>();
         
         String[] paramsKey =  {"Authorization"};
-        String[] paramsValue = {"Bearer " + mSessionManager.getAccessToken()};
+        String[] paramsValue = {"Bearer " + mSessionManager.getActiveUserAccessToken()};
         
         String googleResponse = null;
         try {
-            googleResponse = ConnectionUtils.getHttpsGetConnection(URL_ALL_CALENDARS, paramsKey, paramsValue);
+            googleResponse = ConnectionUtils.getHttpsGetConnection(GoogleConstants.URL_ALL_CALENDARS, paramsKey, paramsValue);
         } catch (IllegalStateException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -184,7 +144,7 @@ public class GoogleApiConnector {
         String url = calendar.getEventFeedLik() +  "?alt=jsonc&start-min=" + mFormatter.format(begin.getTime()) + "&start-max="+ mFormatter.format(end.getTime());
                 
         String[] paramsKey =  {"Authorization"};
-        String[] paramsValue = {"Bearer " + mSessionManager.getAccessToken()};
+        String[] paramsValue = {"Bearer " + mSessionManager.getActiveUserAccessToken()};
         
                
         String googleResponse = null;
@@ -282,16 +242,10 @@ public class GoogleApiConnector {
             data.put(GoogleEvent.FIELD_WHEN_LIST, whenList);
             data = new JSONObject().put("data", data);
     
-            HttpPost httpPost = new HttpPost(GoogleApiConnector.URL_INSERT_EVENT);
-            httpPost.setHeader("Authorization", "Bearer " + mSessionManager.getAccessToken());
-            httpPost.setHeader("Content-type",  "application/json");
-            httpPost.setEntity(new StringEntity(data.toString()));
-      
-      
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpResponse httpResponse = httpClient.execute(httpPost);
-                
-            Log.d(TAG,"Response code is " + httpResponse.getStatusLine().getStatusCode());
+            
+            String[] paramsKey =   {"Authorization","Content-type"};
+            String[] paramsValue = {"Bearer " + mSessionManager.getActiveUserAccessToken(), "application/json"};
+            ConnectionUtils.doHttpsPost(GoogleConstants.URL_INSERT_EVENT, paramsKey, paramsValue, new StringEntity(data.toString()));
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -308,6 +262,9 @@ public class GoogleApiConnector {
             // TODO Auto-generated catch block
             e.printStackTrace();
             retValue = false;
+        } catch (HttpException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
             
         return retValue;

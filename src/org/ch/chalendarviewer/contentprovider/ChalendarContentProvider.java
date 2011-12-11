@@ -61,8 +61,10 @@ public class ChalendarContentProvider extends ContentProvider {
         authUserProjectionMap = new HashMap<String, String>();
         authUserProjectionMap.put(AuthUser._ID, AuthUser._ID);
         authUserProjectionMap.put(AuthUser.ACCESS_TOKEN, AuthUser.ACCESS_TOKEN);
-        authUserProjectionMap.put(AuthUser.AUTH_CODE, AuthUser.AUTH_CODE);
+        authUserProjectionMap.put(AuthUser.REFRESH_TOKEN, AuthUser.REFRESH_TOKEN);
         authUserProjectionMap.put(AuthUser.EMAIL, AuthUser.EMAIL );
+        authUserProjectionMap.put(AuthUser.ACTIVE_USER, AuthUser.ACTIVE_USER );
+        authUserProjectionMap.put(AuthUser.EXPIRATION_DATE, AuthUser.EXPIRATION_DATE );
     }
     
     
