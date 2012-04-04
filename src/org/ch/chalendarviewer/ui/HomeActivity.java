@@ -21,14 +21,21 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 
+import org.ch.chalendarviewer.service.UserManager;
+
 public class HomeActivity extends Activity implements OnClickListener {
 	
 	private ArrayList<CalendarView> calendars = new ArrayList<CalendarView>();
+    
+	private UserManager mUserManager;
 	
     /** Called when the activity is first created. */
     @Override
@@ -83,4 +90,24 @@ public class HomeActivity extends Activity implements OnClickListener {
         EventView nuevoEvent = new EventView(this, "Event inserted!");
         calendars.get(3).addEvent(nuevoEvent);
 	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.main, menu);
+	    return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	        case R.id.MainMenuAddAccount:
+	            mUserManager = UserManager.getInstance(getContentResolver());
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
+	
 }

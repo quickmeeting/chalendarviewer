@@ -17,6 +17,8 @@
 
 package org.ch.chalendarviewer.service;
 
+import android.content.ContentResolver;
+import android.content.Context;
 import android.util.Log;
 
 import org.apache.http.HttpEntity;
@@ -66,16 +68,17 @@ public class GoogleCalendarApiConnector {
 
 
     
-    private GoogleCalendarApiConnector() {
-        mSessionManager = UserManager.getInstance();
+    private GoogleCalendarApiConnector(ContentResolver context) {
+        mSessionManager = UserManager.getInstance(context);
         
         mFormatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
     }
 
-    public static synchronized GoogleCalendarApiConnector getInstance() {
-        if (null == _instance) {
-            _instance = new GoogleCalendarApiConnector();
+    public static synchronized GoogleCalendarApiConnector getInstance(ContentResolver context) {
+        if (null == _instance) {            
+            _instance = new GoogleCalendarApiConnector(context);
         }
+
         return _instance;
     }
     

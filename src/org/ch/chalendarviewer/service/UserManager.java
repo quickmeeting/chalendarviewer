@@ -18,7 +18,9 @@
 package org.ch.chalendarviewer.service;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
@@ -77,23 +79,21 @@ public class UserManager {
     /** ExpirationDate value */
     private Date   mExpirationDate;
     
-    /** Chalendar Provider object */
-    private ContentProvider mProvider;
-    
     /** Data Formatter */
     private SimpleDateFormat mDateFormatter;
 
+    /** Chalendar Provider object */
+    private ContentResolver mProvider;    
     
     /**
      * Internal Constructor
      */
-    private UserManager() {
-        
-        // use our contentProvider
-        mProvider = new ChalendarContentProvider();
+    private UserManager(ContentResolver contentResolver) {
         
         // use the sqlite format for date
         mDateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        
+        mProvider = contentResolver;
         
         recoverDataFromDataBase();
     }
@@ -449,16 +449,15 @@ public class UserManager {
      * Returns a valid SessionManager
      * @return SessionManager instance
      */
-    public static UserManager getInstance(){
-        
-        //avoids double initialization 
-        synchronized (UserManager.sInstance) { 
-            if (sInstance == null) {
-                sInstance = new UserManager();            
-            }
+    public static synchronized UserManager getInstance(ContentResolver contentResolver){        
+        if (sInstance == null) {
+            sInstance = new UserManager(contentResolver);
         }
+        
         return sInstance;
     }
+    
+    
     
     /**
      * Get a valid Access Token
