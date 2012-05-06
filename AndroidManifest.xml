@@ -30,6 +30,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-		<provider android:name="org.ch.chalendarviewer.contentprovider.ChalendarContentProvider" android:authorities="org.ch.chalendarviewer.contentprovider.ChalendarContentProvider"></provider>
+		<provider android:name="org.ch.chalendarviewer.contentprovider.ChalendarContentProvider" 
+		          android:authorities="org.ch.chalendarviewer.contentprovider.ChalendarContentProvider">		   
+		</provider>
+		<activity android:name=".AccountManagerActivity"
+		          android:label="@string/manageAccounts"
+		          android:screenOrientation="landscape">		    
+		</activity>
     </application>
 </manifest>

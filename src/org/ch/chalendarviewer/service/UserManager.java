@@ -68,7 +68,7 @@ public class UserManager {
     private static UserManager sInstance = null;
         
     /** Active user Mail */
-    private String mUserMail;
+    private String mUserMail = "";
     
     /** Active user access Token */
     private String mAccessToken;
@@ -88,12 +88,14 @@ public class UserManager {
     /**
      * Internal Constructor
      */
-    private UserManager(ContentResolver contentResolver) {
+    private UserManager(Context context) {
         
         // use the sqlite format for date
         mDateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         
-        mProvider = contentResolver;
+        
+        //TODO return exception if it is null
+        mProvider = context.getContentResolver();
         
         recoverDataFromDataBase();
     }
@@ -447,18 +449,17 @@ public class UserManager {
     
     /**
      * Returns a valid SessionManager
+     * @param contentResolver content resolver to be used by the object
      * @return SessionManager instance
      */
-    public static synchronized UserManager getInstance(ContentResolver contentResolver){        
+    public static synchronized UserManager getInstance(Context context){        
         if (sInstance == null) {
-            sInstance = new UserManager(contentResolver);
+            sInstance = new UserManager(context);
         }
         
         return sInstance;
     }
-    
-    
-    
+        
     /**
      * Get a valid Access Token
      * @return valid Access Token 

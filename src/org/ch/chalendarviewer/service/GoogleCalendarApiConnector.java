@@ -32,7 +32,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.ch.chalendarviewer.objects.GoogleEvent;
 import org.ch.chalendarviewer.objects.GoogleCalendar;
 import org.ch.chalendarviewer.objects.User;
-import org.ch.chalendarviewer.ui.R;
 import org.ch.chalendarviewer.util.ConnectionUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,15 +65,14 @@ public class GoogleCalendarApiConnector {
     
     private SimpleDateFormat mFormatter;
 
-
     
-    private GoogleCalendarApiConnector(ContentResolver context) {
+    private GoogleCalendarApiConnector(Context context) {
         mSessionManager = UserManager.getInstance(context);
         
         mFormatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
     }
 
-    public static synchronized GoogleCalendarApiConnector getInstance(ContentResolver context) {
+    public static synchronized GoogleCalendarApiConnector getInstance(Context context) {
         if (null == _instance) {            
             _instance = new GoogleCalendarApiConnector(context);
         }

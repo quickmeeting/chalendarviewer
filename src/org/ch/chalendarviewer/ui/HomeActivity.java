@@ -20,6 +20,8 @@ package org.ch.chalendarviewer.ui;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,6 +38,8 @@ public class HomeActivity extends Activity implements OnClickListener {
 	private ArrayList<CalendarView> calendars = new ArrayList<CalendarView>();
     
 	private UserManager mUserManager;
+	
+	UserManager _userManager = null;
 	
     /** Called when the activity is first created. */
     @Override
@@ -79,6 +83,9 @@ public class HomeActivity extends Activity implements OnClickListener {
         
         //Se setea un listener para escuchar cualquier click sobre la pantalla
         mainLayout.setOnClickListener(this);
+        
+        
+        _userManager = UserManager.getInstance(this);
     }
 
 	@Override
@@ -98,16 +105,44 @@ public class HomeActivity extends Activity implements OnClickListener {
 	    return true;
 	}
 	
+	/**
+	 * Enables or disables menu options based on activity's state
+	 */
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle item selection
-	    switch (item.getItemId()) {
-	        case R.id.MainMenuAddAccount:
-	            mUserManager = UserManager.getInstance(getContentResolver());
-	            return true;
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
-	}
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem mnuOptRefresh =  menu.findItem(R.id.menuHomeRefresh);
+        MenuItem mnuOptManageResources =  menu.findItem(R.id.menuHomeManageResources);
+        
+        if (_userManager.hasUserActiveAccessToken() == false) {
+            mnuOptManageResources.setEnabled(false);
+            mnuOptRefresh.setEnabled(false);            
+        } else {
+            mnuOptManageResources.setEnabled(true);
+            mnuOptRefresh.setEnabled(true);
+        }
+        
+        return super.onPrepareOptionsMenu(menu);
+    }  
 	
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.menuHomeRefresh:
+                // TODO
+                return true;
+            case R.id.menuHomeManageAccounts:
+                Intent intent = new Intent(this, AccountManagerActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.menuHomeManageResources:
+                // TODO
+                return true;
+            case R.id.menuHomeConfiguration:
+                // TODO
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    } 
 }

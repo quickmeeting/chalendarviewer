@@ -39,8 +39,8 @@ public class GoogleConstants {
     public static final String URL_INSERT_EVENT =  "https://www.google.com/calendar/feeds/default/private/full";
  
     /** Google App Client Identification */
-    public static final String CLIENT_ID = "960151117831.apps.googleusercontent.com"; /** DONT STORE THIS DATA ON SOURCE CODE VERSION CONTROL */
+    public static final String CLIENT_ID = "960151117831.apps.googleusercontent.com"; /** DONT STORE THE REAL DATA ON SOURCE CODE VERSION CONTROL */
     
     /** Google App Client Secret */
-    public static final String CLIENT_SECRET = "1fBedz_8UAKElxNrXJjWZJxC"; /** DONT STORE THIS DATA ON SOURCE CODE VERSION CONTROL */
+    public static final String CLIENT_SECRET = "1fBedz_8UAKElxNrXJjWZJxC"; /** DONT STORE THE REAL DATA ON SOURCE CODE VERSION CONTROL */
 }

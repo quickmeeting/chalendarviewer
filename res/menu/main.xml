@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/MainMenuAddAccount"        
-          android:icon="@android:drawable/ic_menu_add"
-          android:title="@string/addaccount"/>
+    <item android:id="@+id/menuHomeRefresh"        
+          android:icon="@drawable/ic_menu_refresh"
+          android:title="@string/refresh"/>
     
-
+    <item android:id="@+id/menuHomeManageAccounts"        
+          android:icon="@drawable/ic_menu_friendslist"
+          android:title="@string/manageAccounts"/>
+    
+    <item android:id="@+id/menuHomeManageResources"        
+          android:icon="@drawable/ic_menu_account_list"
+          android:title="@string/manageResources"/>
+    
+    <item android:id="@+id/menuHomeConfiguration"        
+          android:icon="@android:drawable/ic_menu_manage"
+          android:title="@string/configuration"/>
 </menu>
