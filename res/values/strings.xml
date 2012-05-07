@@ -18,7 +18,7 @@
 <resources>
     <string name="app_name">ChalendarViewer</string>
     
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading</string>
     
     
     <string name="addAccount">Add Account</string>

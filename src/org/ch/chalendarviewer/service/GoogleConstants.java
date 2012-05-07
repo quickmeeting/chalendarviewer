@@ -23,6 +23,12 @@ package org.ch.chalendarviewer.service;
  */
 public class GoogleConstants {
     
+    /** Google App Client Identification */
+    public static final String CLIENT_ID = "960151117831.apps.googleusercontent.com"; /** DONT STORE THE REAL DATA ON SOURCE CODE VERSION CONTROL */
+    
+    /** Google App Client Secret */
+    public static final String CLIENT_SECRET = "1fBedz_8UAKElxNrXJjWZJxC"; /** DONT STORE THE REAL DATA ON SOURCE CODE VERSION CONTROL */
+    
     /** Google API Access Token Address */
     public static final String URL_ACCESS_TOKEN = "https://accounts.google.com/o/oauth2/token";
     
@@ -38,9 +44,21 @@ public class GoogleConstants {
     /** Google API Insert new event Address */
     public static final String URL_INSERT_EVENT =  "https://www.google.com/calendar/feeds/default/private/full";
  
-    /** Google App Client Identification */
-    public static final String CLIENT_ID = "960151117831.apps.googleusercontent.com"; /** DONT STORE THE REAL DATA ON SOURCE CODE VERSION CONTROL */
+    /** Google App authorization site */
+    private static final String OAUTH_SITE         = "https://accounts.google.com/o/oauth2/auth";
+    /** Redirect URI (standard value for APP's */ 
+    private static final String OAUTH_REDIRECT_URI  = "urn:ietf:wg:oauth:2.0:oob";
+    /** Response type (standard value for APP's */
+    private static final String OAUTH_RESPONSE_TYPE = "code";
+    /** Needed permissions */
+    private static final String OAUTH_CALENDAR_PERMS = "https://www.google.com/calendar/feeds/";
+    private static final String OAUTH_USERMAIL_PERMS = "https://www.googleapis.com/auth/userinfo.email";
+    private static final String OAUTH_USERINFO_PERMS = "https://www.googleapis.com/auth/userinfo.profile";
+    private static final String OAUTH_SCOPE         = OAUTH_CALENDAR_PERMS+"+"+OAUTH_USERMAIL_PERMS+"+"+OAUTH_USERINFO_PERMS; 
+    /** Final big authorization URL */
+    public static final String URL_OAUTH = OAUTH_SITE + "?client_id=" + CLIENT_ID + 
+                                                         "&redirect_uri=" + OAUTH_REDIRECT_URI +
+                                                         "&scope=" + OAUTH_SCOPE +
+                                                         "&response_type=" + OAUTH_RESPONSE_TYPE;
     
-    /** Google App Client Secret */
-    public static final String CLIENT_SECRET = "1fBedz_8UAKElxNrXJjWZJxC"; /** DONT STORE THE REAL DATA ON SOURCE CODE VERSION CONTROL */
 }

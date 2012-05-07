@@ -48,13 +48,16 @@ public class AuthenticateDialog extends Dialog {
     private WebView mWebView;
     private LinearLayout mContent;
     private TextView mTitle;
- 
+    
+    private Context mContext;
+    
     private static final String TAG = "AuthenticateDialog";
     
 	public AuthenticateDialog(Context context, String url, AuthenticateDialogListener listener) {
 		super(context);
 		mUrl		= url;
 		mListener	= listener;
+		mContext    = context;
 	}
 	
 	@Override
@@ -65,11 +68,12 @@ public class AuthenticateDialog extends Dialog {
 	    // Create Spinner Dialog
         mSpinner = new ProgressDialog(getContext());
         mSpinner.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mSpinner.setMessage("load");
+        mSpinner.setMessage(mContext.getResources().getText(R.string.loading));
 
         
         mContent = new LinearLayout(getContext());
         mContent.setOrientation(LinearLayout.VERTICAL);
+        mContent.setScrollBarStyle(LinearLayout.SCROLLBARS_INSIDE_INSET);
         
         setUpTitle();
         setUpWebView();
@@ -91,10 +95,7 @@ public class AuthenticateDialog extends Dialog {
 	 private void setUpTitle() {
 	        requestWindowFeature(Window.FEATURE_NO_TITLE);
 	        
-	        //Drawable icon = getContext().getResources().getDrawable(R.drawable.ic_launcher);
-	        
 	        mTitle = new TextView(getContext());
-	        
 	        mTitle.setText(R.string.loading);
 	        mTitle.setTextColor(Color.WHITE);
 	        mTitle.setTypeface(Typeface.DEFAULT_BOLD);
@@ -139,7 +140,7 @@ public class AuthenticateDialog extends Dialog {
 	      
 	            mListener.onError(description);
 	            
-	            AuthenticateDialog.this.dismiss();
+	            //AuthenticateDialog.this.dismiss();
 	        }
 
 	        @Override
