@@ -48,15 +48,30 @@ public class ChalendarContentProvider extends ContentProvider {
     /** Map columns for authUser*/
     private static HashMap<String, String> authUserProjectionMap;
     
+    /** Map columns for resource*/
+    private static HashMap<String, String> resourceProjectionMap;
+    
     /** Database Helper */
     private DatabaseHelper dbHelper;
     
-    /** AUTH_USERS constant */
+    /** AUTH_USERS constant for Uri matcher*/
     private static final int AUTH_USERS = 1;
+    /** AUTH_USER_ID constant for Uri matcher*/
+    private static final int AUTH_USER_ID = 2;
+    /** AUTH_USER_RESOURCES constant for Uri matcher*/
+    private static final int AUTH_USER_RESOURCES = 3;
+    /** AUTH_USER_RESOURCE_ID constant for Uri matcher*/
+    private static final int AUTH_USER_RESOURCE_ID = 4;
+    
     
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         sUriMatcher.addURI(AUTHORITY, DatabaseHelper.AUTH_USER_TABLE_NAME, AUTH_USERS);
+        sUriMatcher.addURI(AUTHORITY, DatabaseHelper.AUTH_USER_TABLE_NAME + "/#", AUTH_USER_ID);
+        sUriMatcher.addURI(AUTHORITY, DatabaseHelper.AUTH_USER_TABLE_NAME + "/#/"
+                + DatabaseHelper.RESOURCE_TABLE_NAME, AUTH_USER_RESOURCES);
+        sUriMatcher.addURI(AUTHORITY, DatabaseHelper.AUTH_USER_TABLE_NAME + "/#/"
+                + DatabaseHelper.RESOURCE_TABLE_NAME + "/#", AUTH_USER_RESOURCE_ID);
 
         authUserProjectionMap = new HashMap<String, String>();
         authUserProjectionMap.put(AuthUser._ID, AuthUser._ID);
@@ -65,6 +80,14 @@ public class ChalendarContentProvider extends ContentProvider {
         authUserProjectionMap.put(AuthUser.EMAIL, AuthUser.EMAIL );
         authUserProjectionMap.put(AuthUser.ACTIVE_USER, AuthUser.ACTIVE_USER );
         authUserProjectionMap.put(AuthUser.EXPIRATION_DATE, AuthUser.EXPIRATION_DATE );
+        
+        resourceProjectionMap = new HashMap<String, String>();
+        resourceProjectionMap.put(Resource._ID, Resource._ID);
+        resourceProjectionMap.put(Resource.AUTH_USER_ID, Resource.AUTH_USER_ID);
+        resourceProjectionMap.put(Resource.EMAIL, Resource.EMAIL);
+        resourceProjectionMap.put(Resource.NAME, Resource.NAME);
+        resourceProjectionMap.put(Resource.DISPLAY_NAME, Resource.DISPLAY_NAME);
+        
     }
     
     
@@ -82,7 +105,11 @@ public class ChalendarContentProvider extends ContentProvider {
             case AUTH_USERS:
                 count = db.delete(DatabaseHelper.AUTH_USER_TABLE_NAME, where, whereArgs);
                 break;
-
+            case AUTH_USER_RESOURCES:
+                //ID of user is passed in URI
+                where += " and " + Resource.AUTH_USER_ID + "=" + uri.getPathSegments().get(1);
+                count = db.delete(DatabaseHelper.RESOURCE_TABLE_NAME, where, whereArgs);
+                break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -96,6 +123,8 @@ public class ChalendarContentProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
             case AUTH_USERS:
                 return AuthUser.CONTENT_TYPE;
+            case AUTH_USER_RESOURCES:
+                return Resource.CONTENT_TYPE;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -103,17 +132,33 @@ public class ChalendarContentProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues initialValues) {
-        if (sUriMatcher.match(uri) != AUTH_USERS) { throw new IllegalArgumentException("Unknown URI " + uri); }
-
         ContentValues values;
         if (initialValues != null) {
             values = new ContentValues(initialValues);
         } else {
             values = new ContentValues();
         }
-
+        
+        String id= null;
+        String table = null;
+        
+        switch (sUriMatcher.match(uri)) {
+            case AUTH_USERS:
+                table = DatabaseHelper.AUTH_USER_TABLE_NAME; 
+                id = AuthUser._ID;
+                break;
+            case AUTH_USER_RESOURCES:
+                table = DatabaseHelper.RESOURCE_TABLE_NAME;
+                id = Resource._ID;
+                //ID of user is passed on URI
+                values.put(Resource.AUTH_USER_ID, uri.getPathSegments().get(1));
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI " + uri);
+        }
+        
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        long rowId = db.insert(DatabaseHelper.AUTH_USER_TABLE_NAME, AuthUser._ID, values);
+        long rowId = db.insert(table, id, values);
         if (rowId > 0) {
             Uri noteUri = ContentUris.withAppendedId(AuthUser.CONTENT_URI, rowId);
             getContext().getContentResolver().notifyChange(noteUri, null);
@@ -133,7 +178,24 @@ public class ChalendarContentProvider extends ContentProvider {
                 qb.setTables(DatabaseHelper.AUTH_USER_TABLE_NAME);
                 qb.setProjectionMap(authUserProjectionMap);
                 break;
-
+            case AUTH_USER_ID:
+                qb.setTables(DatabaseHelper.AUTH_USER_TABLE_NAME);
+                //ID of user is passed on URI
+                qb.appendWhere(AuthUser._ID + "=" + uri.getPathSegments().get(1));
+                break;
+            case AUTH_USER_RESOURCES:
+                qb.setTables(DatabaseHelper.RESOURCE_TABLE_NAME);
+                //ID of user is passed on URI
+                qb.appendWhere(Resource.AUTH_USER_ID + "=" + uri.getPathSegments().get(1));
+                qb.setProjectionMap(resourceProjectionMap);
+                break;
+            case AUTH_USER_RESOURCE_ID:
+                qb.setTables(DatabaseHelper.RESOURCE_TABLE_NAME);
+                //ID of user is passed on URI
+                qb.appendWhere(Resource.AUTH_USER_ID + "=" + uri.getPathSegments().get(1));
+                qb.appendWhere(Resource._ID + "=" + uri.getPathSegments().get(3));
+                qb.setProjectionMap(resourceProjectionMap);
+                break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -153,7 +215,11 @@ public class ChalendarContentProvider extends ContentProvider {
             case AUTH_USERS:
                 count = db.update(DatabaseHelper.AUTH_USER_TABLE_NAME, values, where, whereArgs);
                 break;
-
+            case AUTH_USER_RESOURCES:
+                //not using whereArgs to store user_id parameter. It is coded directly on where clause
+                where += " and " + Resource.AUTH_USER_ID + "=" + uri.getPathSegments().get(1);
+                count = db.update(DatabaseHelper.RESOURCE_TABLE_NAME, values, where, whereArgs);
+                break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }

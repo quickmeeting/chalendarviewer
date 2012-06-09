@@ -30,10 +30,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /** Auth_user table */
     public static final String AUTH_USER_TABLE_NAME = "auth_users";
+    /** Resources table */
+    public static final String RESOURCE_TABLE_NAME = "resources";
     /** SQLite Database name */
     private static final String DATABASE_NAME = "config.db";
     /** SQLite Database version */
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     /** TAG for log entries */
     private static final String TAG = "DatabaseHelper";
     
@@ -54,6 +56,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         + AuthUser.EMAIL           + " VARCHAR(255),"
                         + AuthUser.ACTIVE_USER     + " BOOLEAN,"
                         + AuthUser.EXPIRATION_DATE + " DATETIME);");
+        
+        db.execSQL("CREATE TABLE " + RESOURCE_TABLE_NAME + " (" 
+                + Resource._ID             + " INTEGER PRIMARY KEY AUTOINCREMENT," 
+                + Resource.AUTH_USER_ID    + " VARCHAR(255)," 
+                + Resource.NAME            + " VARCHAR(255)," 
+                + Resource.EMAIL           + " VARCHAR(255),"
+                + Resource.DISPLAY_NAME     + " VARCHAR(255));");
     }
 
     @Override
