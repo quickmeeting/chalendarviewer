@@ -29,12 +29,6 @@ public class GoogleConstants {
     /** Google App Client Secret */
     public static final String CLIENT_SECRET = "1fBedz_8UAKElxNrXJjWZJxC"; /** DONT STORE THE REAL DATA ON SOURCE CODE VERSION CONTROL */
     
-    /** Google API Access Token Address */
-    public static final String URL_ACCESS_TOKEN = "https://accounts.google.com/o/oauth2/token";
-    
-    /** Google API redirection URI */
-    public static final String URL_REDIRECTION_URI = "urn:ietf:wg:oauth:2.0:oob";
-    
     /** Google API User Info Address */
     public static final String URL_USER_INFO = "https://www.googleapis.com/oauth2/v1/userinfo";
     
@@ -47,7 +41,7 @@ public class GoogleConstants {
     /** Google App authorization site */
     private static final String OAUTH_SITE         = "https://accounts.google.com/o/oauth2/auth";
     /** Redirect URI (standard value for APP's */ 
-    private static final String OAUTH_REDIRECT_URI  = "urn:ietf:wg:oauth:2.0:oob";
+    public static final String OAUTH_REDIRECT_URI  = "urn:ietf:wg:oauth:2.0:oob";
     /** Response type (standard value for APP's */
     private static final String OAUTH_RESPONSE_TYPE = "code";
     /** Needed permissions */
