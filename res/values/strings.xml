@@ -24,12 +24,16 @@
     <string name="addAccount">Add Account</string>
     <string name="addFirstAccount">Add the first Account</string>
     <string name="deleteAccount">Delete Account</string>
-    <string name="neilArmstrongsPhrase">That\'s one small step for a man, a giant leap for mankind</string>
     
+    
+    <string name="neilArmstrongsPhrase">That\'s one small step for a man, a giant leap for mankind</string>
+    <string name="problemOcurred">Oops, an error ocurred, try again please! :-)</string>
     
     <string name="manageAccounts">Manage Accounts</string>
     <string name="manageResources">Manage Resources</string>
     <string name="refresh">Refresh</string>
     <string name="configuration">Configuration</string>
+    
+    
     
 </resources>
