@@ -1,4 +1,6 @@
-package org.ch.chalendarviewer.ui;
+package org.ch.chalendarviewer;
+
+import org.ch.chalendarviewer.ui.R;
 
 import android.content.Context;
 import android.graphics.Color;

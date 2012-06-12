@@ -33,7 +33,7 @@
 		<provider android:name="org.ch.chalendarviewer.contentprovider.ChalendarContentProvider" 
 		          android:authorities="org.ch.chalendarviewer.contentprovider.ChalendarContentProvider">		   
 		</provider>
-		<activity android:name=".AccountManagerActivity"
+		<activity android:name="org.ch.chalendarviewer.AccountManagerActivity"
 		          android:label="@string/manageAccounts"
 		          android:screenOrientation="landscape">		    
 		</activity>

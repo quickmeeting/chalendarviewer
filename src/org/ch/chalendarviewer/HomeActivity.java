@@ -15,7 +15,7 @@
     along with ChalendarViewer.  If not, see <http://www.gnu.org/licenses/>.    
  */
 
-package org.ch.chalendarviewer.ui;
+package org.ch.chalendarviewer;
 
 import java.util.ArrayList;
 
@@ -32,6 +32,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 
 import org.ch.chalendarviewer.service.UserManager;
+import org.ch.chalendarviewer.ui.R;
 
 public class HomeActivity extends Activity implements OnClickListener {
 	

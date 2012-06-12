@@ -15,7 +15,7 @@
     along with ChalendarViewer.  If not, see <http://www.gnu.org/licenses/>.    
 */
 
-package org.ch.chalendarviewer.ui;
+package org.ch.chalendarviewer;
 
 import android.app.Activity;
 import android.app.ListActivity;
@@ -33,6 +33,7 @@ import android.widget.ViewSwitcher;
 
 import org.ch.chalendarviewer.service.GoogleConstants;
 import org.ch.chalendarviewer.service.UserManager;
+import org.ch.chalendarviewer.ui.R;
 import org.ch.chalendarviewer.ui.dialogs.AuthenticateDialog;
 import org.ch.chalendarviewer.ui.dialogs.AuthenticateDialogListener;
 import org.json.JSONException;
