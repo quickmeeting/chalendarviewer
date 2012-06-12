@@ -24,7 +24,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import org.ch.chalendarviewer.ui.R;
+import org.ch.chalendarviewer.R;
 
 /**
  * Display Google Authentication dialog.

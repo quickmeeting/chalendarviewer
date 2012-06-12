@@ -33,7 +33,7 @@ import android.widget.ViewSwitcher;
 
 import org.ch.chalendarviewer.service.GoogleConstants;
 import org.ch.chalendarviewer.service.UserManager;
-import org.ch.chalendarviewer.ui.R;
+import org.ch.chalendarviewer.R;
 import org.ch.chalendarviewer.ui.dialogs.AuthenticateDialog;
 import org.ch.chalendarviewer.ui.dialogs.AuthenticateDialogListener;
 import org.json.JSONException;

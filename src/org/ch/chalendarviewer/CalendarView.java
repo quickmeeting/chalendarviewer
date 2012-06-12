@@ -1,6 +1,6 @@
 package org.ch.chalendarviewer;
 
-import org.ch.chalendarviewer.ui.R;
+import org.ch.chalendarviewer.R;
 
 import android.content.Context;
 import android.view.Gravity;

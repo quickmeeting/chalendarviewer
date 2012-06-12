@@ -32,7 +32,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 
 import org.ch.chalendarviewer.service.UserManager;
-import org.ch.chalendarviewer.ui.R;
+import org.ch.chalendarviewer.R;
 
 public class HomeActivity extends Activity implements OnClickListener {
 	
