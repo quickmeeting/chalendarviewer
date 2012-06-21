@@ -38,6 +38,9 @@ public class GoogleConstants {
     /** Google API Insert new event Address */
     public static final String URL_INSERT_EVENT =  "https://www.google.com/calendar/feeds/default/private/full";
  
+    /** Google API Access Token Address */
+    public static final String URL_ACCESS_TOKEN = "https://accounts.google.com/o/oauth2/token";
+    
     /** Google App authorization site */
     private static final String OAUTH_SITE         = "https://accounts.google.com/o/oauth2/auth";
     /** Redirect URI (standard value for APP's */ 
