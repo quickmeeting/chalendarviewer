@@ -15,7 +15,7 @@
     along with ChalendarViewer.  If not, see <http://www.gnu.org/licenses/>.    
  */
 
-package org.ch.chalendarviewer.ui;
+package org.ch.chalendarviewer;
 
 import java.util.ArrayList;
 
@@ -32,6 +32,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 
 import org.ch.chalendarviewer.service.UserManager;
+import org.ch.chalendarviewer.R;
 
 public class HomeActivity extends Activity implements OnClickListener {
 	
@@ -59,24 +60,24 @@ public class HomeActivity extends Activity implements OnClickListener {
         //calendars.add(3, (LinearLayout)this.getLayoutInflater().inflate(R.layout.calendar_4, mainLayout, false));
         
         //Se crean cuatro calendarios. El numero de calendarios y sus identificadores
-        //se leen del fichero de configuraciï¿½n.
+        //se leen del fichero de configuraci—n.
         calendars.add(new CalendarView(this, "Sala 1"));
         calendars.add(new CalendarView(this, "Sala 2"));
         calendars.add(new CalendarView(this, "Sala 3"));
         calendars.add(new CalendarView(this, "Sala 4"));
         
-        //Se aï¿½aden los calendarios a la View principal
+        //Se a–aden los calendarios a la View principal
         for(CalendarView c: calendars) {
         	mainLayout.addView(c);
         	c.setStyle((float)1/calendars.size());
         }
         
-        //A modo de prueba, se aï¿½aden eventos a los calendarios
-        calendars.get(0).addEvent(new EventView(this, "8:00 - 10:00 \nP-722: Revisiï¿½n"));
+        //A modo de prueba, se a–aden eventos a los calendarios
+        calendars.get(0).addEvent(new EventView(this, "8:00 - 10:00 \nP-722: Revisi—n"));
         calendars.get(0).addEvent(new EventView(this, "LIBRE"));
         calendars.get(1).addEvent(new EventView(this, "LIBRE"));
-        calendars.get(2).addEvent(new EventView(this, "9:20 - 11:20 \nReuniï¿½n de R-Team"));   
-        calendars.get(2).addEvent(new EventView(this, "12:20 - 13:30 \nReuniï¿½n de Jefes de proyectos (periï¿½dica)"));
+        calendars.get(2).addEvent(new EventView(this, "9:20 - 11:20 \nReuni—n de R-Team"));   
+        calendars.get(2).addEvent(new EventView(this, "12:20 - 13:30 \nReuni—n de Jefes de proyectos (peri—dica)"));
         calendars.get(3).addEvent(new EventView(this, "8:00 - 15:00 \nSr. Ruesga"));
         
         setContentView(mainLayout);
@@ -136,8 +137,7 @@ public class HomeActivity extends Activity implements OnClickListener {
                 startActivity(intent);
                 return true;
             case R.id.menuHomeManageResources:
-                Intent intentResources = new Intent(this, ResourceManagerActivity.class);
-                startActivity(intentResources);
+                // TODO
                 return true;
             case R.id.menuHomeConfiguration:
                 // TODO

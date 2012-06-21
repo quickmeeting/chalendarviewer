@@ -16,7 +16,7 @@
     along with ChalendarViewer.  If not, see <http://www.gnu.org/licenses/>.    
  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="org.ch.chalendarviewer.ui"
+      package="org.ch.chalendarviewer"
       android:versionCode="1"
       android:versionName="1.0">
     <uses-sdk android:minSdkVersion="7" />
@@ -33,7 +33,7 @@
 		<provider android:name="org.ch.chalendarviewer.contentprovider.ChalendarContentProvider" 
 		          android:authorities="org.ch.chalendarviewer.contentprovider.ChalendarContentProvider">		   
 		</provider>
-		<activity android:name=".AccountManagerActivity"
+		<activity android:name="org.ch.chalendarviewer.AccountManagerActivity"
 		          android:label="@string/manageAccounts"
 		          android:screenOrientation="landscape">		    
 		</activity>

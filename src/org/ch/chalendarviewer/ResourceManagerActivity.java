@@ -1,4 +1,4 @@
-package org.ch.chalendarviewer.ui;
+package org.ch.chalendarviewer;
 
 import android.app.ListActivity;
 import android.app.ProgressDialog;
