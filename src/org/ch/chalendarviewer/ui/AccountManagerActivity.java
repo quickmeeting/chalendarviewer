@@ -133,7 +133,9 @@ public class AccountManagerActivity extends Activity {
             @Override
             public void onComplete(String authorizationCode) {
                 // TODO Auto-generated method stub
+                _userManager.addActiveUserToken(authorizationCode);
                 verifyNoAccounts();
+                
             }
         };
         

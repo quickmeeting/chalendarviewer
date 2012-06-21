@@ -37,6 +37,10 @@
 		          android:label="@string/manageAccounts"
 		          android:screenOrientation="landscape">		    
 		</activity>
+		<activity android:name=".ResourceManagerActivity"
+		          android:label="@string/manageResources"
+		          android:screenOrientation="landscape">		    
+		</activity>
     </application>
     
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>

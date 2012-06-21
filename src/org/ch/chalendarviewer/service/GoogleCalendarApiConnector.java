@@ -115,14 +115,13 @@ public class GoogleCalendarApiConnector {
             for (int j = 0; j < ilength; j++) {
                 cal = new GoogleCalendar();
                 jsonCalendar = (JSONObject) jsonCalendarsList.get(j);
-                
+                Log.d(TAG,jsonCalendar.toString());
                 cal.setColor(jsonCalendar.getString(GoogleCalendar.FIELD_COLOR));
                 cal.setEventFeedLik(jsonCalendar.getString(GoogleCalendar.FIELD_EVENT_FEED_LINK));
                 cal.setId(jsonCalendar.getString(GoogleCalendar.FIELD_ID));
                 cal.setSelfLink(jsonCalendar.getString(GoogleCalendar.FIELD_SELF_LINK));
                 cal.setTimeZone(TimeZone.getTimeZone(jsonCalendar.getString(GoogleCalendar.FIELD_TIMEZONE)));
                 cal.setTitle(jsonCalendar.getString(GoogleCalendar.FIELD_TITLE));
-                
                 calendarsList.add(cal);               
             }
             
@@ -132,6 +131,55 @@ public class GoogleCalendarApiConnector {
         }
         
         return calendarsList;
+    }
+    
+    /**
+     * Get calendar data from link
+     * @param link calendar link
+     * @return
+     */
+    public GoogleCalendar getCalendarByLink(String link){
+        Log.d(TAG,link);
+        GoogleCalendar cal = new GoogleCalendar(); 
+
+        String[] paramsKey =  {"Authorization"};
+        String[] paramsValue = {"Bearer " + mSessionManager.getActiveUserAccessToken()};
+
+        String googleResponse = null;
+        try {
+            googleResponse = ConnectionUtils.getHttpsGetConnection(link + "?alt=jsonc", paramsKey, paramsValue);
+        } catch (IllegalStateException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (HttpException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        Log.d(TAG,googleResponse);
+        JSONObject jsonCalendarObj;
+        try {
+            jsonCalendarObj = (JSONObject) new JSONTokener(googleResponse).nextValue();
+
+            JSONObject jsonCalendar = jsonCalendarObj.getJSONObject("data");
+
+            cal = new GoogleCalendar();
+            Log.d(TAG,jsonCalendar.toString());
+            cal.setColor(jsonCalendar.getString(GoogleCalendar.FIELD_COLOR));
+            cal.setEventFeedLik(jsonCalendar.getString(GoogleCalendar.FIELD_EVENT_FEED_LINK));
+            cal.setId(jsonCalendar.getString(GoogleCalendar.FIELD_ID));
+            cal.setSelfLink(jsonCalendar.getString(GoogleCalendar.FIELD_SELF_LINK));
+            cal.setTimeZone(TimeZone.getTimeZone(jsonCalendar.getString(GoogleCalendar.FIELD_TIMEZONE)));
+            cal.setTitle(jsonCalendar.getString(GoogleCalendar.FIELD_TITLE));
+
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return cal;
     }
     
     public List<GoogleEvent> getEvents (GoogleCalendar calendar, Calendar begin, Calendar end) {

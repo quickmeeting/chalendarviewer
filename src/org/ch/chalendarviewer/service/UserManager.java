@@ -67,6 +67,9 @@ public class UserManager {
     /** instance reference */
     private static UserManager sInstance = null;
         
+    /** Active user id */
+    private String mUserId = "";
+    
     /** Active user Mail */
     private String mUserMail = "";
     
@@ -144,6 +147,7 @@ public class UserManager {
         
         // Form an array specifying which columns to return. 
         String[] projection = new String[] {
+                AuthUser._ID,
                 AuthUser.EMAIL,
                 AuthUser.ACCESS_TOKEN,
                 AuthUser.REFRESH_TOKEN,
@@ -164,12 +168,14 @@ public class UserManager {
         // is there at least one user?
         if (managedCursor.moveToFirst()) {
             
+            int userIdColumn         = managedCursor.getColumnIndex(AuthUser._ID);
             int userMailColumn       = managedCursor.getColumnIndex(AuthUser.EMAIL);
             int accessTokenColumn    = managedCursor.getColumnIndex(AuthUser.ACCESS_TOKEN);
             int refreshTokenColumn   = managedCursor.getColumnIndex(AuthUser.REFRESH_TOKEN);
             int expirationDateColumn = managedCursor.getColumnIndex(AuthUser.EXPIRATION_DATE);
                         
             try {
+                mUserId         = managedCursor.getString(userIdColumn);
                 mUserMail       = managedCursor.getString(userMailColumn);
                 mAccessToken    = managedCursor.getString(accessTokenColumn);
                 mRefreshToken   = managedCursor.getString(refreshTokenColumn);
@@ -489,6 +495,15 @@ public class UserManager {
         synchronized (mUserMail) {
             return (mAccessToken != null);
         }
-    }   
+    }
+    
+    /**
+     * active user id
+     * @return active user id
+     */
+    public String getActiveUserId() {
+        //TODO: Check if active user is loaded
+        return mUserId;
+    }
     
 }

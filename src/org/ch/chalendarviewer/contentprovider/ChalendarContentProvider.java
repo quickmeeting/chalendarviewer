@@ -26,6 +26,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.util.Log;
 
 import org.ch.chalendarviewer.contentprovider.AuthUser;
 import org.ch.chalendarviewer.contentprovider.DatabaseHelper;
@@ -84,9 +85,10 @@ public class ChalendarContentProvider extends ContentProvider {
         resourceProjectionMap = new HashMap<String, String>();
         resourceProjectionMap.put(Resource._ID, Resource._ID);
         resourceProjectionMap.put(Resource.AUTH_USER_ID, Resource.AUTH_USER_ID);
-        resourceProjectionMap.put(Resource.EMAIL, Resource.EMAIL);
+        resourceProjectionMap.put(Resource.LINK, Resource.LINK);
         resourceProjectionMap.put(Resource.NAME, Resource.NAME);
         resourceProjectionMap.put(Resource.DISPLAY_NAME, Resource.DISPLAY_NAME);
+        resourceProjectionMap.put(Resource.ACTIVE, Resource.ACTIVE);
         
     }
     
@@ -160,7 +162,7 @@ public class ChalendarContentProvider extends ContentProvider {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         long rowId = db.insert(table, id, values);
         if (rowId > 0) {
-            Uri noteUri = ContentUris.withAppendedId(AuthUser.CONTENT_URI, rowId);
+            Uri noteUri = ContentUris.withAppendedId(uri, rowId);
             getContext().getContentResolver().notifyChange(noteUri, null);
             return noteUri;
         }
@@ -210,7 +212,7 @@ public class ChalendarContentProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String where, String[] whereArgs) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        int count;
+        int count = 1;
         switch (sUriMatcher.match(uri)) {
             case AUTH_USERS:
                 count = db.update(DatabaseHelper.AUTH_USER_TABLE_NAME, values, where, whereArgs);
@@ -218,6 +220,18 @@ public class ChalendarContentProvider extends ContentProvider {
             case AUTH_USER_RESOURCES:
                 //not using whereArgs to store user_id parameter. It is coded directly on where clause
                 where += " and " + Resource.AUTH_USER_ID + "=" + uri.getPathSegments().get(1);
+                count = db.update(DatabaseHelper.RESOURCE_TABLE_NAME, values, where, whereArgs);
+                break;
+            case AUTH_USER_RESOURCE_ID:
+                //not using whereArgs to store user_id parameter. It is coded directly on where clause
+                String idCondition = Resource.AUTH_USER_ID + "=" + uri.getPathSegments().get(1);
+                idCondition += " and " + Resource._ID + "=" + uri.getPathSegments().get(3);
+                if(where == null){
+                    where = idCondition;
+                }else{
+                    where = idCondition + " and " + where;
+                }
+                Log.d("WHERE", where);
                 count = db.update(DatabaseHelper.RESOURCE_TABLE_NAME, values, where, whereArgs);
                 break;
             default:

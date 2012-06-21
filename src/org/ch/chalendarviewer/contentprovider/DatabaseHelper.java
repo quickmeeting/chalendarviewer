@@ -35,7 +35,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /** SQLite Database name */
     private static final String DATABASE_NAME = "config.db";
     /** SQLite Database version */
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 4;
     /** TAG for log entries */
     private static final String TAG = "DatabaseHelper";
     
@@ -61,7 +61,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + Resource._ID             + " INTEGER PRIMARY KEY AUTOINCREMENT," 
                 + Resource.AUTH_USER_ID    + " VARCHAR(255)," 
                 + Resource.NAME            + " VARCHAR(255)," 
-                + Resource.EMAIL           + " VARCHAR(255),"
+                + Resource.LINK           + " VARCHAR(255),"
+                + Resource.ACTIVE           + " BOOLEAN,"
                 + Resource.DISPLAY_NAME     + " VARCHAR(255));");
     }
 
@@ -70,6 +71,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion
                 + ", which will destroy all old data");
         db.execSQL("DROP TABLE IF EXISTS " + AUTH_USER_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + RESOURCE_TABLE_NAME);
         onCreate(db);
     }
 }

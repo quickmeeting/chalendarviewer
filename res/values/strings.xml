@@ -31,5 +31,6 @@
     <string name="manageResources">Manage Resources</string>
     <string name="refresh">Refresh</string>
     <string name="configuration">Configuration</string>
+    <string name="synchronizing">Sincronizando calendarios</string>
     
 </resources>

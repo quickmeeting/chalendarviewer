@@ -30,12 +30,16 @@ public class Resource implements BaseColumns{
     /** Column name: auth_user foreign key */
     public static final String AUTH_USER_ID = "auth_user_id";
     /** Column name: email */
-    public static final String EMAIL = "email";
+    public static final String LINK = "link";
     /** Column name: name */
     public static final String NAME = "name";
     /** Column name: name to display on main screen */
-    public static final String DISPLAY_NAME = "displayName";  
+    public static final String DISPLAY_NAME = "displayName";
+    /** Column name: name to display on main screen */
+    public static final String ACTIVE = "active";
+    
 
     /** Content type */
     public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.resources";
+    
 }
