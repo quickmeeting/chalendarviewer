@@ -1,3 +1,20 @@
+/**
+    This file is part of ChalendarViewer.
+
+    ChalendarViewer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    ChalendarViewer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with ChalendarViewer.  If not, see <http://www.gnu.org/licenses/>.    
+*/
+
 package org.ch.chalendarviewer.service;
 
 import android.content.ContentResolver;
@@ -9,7 +26,8 @@ import android.util.Log;
 
 import org.ch.chalendarviewer.contentprovider.AuthUser;
 import org.ch.chalendarviewer.contentprovider.Resource;
-import org.ch.chalendarviewer.objects.GoogleCalendar;
+import org.ch.chalendarviewer.objects.CalendarResource;
+import org.ch.chalendarviewer.objects.google.GoogleCalendar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +35,6 @@ import java.util.List;
 /**
  * Manage resources (calendars)
  * @author vitor
- *
  */
 public class ResourceManager {
 
@@ -31,7 +48,9 @@ public class ResourceManager {
     /** app context */
     private Context mContext;
     /** Chalendar Provider object */
-    private ContentResolver mProvider;    
+    private ContentResolver mProvider;
+    /** List of active calendar resources */
+    private List<CalendarResource> activeResources = null;    
     
     
     /**
@@ -94,7 +113,7 @@ public class ResourceManager {
             gLinks.add(link);
             
             if( !dbLinks.contains(link) ){
-                addCalendarToDatabase(calendar);
+                addResourceToDatabase(calendar);
             }
         }
         
@@ -146,7 +165,7 @@ public class ResourceManager {
      * Add a google calendar to database
      * @param calendar calendar to add
      */
-    private void addCalendarToDatabase(GoogleCalendar calendar) {
+    private void addResourceToDatabase(GoogleCalendar calendar) {
         ContentValues values = new ContentValues();
 
         values.put(Resource.NAME, calendar.getTitle());
@@ -216,6 +235,7 @@ public class ResourceManager {
         Uri resources = Uri.parse(AuthUser.CONTENT_URI + "/" + mUserManager.getActiveUserId() + "/" + "resources/" + id); 
         int result = mProvider.update(resources, values, null, null);
         Log.d(TAG, "Result update: " + result);
+        activeResources = null;
     }
 
 
@@ -232,5 +252,57 @@ public class ResourceManager {
         return sInstance;
     }
     
+    /**
+     * List of active calendar resources
+     */
+    private  void refreshActiveResources(){
+        activeResources = new ArrayList<CalendarResource>();
+
+        // Form an array specifying which columns to return. 
+        String[] projection = new String[] {
+                Resource._ID,
+                Resource.NAME
+        };
+
+        // Get the base URI for the Resources table.
+        Uri resourceUri = Uri.parse(AuthUser.CONTENT_URI + "/" + mUserManager.getActiveUserId() + "/" + "resources"); 
+
+        String where = Resource.ACTIVE + "=?";
+        String[] whereParams = new String[]{"1"};
+        
+        // Make the query. 
+        Cursor managedCursor = mProvider.query(resourceUri,
+                projection, // Which columns to return 
+                where,       // Which rows to return (all rows)
+                whereParams,       // Selection arguments (none)
+                // Put the results in ascending order by email
+                Resource._ID + " ASC");       
+
+        if (managedCursor.moveToFirst()) {
+
+            int idColumn   = managedCursor.getColumnIndex(Resource._ID);
+            int nameColumn = managedCursor.getColumnIndex(Resource.NAME); 
+
+            do {
+                String id = managedCursor.getString(idColumn);
+                String name = managedCursor.getString(nameColumn);
+                activeResources.add(new CalendarResource(id,name));
+
+                Log.d(TAG, "Resource calendar loaded from db: " + id + "/" + name );
+            } while (managedCursor.moveToNext());
+        }
+    }
+
+    /**
+     * Return a list of active resources
+     * @return List of active resources
+     */
+    public List<CalendarResource> getActiveResources(){
+        if (activeResources == null){
+            refreshActiveResources();
+        }
+        return activeResources;
+    }
     
+
 }

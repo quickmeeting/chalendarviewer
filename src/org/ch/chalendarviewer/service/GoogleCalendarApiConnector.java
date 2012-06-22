@@ -29,9 +29,10 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.ch.chalendarviewer.objects.GoogleEvent;
-import org.ch.chalendarviewer.objects.GoogleCalendar;
+import org.ch.chalendarviewer.objects.CalendarResource;
 import org.ch.chalendarviewer.objects.User;
+import org.ch.chalendarviewer.objects.google.GoogleCalendar;
+import org.ch.chalendarviewer.objects.google.GoogleEvent;
 import org.ch.chalendarviewer.util.ConnectionUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -138,7 +139,7 @@ public class GoogleCalendarApiConnector {
      * @param link calendar link
      * @return
      */
-    public GoogleCalendar getCalendarByLink(String link){
+    public CalendarResource getCalendarByLink(String link){
         Log.d(TAG,link);
         GoogleCalendar cal = new GoogleCalendar(); 
 
@@ -264,7 +265,7 @@ public class GoogleCalendarApiConnector {
         return events;
     }
     
-    public boolean setEvent(GoogleCalendar calendar, GoogleEvent event) {
+    public boolean setEvent(CalendarResource calendar, GoogleEvent event) {
         
         JSONObject data = new JSONObject();
         JSONObject attendee = new JSONObject();

@@ -502,7 +502,9 @@ public class UserManager {
      * @return active user id
      */
     public String getActiveUserId() {
-        //TODO: Check if active user is loaded
+        if(mUserId == null){
+            recoverDataFromDataBase();
+        }
         return mUserId;
     }
     
