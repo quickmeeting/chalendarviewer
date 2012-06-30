@@ -136,6 +136,10 @@ public class ConnectionUtils {
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpResponse response = httpClient.execute(httpPost);
         
+        // Don't know why, but 2 calls are needed to get a HTTP_CREATED response
+        if (response.getStatusLine().getStatusCode() == HTTP_OK){
+            response = httpClient.execute(httpPost);
+        }
         HttpEntity entity = response.getEntity();
         
         int returnCode = response.getStatusLine().getStatusCode();

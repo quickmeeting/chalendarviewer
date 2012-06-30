@@ -314,7 +314,8 @@ public class GoogleCalendarApiConnector {
         try {
             attendee.put(GoogleCalendar.FIELD_RESOURCE, true);
             attendee.put(User.FIELD_DISPLAY_NAME,calendar.getTitle());
-            attendee.put(User.FIELD_EMAIL, calendar.getId().replace("http://www.google.com/calendar/feeds/default/allcalendars/full/",""));
+            String email = getEmailFromCalendarID(calendar);
+            attendee.put(User.FIELD_EMAIL, email);
             attendeeList.put(attendee);
             
             when.put(GoogleEvent.FIELD_BEGIN, mDateTimeFormatter.format(event.getBegin().getTime()));
@@ -323,7 +324,7 @@ public class GoogleCalendarApiConnector {
             
             data.put(GoogleEvent.FIELD_TITLE, event.getTitle());
             data.put(GoogleEvent.FIELD_DETAILS, event.getDetails());
-            data.put(GoogleEvent.FIELD_STATUS, "confirmed");
+            data.put(GoogleEvent.FIELD_STATUS, event.getStatus());
             data.put(GoogleEvent.FIELD_LOCATION, calendar.getTitle());
             data.put(GoogleEvent.FIELD_ATTENDEES, attendeeList);
             data.put(GoogleEvent.FIELD_WHEN_LIST, whenList);
@@ -358,5 +359,16 @@ public class GoogleCalendarApiConnector {
         }
             
         return retValue;
+    }
+
+    /**
+     * Email is a part of ID URL of a google calendar
+     * @param calendar ResourceCalendar
+     * @return email
+     */
+    private String getEmailFromCalendarID(CalendarResource calendar) {
+        String email = calendar.getId().replace("http://www.google.com/calendar/feeds/default/allcalendars/full/","")
+        .replace("%40", "@");
+        return email;
     }
 }
