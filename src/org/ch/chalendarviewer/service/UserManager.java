@@ -68,7 +68,7 @@ public class UserManager {
     private static UserManager sInstance = null;
         
     /** Active user id */
-    private String mUserId = "";
+    private String mUserId = null;
     
     /** Active user Mail */
     private String mUserMail = "";
@@ -228,8 +228,8 @@ public class UserManager {
             
             // fill parameters
             // TODO create constants to these parameters
-            String[] paramsKey =   {"cliend_id","client_secret","refresh_token","grant_type"};
-            String[] paramsValue = {GoogleConstants.CLIENT_ID,GoogleConstants.CLIENT_SECRET,mRefreshToken,"refresh_token"};
+            String[] paramsKey =   {"cliend_id","client_secret","refresh_token","grant_type","Content-Type"};
+            String[] paramsValue = {GoogleConstants.CLIENT_ID,GoogleConstants.CLIENT_SECRET,mRefreshToken,"refresh_token","application/x-www-form-urlencoded"};
             
             // connect to google and get the response
             String googleResponse = null;

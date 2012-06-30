@@ -58,6 +58,18 @@ public class GoogleEvent extends Event{
     public GoogleEvent() {
         mAttendees = new ArrayList<User>();
     }
+    
+    /**
+     * Build GoogleEvent class from superclass
+     * @param ev
+     */
+    public GoogleEvent(Event ev){
+        this.mBegin = ev.getBegin();
+        this.mEnd = ev.getEnd();
+        this.mId = ev.getId();
+        this.mTitle = ev.getTitle();
+        this.mDetails = ev.getDetails();
+    }
 
     public String getSelfLink() {
         return mSelfLink;
