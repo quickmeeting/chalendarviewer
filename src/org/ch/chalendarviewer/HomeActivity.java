@@ -17,28 +17,49 @@
 
 package org.ch.chalendarviewer;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
+import org.ch.chalendarviewer.objects.GoogleEvent;
 import org.ch.chalendarviewer.service.UserManager;
 import org.ch.chalendarviewer.R;
 
-public class HomeActivity extends Activity implements OnClickListener {
+public class HomeActivity extends Activity {
 	
-	private ArrayList<CalendarView> calendars = new ArrayList<CalendarView>();
-    
+	private ArrayList<GoogleEvent> mGoogleEventList;
 	private UserManager mUserManager;
+	SimpleDateFormat mFormateador;
+	TableLayout mTableLayout;
+	FrameLayout mFrameLayout;
+	private int mNumberOfRows;
+	private int mCalendarColumnWidth;
+	private int mCalendarRowHeight;
+	private int mFirstColumnWidth;
+	private int mFirstRowHeight;
+	private Calendar mCalendarBegin;
+	private Calendar mCalendarEnd;
+	
+	private final int MIN_EVENT_TIME = 15;
 	
 	UserManager _userManager = null;
 	
@@ -46,58 +67,33 @@ public class HomeActivity extends Activity implements OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
         
-        //Layout principal que contiene los calendarios
-        LinearLayout mainLayout = new LinearLayout(this);  
-        mainLayout.setOrientation(LinearLayout.HORIZONTAL);  
-        mainLayout.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));      
+        mTableLayout = (TableLayout)findViewById(R.id.mainTableLayout);
+        mFrameLayout = (FrameLayout)findViewById(R.id.frameLayout);
         
-        //Se cargan los calendarios desde xml. De esta forma se tiene que definir un xml para
-        //cada calenario. En nuestro caso debe ser dinamico.
-        //calendars.add(0, (LinearLayout)this.getLayoutInflater().inflate(R.layout.calendar_1, mainLayout, false));
-        //calendars.add(1, (LinearLayout)this.getLayoutInflater().inflate(R.layout.calendar_2, mainLayout, false));
-        //calendars.add(2, (LinearLayout)this.getLayoutInflater().inflate(R.layout.calendar_3, mainLayout, false));
-        //calendars.add(3, (LinearLayout)this.getLayoutInflater().inflate(R.layout.calendar_4, mainLayout, false));
+        mFormateador = new SimpleDateFormat("HH:mm");
         
-        //Se crean cuatro calendarios. El numero de calendarios y sus identificadores
-        //se leen del fichero de configuraci—n.
-        calendars.add(new CalendarView(this, "Sala 1"));
-        calendars.add(new CalendarView(this, "Sala 2"));
-        calendars.add(new CalendarView(this, "Sala 3"));
-        calendars.add(new CalendarView(this, "Sala 4"));
+        mCalendarColumnWidth = getResources().getDimensionPixelSize(R.dimen.calendar_column_width);
+        mFirstColumnWidth    = getResources().getDimensionPixelSize(R.dimen.first_column_width);
+        mFirstRowHeight      = getResources().getDimensionPixelSize(R.dimen.first_row_height);
+        mCalendarRowHeight   = getResources().getDimensionPixelSize(R.dimen.calendar_row_height);
         
-        //Se a–aden los calendarios a la View principal
-        for(CalendarView c: calendars) {
-        	mainLayout.addView(c);
-        	c.setStyle((float)1/calendars.size());
-        }
+        ArrayList<String> calendars = new ArrayList<String>(
+        	    Arrays.asList("Sala 1", "Sala 2", "Sala 3", "Sala 4"));
         
-        //A modo de prueba, se a–aden eventos a los calendarios
-        calendars.get(0).addEvent(new EventView(this, "8:00 - 10:00 \nP-722: Revisi—n"));
-        calendars.get(0).addEvent(new EventView(this, "LIBRE"));
-        calendars.get(1).addEvent(new EventView(this, "LIBRE"));
-        calendars.get(2).addEvent(new EventView(this, "9:20 - 11:20 \nReuni—n de R-Team"));   
-        calendars.get(2).addEvent(new EventView(this, "12:20 - 13:30 \nReuni—n de Jefes de proyectos (peri—dica)"));
-        calendars.get(3).addEvent(new EventView(this, "8:00 - 15:00 \nSr. Ruesga"));
-        
-        setContentView(mainLayout);
-        
-        //Se setea un listener para escuchar cualquier click sobre la pantalla
-        mainLayout.setOnClickListener(this);
-        
+        drawBackground(calendars);
         
         _userManager = UserManager.getInstance(this);
     }
-
-	@Override
-	public void onClick(View arg0) {
-		// TODO Auto-generated method stub
-        //TextView tv = (TextView) this.getLayoutInflater().inflate(R.layout.event, calendars.get(3), false);
-        //tv.setText("Event inserted!");
-        calendars.get(3).removeAllEvents();
-        EventView nuevoEvent = new EventView(this, "Event inserted!");
-        calendars.get(3).addEvent(nuevoEvent);
-	}
+    
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	updateTimeColumn();
+    	loadTestData();
+    	drawEvents();
+    }
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -145,5 +141,182 @@ public class HomeActivity extends Activity implements OnClickListener {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    } 
+    }
+    
+    private void drawBackground(ArrayList<String> calendars){
+        drawFirstRow(calendars);
+        drawBackgroundCells(calendars);
+    }
+    
+    private void drawFirstRow(ArrayList<String> al) {
+    	
+    	//Adding time column
+    	TableRow tr = new TableRow(this);
+        tr.setLayoutParams(new LayoutParams(
+        			   LayoutParams.FILL_PARENT,
+                       LayoutParams.WRAP_CONTENT));
+        TextView tv = new TextView(this);
+        
+        tr.addView(tv);
+        mTableLayout.addView(tr,new TableLayout.LayoutParams(
+                LayoutParams.FILL_PARENT,
+                LayoutParams.WRAP_CONTENT));
+    	
+    	//Adding calendar columns
+        int scaledFontSize = getResources().getDimensionPixelSize(R.dimen.calendar_name_font_size);
+    	for(String calendar_name: al) {
+        	TableRow tr_cal = new TableRow(this);
+        	tr_cal.setLayoutParams(new LayoutParams(
+        				   LayoutParams.FILL_PARENT,
+                           LayoutParams.WRAP_CONTENT));
+        	
+            TextView tv_cal = new TextView(this);
+            tv_cal.setText(calendar_name);
+            tv_cal.setTextColor(Color.BLACK);
+            tv_cal.setTypeface(null,Typeface.BOLD);
+            tv_cal.setTextSize(scaledFontSize);
+            tv_cal.setWidth(mCalendarColumnWidth);
+            tv_cal.setGravity(Gravity.CENTER_HORIZONTAL);
+            tv_cal.setPadding(0, 10, 0, 10);
+            
+            tr.addView(tv_cal);
+            mTableLayout.addView(tr_cal,new TableLayout.LayoutParams(
+                    LayoutParams.FILL_PARENT,
+                    LayoutParams.WRAP_CONTENT));
+    	}
+    }
+    
+    private void drawBackgroundCells(ArrayList<String> al) {       
+        Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        int screen_width_pixels = display.getHeight();
+        int scaledFontSize = getResources().getDimensionPixelSize(R.dimen.time_font_size);
+        
+        mNumberOfRows = screen_width_pixels/mCalendarRowHeight-2;
+        for(int i = 0; i<mNumberOfRows; i++) {
+        	TableRow tr = new TableRow(this);
+            tr.setLayoutParams(new LayoutParams(
+                           LayoutParams.FILL_PARENT,
+                           LayoutParams.WRAP_CONTENT));
+             
+             TextView tv = new TextView(this);
+             tv.setBackgroundResource(R.drawable.cell_background);
+             tv.setPadding(10, 5, 10, 5);
+             tv.setTextSize(scaledFontSize);
+             
+             tr.addView(tv);
+             
+             for(int j=0; j<al.size(); j++) {                 
+                 TextView tv_cal = new TextView(this);
+                 tv_cal.setBackgroundResource(R.drawable.cell_background);
+                 tv_cal.setPadding(10, 5, 10, 5);
+                 tv_cal.setTextSize(scaledFontSize);
+                 tv_cal.setWidth(mCalendarColumnWidth);
+                 
+                 tr.addView(tv_cal);
+             }
+             
+             mTableLayout.addView(tr,new TableLayout.LayoutParams(
+	                 LayoutParams.FILL_PARENT,
+	                 LayoutParams.WRAP_CONTENT));
+        }
+    }
+    
+    private void updateTimeColumn() {
+        Calendar now = Calendar.getInstance();
+        int minutes = now.get(Calendar.MINUTE);
+        int calendarMinutes = 0;
+        while( minutes >= (calendarMinutes+MIN_EVENT_TIME) ) {
+        	calendarMinutes += MIN_EVENT_TIME;
+        }
+        now.set(Calendar.MINUTE, calendarMinutes);
+        mCalendarBegin = (Calendar)now.clone();
+        
+    	for(int i=1; i<mTableLayout.getChildCount(); i++) {
+    		TableRow tr = (TableRow)mTableLayout.getChildAt(i);
+    		TextView tv = (TextView)tr.getChildAt(0);
+            if(tv!=null) {
+            	tv.setText(mFormateador.format(now.getTime()));
+            	now.add(Calendar.MINUTE, MIN_EVENT_TIME);
+            }
+    	}
+    	now.add(Calendar.MINUTE, -MIN_EVENT_TIME);
+    	mCalendarEnd = (Calendar)now.clone();
+    }
+    
+    private void drawEvents() {
+    	boolean test = true;
+        
+    	for(GoogleEvent e: mGoogleEventList) {
+    		String title = e.getTitle();
+    		Calendar begin = e.getBegin();
+    		Calendar end = e.getEnd();
+    		if( end.before(mCalendarBegin) || begin.after(mCalendarEnd)) {
+    			//Event out of range
+    			break;
+    		}
+    		
+    		int startCellPos = getCellPositionAtCertainTime(begin, true);
+    		int endCellPos = getCellPositionAtCertainTime(end, false)+1;
+    		
+    		//simulamos la columna a la que pertenece
+    		int calendarPos = 0;
+    		if(test) test = false;
+    		else calendarPos = 2;
+    		int column = mFirstColumnWidth + calendarPos*mCalendarColumnWidth;
+    		
+    		TextView tv = new TextView(this);
+    		tv.setBackgroundResource(R.drawable.event_background);
+    		tv.setWidth(mCalendarColumnWidth);
+    		tv.setHeight((endCellPos-startCellPos)*mCalendarRowHeight);
+    		tv.setTextColor(Color.BLACK);
+    		tv.setText(title + "\n" 
+    			+ mFormateador.format(begin.getTime()) + " - " 
+    			+ mFormateador.format(end.getTime()));
+    		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(
+    		        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
+    		        (Gravity.LEFT | Gravity.TOP));
+    		fl.setMargins(column, mFirstRowHeight+startCellPos*mCalendarRowHeight, 0, 0);
+    		mFrameLayout.addView(tv,fl);
+    	}
+    }
+    
+    /**
+     * Return the cell position for a certain time.
+     * @param time: given time to search for their cell
+     * @param includeBounds: true for counting the time at the border.
+     * @return vertical cell position
+     */
+    private int getCellPositionAtCertainTime(Calendar time, boolean includeBounds) {
+		int count = 0;
+		Calendar loopControl = (Calendar) mCalendarBegin.clone();
+		while(loopControl.compareTo(time) < 0) {
+			loopControl.add(Calendar.MINUTE, MIN_EVENT_TIME);
+			count++;
+		}
+		if(count > 0) --count;
+		if(!includeBounds && (time.get(Calendar.MINUTE) % MIN_EVENT_TIME) ==0)  {
+			 --count;
+		}
+		return count;
+    }
+    
+    private void loadTestData() {
+    	mGoogleEventList = new ArrayList<GoogleEvent>();
+    	GoogleEvent g1 = new GoogleEvent();
+    	g1.setTitle("Reunion VDSL");
+    	Calendar now = Calendar.getInstance();
+    	g1.setBegin((Calendar)now.clone());
+    	Calendar end = (Calendar)now.clone();
+    	end.add(Calendar.HOUR, 1);
+    	end.set(Calendar.MINUTE, 0);
+    	g1.setEnd((Calendar)end.clone());
+    	mGoogleEventList.add(g1);
+    	
+    	GoogleEvent g2 = new GoogleEvent();
+    	g2.setTitle("Traslados (JANDON)");
+    	g2.setBegin((Calendar)end.clone());
+    	end.add(Calendar.HOUR, 1);
+    	g2.setEnd((Calendar)end.clone());
+    	mGoogleEventList.add(g2);
+    }
 }
