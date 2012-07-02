@@ -23,7 +23,9 @@ import java.util.Arrays;
 import java.util.Calendar;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -33,7 +35,11 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.WindowManager;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 import android.widget.TableLayout;
@@ -58,8 +64,9 @@ public class HomeActivity extends Activity {
 	private int mFirstRowHeight;
 	private Calendar mCalendarBegin;
 	private Calendar mCalendarEnd;
+	private CellTextView selectedCell;
 	
-	private final int MIN_EVENT_TIME = 15;
+	private final int MIN_EVENT_TIME = 30;
 	
 	UserManager _userManager = null;
 	
@@ -170,16 +177,16 @@ public class HomeActivity extends Activity {
         				   LayoutParams.FILL_PARENT,
                            LayoutParams.WRAP_CONTENT));
         	
-            TextView tv_cal = new TextView(this);
-            tv_cal.setText(calendar_name);
-            tv_cal.setTextColor(Color.BLACK);
-            tv_cal.setTypeface(null,Typeface.BOLD);
-            tv_cal.setTextSize(scaledFontSize);
-            tv_cal.setWidth(mCalendarColumnWidth);
-            tv_cal.setGravity(Gravity.CENTER_HORIZONTAL);
-            tv_cal.setPadding(0, 10, 0, 10);
+            TextView calendar = new TextView(this);
+            calendar.setText(calendar_name);
+            calendar.setTextColor(Color.BLACK);
+            calendar.setTypeface(null,Typeface.BOLD);
+            calendar.setTextSize(scaledFontSize);
+            calendar.setWidth(mCalendarColumnWidth);
+            calendar.setGravity(Gravity.CENTER_HORIZONTAL);
+            calendar.setPadding(0, 10, 0, 10);
             
-            tr.addView(tv_cal);
+            tr.addView(calendar);
             mTableLayout.addView(tr_cal,new TableLayout.LayoutParams(
                     LayoutParams.FILL_PARENT,
                     LayoutParams.WRAP_CONTENT));
@@ -206,13 +213,24 @@ public class HomeActivity extends Activity {
              tr.addView(tv);
              
              for(int j=0; j<al.size(); j++) {                 
-                 TextView tv_cal = new TextView(this);
-                 tv_cal.setBackgroundResource(R.drawable.cell_background);
-                 tv_cal.setPadding(10, 5, 10, 5);
-                 tv_cal.setTextSize(scaledFontSize);
-                 tv_cal.setWidth(mCalendarColumnWidth);
+                 final CellTextView cell = new CellTextView(this);
+                 cell.setCalendarId(al.get(j));
+                 cell.setPosition(j);
                  
-                 tr.addView(tv_cal);
+                 cell.setBackgroundResource(R.drawable.cell_background);
+                 cell.setPadding(10, 5, 10, 5);
+                 cell.setTextSize(scaledFontSize);
+                 cell.setWidth(mCalendarColumnWidth);
+                 
+                 tr.addView(cell);
+                 
+                 cell.setOnClickListener(new OnClickListener() {
+                     @Override
+                     public void onClick(View v) {
+                    	 selectedCell = cell;
+                    	 showReservationDialog();
+                     }
+                 });
              }
              
              mTableLayout.addView(tr,new TableLayout.LayoutParams(
@@ -277,6 +295,14 @@ public class HomeActivity extends Activity {
     		        (Gravity.LEFT | Gravity.TOP));
     		fl.setMargins(column, mFirstRowHeight+startCellPos*mCalendarRowHeight, 0, 0);
     		mFrameLayout.addView(tv,fl);
+    		
+    		tv.setOnTouchListener(new OnTouchListener() {
+				
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					return true;
+				}
+			});
     	}
     }
     
@@ -298,6 +324,26 @@ public class HomeActivity extends Activity {
 			 --count;
 		}
 		return count;
+    }
+    
+    public void showReservationDialog() {
+    	AlertDialog.Builder b = new AlertDialog.Builder(this);
+    	b.setIcon(android.R.drawable.ic_dialog_alert);
+    	b.setTitle(selectedCell.getCalendarId());
+    	b.setMessage("ÀQuieres reservar esta hora?");
+    	b.setPositiveButton("S’", new DialogInterface.OnClickListener() {
+    	    @Override
+    	    public void onClick(DialogInterface dialog, int which) {
+    	    	;
+    	    }
+    	});
+    	b.setNegativeButton("No", new DialogInterface.OnClickListener() {
+    	    @Override
+    	    public void onClick(DialogInterface dialog, int which) {
+    	        ;
+    	    }
+    	});
+    	b.show();
     }
     
     private void loadTestData() {
