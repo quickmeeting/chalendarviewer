@@ -34,7 +34,6 @@
     <string name="refresh">Refresh</string>
     <string name="configuration">Configuration</string>
     <string name="synchronizing">Sincronizando calendarios</string>
-    
-    
+    <string name="synchronizingError">Error Sincronizando calendarios</string>
     
 </resources>

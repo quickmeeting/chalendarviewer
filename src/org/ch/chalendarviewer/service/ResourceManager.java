@@ -30,6 +30,7 @@ import org.ch.chalendarviewer.objects.CalendarResource;
 import org.ch.chalendarviewer.objects.Event;
 import org.ch.chalendarviewer.objects.google.GoogleCalendar;
 import org.ch.chalendarviewer.objects.google.GoogleEvent;
+import org.ch.chalendarviewer.service.exception.SyncFailedException;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -199,24 +200,26 @@ public class ResourceManager {
      * Synchronizes google and database resources.
      * Add new calendars from google.
      * Delete old calendars stored in database 
-     * @return a list of resources links from database
+     * @throws SyncFailedException When synchronizatoin fails
      */
-    public List<String> syncResources(){
+    public void syncResources() throws SyncFailedException{
         
-        //Get Calendars from google (and add the new ones)
-        List<String> googleLinks = loadLinksFromGoogle();
-        //Initialize calendars from database
-        List<String> resourceLinks = new ArrayList<String>();
+        try{
+            //Get Calendars from google (and add the new ones)
+            List<String> googleLinks = loadLinksFromGoogle();
+            
+            //build a where clause, to exclude calendars that exists in db, but not in google 
+            String where = buildWhereClause(googleLinks);
+
+            Uri resources = Uri.parse(AuthUser.CONTENT_URI + "/" + mUserManager.getActiveUserId() +"/" + "resources"); 
+
+            int result = mProvider.delete(resources, where, null);
+            Log.d(TAG, "Number of resources to delete: " + result);
+            
+        } catch (Exception e){
+            throw new SyncFailedException("Cannot synchronize calendars with Google", e);
+        }
         
-        //build a where clause, to exclude calendars that exists in db, but not in google 
-        String where = buildWhereClause(googleLinks);
-        
-        Uri resources = Uri.parse(AuthUser.CONTENT_URI + "/" + mUserManager.getActiveUserId() +"/" + "resources"); 
-        
-        int result = mProvider.delete(resources, where, null);
-        Log.d(TAG, "Number of resources to delete: " + result);
-        
-        return resourceLinks;
     }
 
     /**

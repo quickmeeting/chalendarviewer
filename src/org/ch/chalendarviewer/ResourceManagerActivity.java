@@ -5,8 +5,10 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.ch.chalendarviewer.service.ResourceManager;
+import org.ch.chalendarviewer.service.exception.SyncFailedException;
 
 /**
  * Display resources in a list of checkbox objects
@@ -44,26 +46,42 @@ public class ResourceManagerActivity extends ListActivity {
      */
     private class ResourceAsyncTask extends AsyncTask<String, Void, Object>{
 
+        /** success on synchronizing calendar */
+        private boolean success = true;
+        
         @Override
         protected Object doInBackground(String... params) {
             
             _resourceManager = ResourceManager.getInstance(getApplicationContext());
             
-            _resourceManager.syncResources();
+            try {
+                _resourceManager.syncResources();
+            } catch (SyncFailedException e) {
+                Log.e( TAG, e.getMessage() + ":" + e.getCause());
+                success = false;
+            }
             
             return "yes";
         }
         
         protected void onPostExecute(Object result) {
-            
+
             Log.d(TAG, "ResourceActivity loaded");
-            
+
             if (ResourceManagerActivity.this.progress != null) {
                 ResourceManagerActivity.this.progress.dismiss();
-                setListAdapter(new CustomResourceAdapter(getApplicationContext(), _resourceManager));
+                if (success) {
+                    setListAdapter(new CustomResourceAdapter(getApplicationContext(), _resourceManager));
+                } else {
+                    int duration = Toast.LENGTH_LONG;
+                    Toast toast = Toast.makeText(getApplicationContext(), 
+                            getString(R.string.synchronizingError), duration);
+                    toast.show();
+                    ResourceManagerActivity.this.finish();
+                }
+
             }
         }
-
         
     }
     
