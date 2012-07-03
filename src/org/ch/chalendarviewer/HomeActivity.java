@@ -36,12 +36,10 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 import android.widget.TableLayout;
@@ -51,9 +49,11 @@ import android.widget.TextView;
 import org.ch.chalendarviewer.objects.GoogleEvent;
 import org.ch.chalendarviewer.objects.User;
 import org.ch.chalendarviewer.service.UserManager;
+import org.ch.chalendarviewer.util.Observable;
+import org.ch.chalendarviewer.util.Observer;
 import org.ch.chalendarviewer.R;
 
-public class HomeActivity extends Activity {
+public class HomeActivity extends Activity implements Observer {
 	
 	private UserManager mUserManager;
 	
@@ -297,37 +297,29 @@ public class HomeActivity extends Activity {
     		int calendarPos = 0;
     		if(test) test = false;
     		else calendarPos = 2;
-    		int column = mFirstColumnWidth + calendarPos*mCalendarColumnWidth;
     		
-    		final EventTextView event = new EventTextView(this);
-    		event.setWidth(mCalendarColumnWidth);
-    		event.setHeight((endCellPos-startCellPos)*mCalendarRowHeight);
-    		event.setText(title + "\n" 
-    			+ mFormateador.format(begin.getTime()) + " - " 
-    			+ mFormateador.format(end.getTime()));
-    		if(u!=null && u.equals(mUser)) {
-    			event.setUserEvent(true);
-    			event.setBackgroundResource(R.drawable.user_event_background);
-    			event.setOnTouchListener(new OnTouchListener() {
-    	            @Override
-    	            public boolean onTouch(View v, MotionEvent event) {
-    	            	return false;
-    	            }
-    	        });
-    			event.setOnClickListener(new OnClickListener() {
-    	            @Override
-    	            public void onClick(View v) {
-    	            	mSelectedEvent = event;
-    	            	showCancelReservationDialog();
-    	            }
-    	        });
-    		}
-    		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(
-    		        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
-    		        (Gravity.LEFT | Gravity.TOP));
-    		fl.setMargins(column, mFirstRowHeight+startCellPos*mCalendarRowHeight, 0, 0);
-    		mFrameLayout.addView(event,fl);
+    		String text = title + "\n" 
+    				+ mFormateador.format(begin.getTime()) + " - " 
+    				+ mFormateador.format(end.getTime());
+    		createEvent(calendarPos, startCellPos, text, endCellPos-startCellPos, false);
     	}
+    }
+    
+    private void createEvent(int calendarPos, int startCellPos, String text, int height, boolean isAppUser) {
+		EventTextView event = new EventTextView(this);
+		event.setWidth(mCalendarColumnWidth);
+		event.setHeight(height*mCalendarRowHeight);
+		event.setText(text);
+		if(isAppUser) {
+			event.setUserEvent(true);
+			event.setObserver(this);
+		}
+		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(
+		        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
+		        (Gravity.LEFT | Gravity.TOP));
+		int column = mFirstColumnWidth + calendarPos*mCalendarColumnWidth;
+		fl.setMargins(column, mFirstRowHeight+startCellPos*mCalendarRowHeight, 0, 0);
+		mFrameLayout.addView(event,fl);
     }
     
     /**
@@ -350,37 +342,6 @@ public class HomeActivity extends Activity {
 		return count;
     }
     
-    private void createEvent(int eventTimeUnits) {
-		final EventTextView ev = new EventTextView(this);
-		ev.setWidth(mCalendarColumnWidth);
-		ev.setHeight(mCalendarRowHeight*eventTimeUnits);
-		ev.setText(R.string.reserved);
-		ev.setBackgroundResource(R.drawable.user_event_background);
-		ev.setUserEvent(true);
-		ev.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-            	return false;
-            }
-        });
-		ev.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            	mSelectedEvent = ev;
-            	showCancelReservationDialog();
-            }
-        });
-		
-		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(
-		        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
-		        (Gravity.LEFT | Gravity.TOP));
-		
-		int column = mFirstColumnWidth 
-				+ mCalendars.indexOf(mSelectedCell.getCalendarId())*mCalendarColumnWidth;
-		fl.setMargins(column, mFirstRowHeight+mSelectedCell.getPosition()*mCalendarRowHeight, 0, 0);
-		mFrameLayout.addView(ev,fl);
-    }
-    
     private void destroyEvent() {
     	mFrameLayout.removeView(mSelectedEvent);
     }
@@ -393,7 +354,9 @@ public class HomeActivity extends Activity {
     	b.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
     	    @Override
     	    public void onClick(DialogInterface dialog, int which) {
-    	    	showContextMenu();
+    	        registerForContextMenu(mFrameLayout); 
+    	        openContextMenu(mFrameLayout);
+    	        unregisterForContextMenu(mFrameLayout);
     	    }
     	});
     	b.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -403,12 +366,6 @@ public class HomeActivity extends Activity {
     	    }
     	});
     	b.show();
-    }
-    
-    private void showContextMenu() {
-        registerForContextMenu(mFrameLayout); 
-        openContextMenu(mFrameLayout);
-        unregisterForContextMenu(mFrameLayout);
     }
     
     public void showCancelReservationDialog() {
@@ -441,23 +398,26 @@ public class HomeActivity extends Activity {
 	}
 	
 	public boolean onContextItemSelected(MenuItem item) {
-		int numberOfTimeUnits = 1;
+		int height = 1;
 		switch (item.getItemId()) {
 		case MIN_EVENT_SELECTION:
 		    break;
 		case TWO_MIN_EVENTS_SELECTIONS:
-			numberOfTimeUnits = 2;
+			height = 2;
 			break;
 		case THREE_MIN_EVENTS_SELECTIONS:
-			numberOfTimeUnits = 3;
+			height = 3;
 			break;
 		case FOUR_MIN_EVENTS_SELECTIONS:
-			numberOfTimeUnits = 4;
+			height = 4;
 			break;
 		default:
 		    return super.onContextItemSelected(item);
 		}
-		createEvent(numberOfTimeUnits);
+    	int calendarPos = mCalendars.indexOf(mSelectedCell.getCalendarId());
+    	String text = getString(R.string.reserved);
+    	int startCellPos = mSelectedCell.getPosition();
+    	createEvent(calendarPos, startCellPos, text, height, true);
 		return true;
 	}
     
@@ -480,4 +440,10 @@ public class HomeActivity extends Activity {
     	g2.setEnd((Calendar)end.clone());
     	mGoogleEventList.add(g2);
     }
+
+	@Override
+	public void notify(Observable o) {
+		mSelectedEvent = (EventTextView) o;
+		showCancelReservationDialog();
+	}
 }
