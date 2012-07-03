@@ -13,6 +13,8 @@ public class CellTextView extends TextView {
 	
 	public CellTextView(Context context) {
 		super(context);
+        setBackgroundResource(R.drawable.cell_background);
+        setPadding(10, 5, 10, 5);
 	}
 	
 	public CellTextView(Context context, AttributeSet attrs) {
