@@ -39,8 +39,9 @@ import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
-import org.ch.chalendarviewer.contentprovider.AuthUser;
+import org.ch.chalendarviewer.contentprovider.AccountColumns;
 import org.ch.chalendarviewer.contentprovider.ChalendarContentProvider;
+import org.ch.chalendarviewer.contentprovider.Resource;
 import org.ch.chalendarviewer.objects.User;
 import org.ch.chalendarviewer.util.ConnectionUtils;
 import org.json.JSONException;
@@ -68,7 +69,7 @@ public class UserManager {
     private static UserManager sInstance = null;
         
     /** Active user id */
-    private String mUserId = "";
+    private String mUserId;
     
     /** Active user Mail */
     private String mUserMail = "";
@@ -147,18 +148,18 @@ public class UserManager {
         
         // Form an array specifying which columns to return. 
         String[] projection = new String[] {
-                AuthUser._ID,
-                AuthUser.EMAIL,
-                AuthUser.ACCESS_TOKEN,
-                AuthUser.REFRESH_TOKEN,
-                AuthUser.EXPIRATION_DATE
+                AccountColumns._ID,
+                AccountColumns.EMAIL,
+                AccountColumns.ACCESS_TOKEN,
+                AccountColumns.REFRESH_TOKEN,
+                AccountColumns.EXPIRATION_DATE
         };
-        String whereClause = AuthUser.ACTIVE_USER + " = ?";
+        String whereClause = AccountColumns.ACTIVE_USER + " = ?";
         String[] whereArgs = new String[]{"1"};
         
         // Make the query. 
         Cursor managedCursor = mProvider.query(
-                AuthUser.CONTENT_URI, // uri                
+                AccountColumns.CONTENT_URI, // uri                
                 projection,           // Which columns to return 
                 whereClause,          // Which rows to return (active user)
                 whereArgs,            // Selection arguments 
@@ -168,11 +169,11 @@ public class UserManager {
         // is there at least one user?
         if (managedCursor.moveToFirst()) {
             
-            int userIdColumn         = managedCursor.getColumnIndex(AuthUser._ID);
-            int userMailColumn       = managedCursor.getColumnIndex(AuthUser.EMAIL);
-            int accessTokenColumn    = managedCursor.getColumnIndex(AuthUser.ACCESS_TOKEN);
-            int refreshTokenColumn   = managedCursor.getColumnIndex(AuthUser.REFRESH_TOKEN);
-            int expirationDateColumn = managedCursor.getColumnIndex(AuthUser.EXPIRATION_DATE);
+            int userIdColumn         = managedCursor.getColumnIndex(AccountColumns._ID);
+            int userMailColumn       = managedCursor.getColumnIndex(AccountColumns.EMAIL);
+            int accessTokenColumn    = managedCursor.getColumnIndex(AccountColumns.ACCESS_TOKEN);
+            int refreshTokenColumn   = managedCursor.getColumnIndex(AccountColumns.REFRESH_TOKEN);
+            int expirationDateColumn = managedCursor.getColumnIndex(AccountColumns.EXPIRATION_DATE);
                         
             try {
                 mUserId         = managedCursor.getString(userIdColumn);
@@ -285,8 +286,8 @@ public class UserManager {
         // data to change
         ContentValues values = new ContentValues();
 
-        values.put(AuthUser.ACCESS_TOKEN, accessToken);
-        values.put(AuthUser.EXPIRATION_DATE, mDateFormatter.format(expirationDate));
+        values.put(AccountColumns.ACCESS_TOKEN, accessToken);
+        values.put(AccountColumns.EXPIRATION_DATE, mDateFormatter.format(expirationDate));
         
         if (updateUser(mUserMail, values) == true) {
             mAccessToken = accessToken;
@@ -309,11 +310,11 @@ public class UserManager {
         boolean userWasUpdated = false; 
 
         // where clause
-        String where = AuthUser.EMAIL + " = ?";
+        String where = AccountColumns.EMAIL + " = ?";
         String[] whereParams = new String[]{userMail};
         
         // update the row
-        int rowsAffected = mProvider.update(AuthUser.CONTENT_URI, values, where, whereParams);
+        int rowsAffected = mProvider.update(AccountColumns.CONTENT_URI, values, where, whereParams);
         
         //verify if user is updated
         if (rowsAffected == 1) {
@@ -348,10 +349,13 @@ public class UserManager {
         // temp calendar
         Calendar tCalendar = Calendar.getInstance();
         
+        //values to be inserted/updated
+        ContentValues values = new ContentValues();        
+        
         // recover user internal data
         try {
             // fill parameters
-            // TODO create constansts
+            // TODO create constants
             String[] paramsKey = {"client_id","client_secret","code","redirect_uri","grant_type"};        
             String[] paramsValue = {GoogleConstants.CLIENT_ID, GoogleConstants.CLIENT_SECRET, authorizationCode, GoogleConstants.OAUTH_REDIRECT_URI,"authorization_code"}; 
             HTMLresponse = ConnectionUtils.doHttpsPostFormUrlEncoded(GoogleConstants.URL_ACCESS_TOKEN, paramsKey, paramsValue);
@@ -393,13 +397,13 @@ public class UserManager {
                 //verify if user exists on database
                 // Form an array specifying which columns to return. 
                 String[] projection = new String[] {
-                        AuthUser._ID
+                        AccountColumns._ID
                 };
                 // Get the base URI for the Auth users table content provider.
-                Uri authUsers =  AuthUser.CONTENT_URI;
+                Uri authUsers =  AccountColumns.CONTENT_URI;
 
                 // build the where clause
-                String where = AuthUser.EMAIL + "= ?";
+                String where = AccountColumns.EMAIL + "= ?";
                 String[] whereParams = new String[]{userMail};  
                 
                 // Make the query. 
@@ -410,13 +414,12 @@ public class UserManager {
                         whereParams,       // Selection arguments (new ActiveUser)
                         null);             // user order       
 
-                //set values (will be used in a near future)
-                ContentValues values = new ContentValues();
-                values.put(AuthUser.EMAIL, userMail);
-                values.put(AuthUser.ACCESS_TOKEN, accessToken);
-                values.put(AuthUser.REFRESH_TOKEN, refreshToken);
-                values.put(AuthUser.ACTIVE_USER, true);
-                values.put(AuthUser.EXPIRATION_DATE,  mDateFormatter.format(expirationDate));
+                //set values (will be used in a near future)                
+                values.put(AccountColumns.EMAIL, userMail);
+                values.put(AccountColumns.ACCESS_TOKEN, accessToken);
+                values.put(AccountColumns.REFRESH_TOKEN, refreshToken);
+                values.put(AccountColumns.ACTIVE_USER, true);
+                values.put(AccountColumns.EXPIRATION_DATE,  mDateFormatter.format(expirationDate));
                 
                 // verify if user exists on dataBase
                 if (managedCursor.moveToFirst() == true) {
@@ -431,7 +434,7 @@ public class UserManager {
                 } else {
                     Log.d(TAG, "User " + userMail + " is a new user!" );
 
-                    Uri uri = mProvider.insert(AuthUser.CONTENT_URI, values);
+                    Uri uri = mProvider.insert(AccountColumns.CONTENT_URI, values);
                     Log.d(TAG, "User " + userMail + " inserted and defined as ACTIVE");
                     userWasAdded = true;                   
                 }
@@ -440,14 +443,25 @@ public class UserManager {
                 managedCursor.close();
                 
                 //update current values?
-                if (userWasAdded == true) {
+                if (userWasAdded == true) {                    
                     mAccessToken = accessToken;
                     mExpirationDate = expirationDate;
                     mUserMail = userMail;
                     mRefreshToken = refreshToken;
                 }
             }
-        }  
+        } 
+        
+        
+        // others users should be disabled
+        // where clause
+        String where = AccountColumns.EMAIL + " != ?";
+        String[] whereParams = new String[]{mUserMail};
+        values.clear();
+        values.put(AccountColumns.ACTIVE_USER, false);
+        
+        // update the rows
+        int rowsAffected = mProvider.update(AccountColumns.CONTENT_URI, values, where, whereParams);
         
         Log.d(TAG, "addActiveUserToken end (result = " + userWasAdded + ")");
         return userWasAdded;
@@ -507,5 +521,59 @@ public class UserManager {
         }
         return mUserId;
     }
-    
+            
+    public void changeAccountActive(String mail) {
+        Log.d(TAG, "changeAccountActive begin");
+        
+        Log.d(TAG, "The new active user is " + mail);
+        
+        //values to be inserted/updated
+        ContentValues values = new ContentValues();      
+        
+        String where = AccountColumns.EMAIL + " = ?";
+        String[] whereParams = new String[]{mUserMail};
+        values.put(AccountColumns.ACTIVE_USER, true);
+        
+        // update the rows
+        int rowsAffected = mProvider.update(AccountColumns.CONTENT_URI, values, where, whereParams);
+        
+        Log.d(TAG, rowsAffected + " line on database was passed to active");
+                
+        // others users should be disabled
+        // where clause
+        where = AccountColumns.EMAIL + " != ?";
+        whereParams = new String[]{mUserMail};
+        values.clear();
+        values.put(AccountColumns.ACTIVE_USER, false);
+        
+        // update the rows
+        rowsAffected = mProvider.update(AccountColumns.CONTENT_URI, values, where, whereParams);
+
+        Log.d(TAG, rowsAffected + " lines on database were passed to inactive");
+        recoverDataFromDataBase();
+        
+    }
+
+    public String getActiveUserEmail() {
+        // TODO Auto-generated method stub
+        return mUserMail;
+    }
+
+    public Cursor getAllAccountsIdEmail() {
+       
+        // Form an array specifying which columns to return. 
+        String[] projection = new String[] {
+                AccountColumns._ID,
+                AccountColumns.EMAIL
+        };        
+        // Make the query. 
+        Cursor managedCursor = mProvider.query(
+                AccountColumns.CONTENT_URI,      // uri                
+                projection,                      // Which columns to return 
+                null,                            // Which rows to return 
+                null,                            // Selection arguments 
+                AccountColumns.EMAIL + " DESC"   // Put the results in ascending order by email
+        ); 
+        return managedCursor;
+    }
 }

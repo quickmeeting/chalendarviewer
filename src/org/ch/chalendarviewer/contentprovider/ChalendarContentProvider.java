@@ -28,7 +28,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.util.Log;
 
-import org.ch.chalendarviewer.contentprovider.AuthUser;
+import org.ch.chalendarviewer.contentprovider.AccountColumns;
 import org.ch.chalendarviewer.contentprovider.DatabaseHelper;
 
 import java.util.HashMap;
@@ -75,12 +75,12 @@ public class ChalendarContentProvider extends ContentProvider {
                 + DatabaseHelper.RESOURCE_TABLE_NAME + "/#", AUTH_USER_RESOURCE_ID);
 
         authUserProjectionMap = new HashMap<String, String>();
-        authUserProjectionMap.put(AuthUser._ID, AuthUser._ID);
-        authUserProjectionMap.put(AuthUser.ACCESS_TOKEN, AuthUser.ACCESS_TOKEN);
-        authUserProjectionMap.put(AuthUser.REFRESH_TOKEN, AuthUser.REFRESH_TOKEN);
-        authUserProjectionMap.put(AuthUser.EMAIL, AuthUser.EMAIL );
-        authUserProjectionMap.put(AuthUser.ACTIVE_USER, AuthUser.ACTIVE_USER );
-        authUserProjectionMap.put(AuthUser.EXPIRATION_DATE, AuthUser.EXPIRATION_DATE );
+        authUserProjectionMap.put(AccountColumns._ID, AccountColumns._ID);
+        authUserProjectionMap.put(AccountColumns.ACCESS_TOKEN, AccountColumns.ACCESS_TOKEN);
+        authUserProjectionMap.put(AccountColumns.REFRESH_TOKEN, AccountColumns.REFRESH_TOKEN);
+        authUserProjectionMap.put(AccountColumns.EMAIL, AccountColumns.EMAIL );
+        authUserProjectionMap.put(AccountColumns.ACTIVE_USER, AccountColumns.ACTIVE_USER );
+        authUserProjectionMap.put(AccountColumns.EXPIRATION_DATE, AccountColumns.EXPIRATION_DATE );
         
         resourceProjectionMap = new HashMap<String, String>();
         resourceProjectionMap.put(Resource._ID, Resource._ID);
@@ -124,7 +124,7 @@ public class ChalendarContentProvider extends ContentProvider {
     public String getType(Uri uri) {
         switch (sUriMatcher.match(uri)) {
             case AUTH_USERS:
-                return AuthUser.CONTENT_TYPE;
+                return AccountColumns.CONTENT_TYPE;
             case AUTH_USER_RESOURCES:
                 return Resource.CONTENT_TYPE;
             default:
@@ -147,7 +147,7 @@ public class ChalendarContentProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
             case AUTH_USERS:
                 table = DatabaseHelper.AUTH_USER_TABLE_NAME; 
-                id = AuthUser._ID;
+                id = AccountColumns._ID;
                 break;
             case AUTH_USER_RESOURCES:
                 table = DatabaseHelper.RESOURCE_TABLE_NAME;
@@ -183,7 +183,7 @@ public class ChalendarContentProvider extends ContentProvider {
             case AUTH_USER_ID:
                 qb.setTables(DatabaseHelper.AUTH_USER_TABLE_NAME);
                 //ID of user is passed on URI
-                qb.appendWhere(AuthUser._ID + "=" + uri.getPathSegments().get(1));
+                qb.appendWhere(AccountColumns._ID + "=" + uri.getPathSegments().get(1));
                 break;
             case AUTH_USER_RESOURCES:
                 qb.setTables(DatabaseHelper.RESOURCE_TABLE_NAME);

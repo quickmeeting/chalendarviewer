@@ -24,7 +24,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
-import org.ch.chalendarviewer.contentprovider.AuthUser;
+import org.ch.chalendarviewer.contentprovider.AccountColumns;
 import org.ch.chalendarviewer.contentprovider.Resource;
 import org.ch.chalendarviewer.objects.CalendarResource;
 import org.ch.chalendarviewer.objects.google.GoogleCalendar;
@@ -79,7 +79,7 @@ public class ResourceManager {
         
 
         // Get the base URI for the Resources table.
-        Uri resourceUri = Uri.parse(AuthUser.CONTENT_URI + "/" + mUserManager.getActiveUserId() + "/" + "resources"); 
+        Uri resourceUri = Uri.parse(AccountColumns.CONTENT_URI + "/" + mUserManager.getActiveUserId() + "/" + "resources"); 
 
         // Make the query. 
         Cursor managedCursor = mProvider.query(resourceUri,
@@ -134,7 +134,7 @@ public class ResourceManager {
         };
 
         // Get the base URI for the Resources table.
-        Uri resourceUri = Uri.parse(AuthUser.CONTENT_URI + "/" + mUserManager.getActiveUserId() + "/" + "resources"); 
+        Uri resourceUri = Uri.parse(AccountColumns.CONTENT_URI + "/" + mUserManager.getActiveUserId() + "/" + "resources"); 
 
         // Make the query. 
         Cursor managedCursor = mProvider.query(resourceUri,
@@ -172,7 +172,7 @@ public class ResourceManager {
         values.put(Resource.LINK, calendar.getSelfLink());
         values.put(Resource.DISPLAY_NAME, calendar.getTitle());
         values.put(Resource.ACTIVE, false);
-        Uri resources = Uri.parse(AuthUser.CONTENT_URI + "/" + mUserManager.getActiveUserId() +"/" + "resources"); 
+        Uri resources = Uri.parse(AccountColumns.CONTENT_URI + "/" + mUserManager.getActiveUserId() +"/" + "resources"); 
         Uri uri = mProvider.insert(resources, values);
         Log.d(TAG, "New calendar inserted: " + uri);
     }
@@ -194,7 +194,7 @@ public class ResourceManager {
         //build a where clause, to exclude calendars that exists in db, but not in google 
         String where = buildWhereClause(googleLinks);
         
-        Uri resources = Uri.parse(AuthUser.CONTENT_URI + "/" + mUserManager.getActiveUserId() +"/" + "resources"); 
+        Uri resources = Uri.parse(AccountColumns.CONTENT_URI + "/" + mUserManager.getActiveUserId() +"/" + "resources"); 
         
         int result = mProvider.delete(resources, where, null);
         Log.d(TAG, "Number of resources to delete: " + result);
@@ -232,7 +232,7 @@ public class ResourceManager {
 
         values.put(Resource.ACTIVE, state);
         
-        Uri resources = Uri.parse(AuthUser.CONTENT_URI + "/" + mUserManager.getActiveUserId() + "/" + "resources/" + id); 
+        Uri resources = Uri.parse(AccountColumns.CONTENT_URI + "/" + mUserManager.getActiveUserId() + "/" + "resources/" + id); 
         int result = mProvider.update(resources, values, null, null);
         Log.d(TAG, "Result update: " + result);
         activeResources = null;
@@ -265,7 +265,7 @@ public class ResourceManager {
         };
 
         // Get the base URI for the Resources table.
-        Uri resourceUri = Uri.parse(AuthUser.CONTENT_URI + "/" + mUserManager.getActiveUserId() + "/" + "resources"); 
+        Uri resourceUri = Uri.parse(AccountColumns.CONTENT_URI + "/" + mUserManager.getActiveUserId() + "/" + "resources"); 
 
         String where = Resource.ACTIVE + "=?";
         String[] whereParams = new String[]{"1"};
