@@ -1,3 +1,19 @@
+/**
+    This file is part of ChalendarViewer.
+
+    ChalendarViewer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    ChalendarViewer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with ChalendarViewer.  If not, see <http://www.gnu.org/licenses/>.    
+*/
 package org.ch.chalendarviewer;
 
 import android.app.ListActivity;
@@ -6,6 +22,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
+import org.ch.chalendarviewer.adapter.CustomResourceAdapter;
 import org.ch.chalendarviewer.service.ResourceManager;
 
 /**
@@ -27,7 +44,7 @@ public class ResourceManagerActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        progress = ProgressDialog.show(this, getString(R.string.app_name), getString(R.string.synchronizing));
+        progress = ProgressDialog.show(this, getString(R.string.app_name), getString(R.string.synchronizingCalendars));
         new ResourceAsyncTask().execute();
         
     }
