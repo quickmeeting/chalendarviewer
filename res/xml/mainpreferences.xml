@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/accounts" android:key="accounts">
-        <Preference android:title="@string/currentActiveAccount" android:selectable="true" android:key="currentActiveAccount" android:enabled="false"/>
-        <Preference android:title="@string/addAccount" android:summary="@string/addAccountHelp" android:key="addAccount"/>
-        <ListPreference android:title="@string/changeActiveAccount" android:summary="@string/changeActiveAccountHelp" android:key="changeActiveAccount" />
+    <PreferenceCategory android:title="@string/accounts" 
+                        android:key="accounts">
+        <Preference android:title="@string/currentActiveAccount" 
+                    android:key="currentActiveAccount" 
+                    android:enabled="false"/>
+        <Preference android:key="addAccount"
+                    android:title="@string/addAccount" 
+                    android:summary="@string/addAccountHelp" />
+        <ListPreference android:title="@string/changeActiveAccount" 
+                        android:summary="@string/changeActiveAccountHelp" 
+                        android:key="changeActiveAccount"/>
         <ListPreference android:title="@string/deleteAccount" android:summary="@string/deleteAccountHelp" android:key="deleteAccount"/>        
     </PreferenceCategory>
     

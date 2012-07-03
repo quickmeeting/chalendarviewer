@@ -133,7 +133,7 @@ public class HomeActivity extends Activity implements OnClickListener {
                 // TODO
                 return true;
             case R.id.menuHomeManageAccounts:
-                Intent intent = new Intent(this, AccountManagerActivity.class);
+                Intent intent = new Intent(this, PreferencesActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.menuHomeManageResources:
