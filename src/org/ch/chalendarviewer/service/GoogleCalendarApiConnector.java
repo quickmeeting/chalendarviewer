@@ -46,6 +46,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -64,13 +65,19 @@ public class GoogleCalendarApiConnector {
     
     private UserManager mSessionManager;
     
-    private SimpleDateFormat mFormatter;
-
+    /** DateTime formatter for interval events */
+    private SimpleDateFormat mDateTimeFormatter;
+    /** Date formatter for complete-day events */
+    private SimpleDateFormat mDateFormatter;
     
+    /**
+     * Constructor. Get userManager instance and initialize formatters
+     * @param context application context
+     */
     private GoogleCalendarApiConnector(Context context) {
         mSessionManager = UserManager.getInstance(context);
-        
-        mFormatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+        mDateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+        mDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
     }
 
     public static synchronized GoogleCalendarApiConnector getInstance(Context context) {
@@ -137,9 +144,9 @@ public class GoogleCalendarApiConnector {
     /**
      * Get calendar data from link
      * @param link calendar link
-     * @return
+     * @return a google Calendar from a link
      */
-    public CalendarResource getCalendarByLink(String link){
+    public GoogleCalendar getCalendarByLink(String link){
         Log.d(TAG,link);
         GoogleCalendar cal = new GoogleCalendar(); 
 
@@ -191,7 +198,7 @@ public class GoogleCalendarApiConnector {
         
         //pattern 2011-11-23T00:00:00
        
-        String url = calendar.getEventFeedLik() +  "?alt=jsonc&start-min=" + mFormatter.format(begin.getTime()) + "&start-max="+ mFormatter.format(end.getTime());
+        String url = calendar.getEventFeedLik() +  "?alt=jsonc&start-min=" + mDateTimeFormatter.format(begin.getTime()) + "&start-max="+ mDateTimeFormatter.format(end.getTime());
                 
         String[] paramsKey =  {"Authorization"};
         String[] paramsValue = {"Bearer " + mSessionManager.getActiveUserAccessToken()};
@@ -211,12 +218,13 @@ public class GoogleCalendarApiConnector {
             e.printStackTrace();
         }
         
+        
         JSONObject jsonUserObj;
         try {
             jsonUserObj = (JSONObject) new JSONTokener(googleResponse).nextValue();
             
             JSONObject jsonData = jsonUserObj.getJSONObject("data");
-            
+            Log.d(TAG, "MESSAGE => " + jsonData.toString());
             JSONArray jsonEventsList = (JSONArray) jsonData.getJSONArray("items");
                         
             int ilength = jsonEventsList.length();
@@ -227,21 +235,23 @@ public class GoogleCalendarApiConnector {
                 ev = new GoogleEvent();
                 
                 jsonEvent = (JSONObject) jsonEventsList.get(j);
-                
+                Log.d(TAG, "EVENT => "+ jsonEvent.toString());
                 ev.setAlternateLink(jsonEvent.getString(GoogleEvent.FIELD_ALTERNATIVE_LINK));
                 ev.setCanEdit(jsonEvent.getBoolean(GoogleEvent.FIELD_CAN_EDIT));
                 ev.setDetails(jsonEvent.getString(GoogleEvent.FIELD_DETAILS));
                 ev.setId(jsonEvent.getString(GoogleEvent.FIELD_ID));
-                ev.setLocation(jsonEvent.getString(GoogleEvent.FIELD_LOCATION));
+                ev.setLocation(jsonEvent.optString(GoogleEvent.FIELD_LOCATION));
                 ev.setSelfLink(jsonEvent.getString(GoogleEvent.FIELD_SELF_LINK));
                 ev.setStatus(jsonEvent.getString(GoogleEvent.FIELD_STATUS));
                 ev.setTitle(jsonEvent.getString(GoogleEvent.FIELD_TITLE));
                
                 JSONArray listWhen  = (JSONArray) jsonEvent.getJSONArray(GoogleEvent.FIELD_WHEN_LIST);
-                begin.setTime(mFormatter.parse(((JSONObject)listWhen.get(0)).getString(GoogleEvent.FIELD_BEGIN)));
-                end.setTime(mFormatter.parse(((JSONObject)listWhen.get(0)).getString(GoogleEvent.FIELD_END)));
-                ev.setBegin(begin);
-                ev.setEnd(end);
+                
+                Calendar evBegin = parseGoogleDate(((JSONObject)listWhen.get(0)).getString(GoogleEvent.FIELD_BEGIN));
+                Calendar evEnd = parseGoogleDate(((JSONObject)listWhen.get(0)).getString(GoogleEvent.FIELD_END));
+                
+                ev.setBegin(evBegin);
+                ev.setEnd(evEnd);
                 
                 jsonUser = (JSONObject) jsonEvent.getJSONObject(GoogleEvent.FIELD_CREATOR);
                 ev.setCreator(new User(jsonUser.getString(User.FIELD_DISPLAY_NAME), jsonUser.getString(User.FIELD_EMAIL)));
@@ -265,6 +275,33 @@ public class GoogleCalendarApiConnector {
         return events;
     }
     
+    
+    /**
+     * Converts a string form GoogleCalendar date o dateTime into a calendar.
+     * @param dateTime string as date or dateTime
+     * @return a Calendar representation of input string
+     * @throws ParseException in case of unparseable string
+     */
+    private Calendar parseGoogleDate(String dateTime) throws ParseException{
+        SimpleDateFormat formatter = mDateTimeFormatter;
+        if(isCompleteDayEvent(dateTime)){
+            formatter = mDateFormatter;
+        }
+        
+        Calendar evCalendar = new GregorianCalendar();
+        evCalendar.setTime(formatter.parse(dateTime));
+        return evCalendar;
+    }
+
+    /**
+     * Check if event represents a complete day
+     * @param dateTime string
+     * @return true: Means that string type is Date (complete day). false: Means that string type is DateTime
+     */
+    private boolean isCompleteDayEvent(String dateTime) {
+        return dateTime.length() == 10;
+    }
+    
     public boolean setEvent(CalendarResource calendar, GoogleEvent event) {
         
         JSONObject data = new JSONObject();
@@ -277,11 +314,12 @@ public class GoogleCalendarApiConnector {
         try {
             attendee.put(GoogleCalendar.FIELD_RESOURCE, true);
             attendee.put(User.FIELD_DISPLAY_NAME,calendar.getTitle());
-            attendee.put(User.FIELD_EMAIL, calendar.getId().replace("http://www.google.com/calendar/feeds/default/allcalendars/full/",""));
+            String email = getEmailFromCalendarID(calendar);
+            attendee.put(User.FIELD_EMAIL, email);
             attendeeList.put(attendee);
             
-            when.put(GoogleEvent.FIELD_BEGIN, mFormatter.format(event.getBegin().getTime()));
-            when.put(GoogleEvent.FIELD_END,   mFormatter.format(event.getEnd().getTime()));
+            when.put(GoogleEvent.FIELD_BEGIN, mDateTimeFormatter.format(event.getBegin().getTime()));
+            when.put(GoogleEvent.FIELD_END,   mDateTimeFormatter.format(event.getEnd().getTime()));
             whenList.put(when);
             
             data.put(GoogleEvent.FIELD_TITLE, event.getTitle());
@@ -293,9 +331,12 @@ public class GoogleCalendarApiConnector {
             data = new JSONObject().put("data", data);
     
             
-            String[] paramsKey =   {"Authorization","Content-type"};
-            String[] paramsValue = {"Bearer " + mSessionManager.getActiveUserAccessToken(), "application/json"};
-            ConnectionUtils.doHttpsPost(GoogleConstants.URL_INSERT_EVENT, paramsKey, paramsValue, new StringEntity(data.toString()));
+            String[] paramsKey =   {"Authorization"};
+            String[] paramsValue = {"Bearer " + mSessionManager.getActiveUserAccessToken()};
+            Log.d(TAG, data.toString());
+            StringEntity stringEntity = new StringEntity(data.toString());
+            stringEntity.setContentType("application/json");
+            Log.d(TAG,"RESPONSE => " + ConnectionUtils.doHttpsPost(GoogleConstants.URL_INSERT_EVENT, paramsKey, paramsValue, stringEntity));
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -318,5 +359,16 @@ public class GoogleCalendarApiConnector {
         }
             
         return retValue;
+    }
+
+    /**
+     * Email is a part of ID URL of a google calendar
+     * @param calendar ResourceCalendar
+     * @return email
+     */
+    private String getEmailFromCalendarID(CalendarResource calendar) {
+        String email = calendar.getId().replace("http://www.google.com/calendar/feeds/default/allcalendars/full/","")
+        .replace("%40", "@");
+        return email;
     }
 }

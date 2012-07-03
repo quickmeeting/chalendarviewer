@@ -52,6 +52,16 @@ public class GoogleCalendar extends CalendarResource {
     private String mColor;
     
     private TimeZone mTimeZone;
+    
+    
+    public GoogleCalendar(){
+        super();
+    }
+
+    public GoogleCalendar(String id, String name, String link) {
+        super(id,name);
+        this.mSelfLink = link;
+    }
 
     public String getEventFeedLik() {
         return mEventFeedLik;

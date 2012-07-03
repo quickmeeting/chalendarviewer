@@ -27,10 +27,16 @@ import android.util.Log;
 import org.ch.chalendarviewer.contentprovider.AccountColumns;
 import org.ch.chalendarviewer.contentprovider.Resource;
 import org.ch.chalendarviewer.objects.CalendarResource;
+import org.ch.chalendarviewer.objects.Event;
 import org.ch.chalendarviewer.objects.google.GoogleCalendar;
+import org.ch.chalendarviewer.objects.google.GoogleEvent;
+import org.ch.chalendarviewer.service.exception.SyncFailedException;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Manage resources (calendars)
@@ -51,8 +57,20 @@ public class ResourceManager {
     private ContentResolver mProvider;
     /** List of active calendar resources */
     private List<CalendarResource> activeResources = null;    
+    /** Hash with calendar ids and calendars */
+    private  Map<String, GoogleCalendar> resourceMap = null;
     
-    
+    /**
+     * Return an updated Map of resources (Calendars)
+     * @return an  updated Map of resources
+     */
+    private Map<String, GoogleCalendar> getResourceMap() {
+        if( resourceMap == null){
+            refreshActiveResources();
+        }
+        return resourceMap;
+    }
+
     /**
      * Private constructor for Resource Manager singleton
      * @param context app context
@@ -182,24 +200,26 @@ public class ResourceManager {
      * Synchronizes google and database resources.
      * Add new calendars from google.
      * Delete old calendars stored in database 
-     * @return a list of resources links from database
+     * @throws SyncFailedException When synchronizatoin fails
      */
-    public List<String> syncResources(){
+    public void syncResources() throws SyncFailedException{
         
-        //Get Calendars from google (and add the new ones)
-        List<String> googleLinks = loadLinksFromGoogle();
-        //Initialize calendars from database
-        List<String> resourceLinks = new ArrayList<String>();
+        try{
+            //Get Calendars from google (and add the new ones)
+            List<String> googleLinks = loadLinksFromGoogle();
+            
+            //build a where clause, to exclude calendars that exists in db, but not in google 
+            String where = buildWhereClause(googleLinks);
+
+            Uri resources = Uri.parse(AccountColumns.CONTENT_URI + "/" + mUserManager.getActiveUserId() +"/" + "resources"); 
+
+            int result = mProvider.delete(resources, where, null);
+            Log.d(TAG, "Number of resources to delete: " + result);
+            
+        } catch (Exception e){
+            throw new SyncFailedException("Cannot synchronize calendars with Google", e);
+        }       
         
-        //build a where clause, to exclude calendars that exists in db, but not in google 
-        String where = buildWhereClause(googleLinks);
-        
-        Uri resources = Uri.parse(AccountColumns.CONTENT_URI + "/" + mUserManager.getActiveUserId() +"/" + "resources"); 
-        
-        int result = mProvider.delete(resources, where, null);
-        Log.d(TAG, "Number of resources to delete: " + result);
-        
-        return resourceLinks;
     }
 
     /**
@@ -257,13 +277,16 @@ public class ResourceManager {
      */
     private  void refreshActiveResources(){
         activeResources = new ArrayList<CalendarResource>();
+        resourceMap = new HashMap<String, GoogleCalendar>();
 
         // Form an array specifying which columns to return. 
         String[] projection = new String[] {
                 Resource._ID,
-                Resource.NAME
+                Resource.NAME,
+                Resource.LINK
         };
 
+        
         // Get the base URI for the Resources table.
         Uri resourceUri = Uri.parse(AccountColumns.CONTENT_URI + "/" + mUserManager.getActiveUserId() + "/" + "resources"); 
 
@@ -282,11 +305,15 @@ public class ResourceManager {
 
             int idColumn   = managedCursor.getColumnIndex(Resource._ID);
             int nameColumn = managedCursor.getColumnIndex(Resource.NAME); 
-
+            int linkColumn = managedCursor.getColumnIndex(Resource.LINK);
+            
             do {
                 String id = managedCursor.getString(idColumn);
                 String name = managedCursor.getString(nameColumn);
-                activeResources.add(new CalendarResource(id,name));
+                String link = managedCursor.getString(linkColumn);
+                GoogleCalendar gCalendar = new GoogleCalendar(id,name,link);
+                activeResources.add(gCalendar);
+                resourceMap.put(id,gCalendar);
 
                 Log.d(TAG, "Resource calendar loaded from db: " + id + "/" + name );
             } while (managedCursor.moveToNext());
@@ -304,5 +331,77 @@ public class ResourceManager {
         return activeResources;
     }
     
+    /**
+     * Get events of a resource 
+     * @param resourceId id of resource
+     * @param begin Calendar begin
+     * @param end Calendar end
+     * @return list of events of selected resource in interval (begin,end)
+     */
+    public List<? extends Event> getEvents(String resourceId, Calendar begin, Calendar end){
+        
+        GoogleCalendar gCalendar = getResourceMap().get(resourceId);
+        
+        GoogleCalendarApiConnector gConector = GoogleCalendarApiConnector.getInstance(mContext);
+        
+        GoogleCalendar completeGCalendar = gConector.getCalendarByLink(gCalendar.getSelfLink());
+        return gConector.getEvents(completeGCalendar, begin, end);
+        
+    }
+    
+    /**
+     * Get resource link from database
+     * @param resourceId id of resource
+     * @return link
+     */
+    public String getResourceLinkFromDatabase(String resourceId) {
+        
+        String link = null;
+        String[] projection = new String[] {
+                Resource._ID,
+                Resource.LINK
+        };
+
+        // Get the base URI for the Resources table.
+        Uri resourceUri = Uri.parse(AccountColumns.CONTENT_URI + "/" + mUserManager.getActiveUserId() + "/" + "resource" + "/" + resourceId); 
+
+        
+        // Make the query. 
+        Cursor managedCursor = mProvider.query(resourceUri,
+                projection, // Which columns to return 
+                null,       // Which rows to return (all rows)
+                null,       // Selection arguments (none)
+                // Put the results in ascending order by email
+                Resource._ID + " ASC");       
+
+        if (managedCursor.moveToFirst()) {
+
+            int idColumn   = managedCursor.getColumnIndex(Resource._ID);
+            int nameColumn = managedCursor.getColumnIndex(Resource.NAME);
+
+            String id = managedCursor.getString(idColumn);
+            link = managedCursor.getString(nameColumn);
+            
+            Log.d(TAG, "Resource calendar loaded from db: " + id + "/" + link );
+        }
+        
+        return link;
+    }
+    
+    /**
+     * Create an event in a specified resource
+     * @param resourceId id of resource
+     * @param event event data
+     */
+    public void createEvent(String resourceId, Event event){
+        GoogleCalendar gCalendar = getResourceMap().get(resourceId);
+
+        GoogleCalendarApiConnector gConector = GoogleCalendarApiConnector.getInstance(mContext);
+
+        GoogleCalendar completeGCalendar = gConector.getCalendarByLink(gCalendar.getSelfLink());
+        
+        Log.d(TAG, Boolean.toString(gConector.setEvent(completeGCalendar, new GoogleEvent(event))));
+    }
+
 
 }

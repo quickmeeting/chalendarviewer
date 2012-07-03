@@ -41,9 +41,9 @@
     
     <string name="loading">Loading</string>
     <string name="loadingAccounts">Loading Accounts</string>
+    
     <string name="synchronizingCalendars">Synchronizing Calendars</string>
-    
-    
+    <string name="synchronizingError">Error Synchronizing Calendars</string>
     
     
     
