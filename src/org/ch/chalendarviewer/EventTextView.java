@@ -53,10 +53,6 @@ public class EventTextView extends TextView implements Observable {
 		return mIsUserEvent;
 	}
 
-	public void setUserEvent(boolean isUserEvent) {
-		this.mIsUserEvent = isUserEvent;
-	}
-
 	public void notifyObserver() {
 		if(mObs!=null) mObs.notify(this);
 	}
