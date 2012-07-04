@@ -25,7 +25,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import org.ch.chalendarviewer.contentprovider.AccountColumns;
-import org.ch.chalendarviewer.contentprovider.Resource;
+import org.ch.chalendarviewer.contentprovider.ResourceColumns;
 import org.ch.chalendarviewer.objects.CalendarResource;
 import org.ch.chalendarviewer.objects.Event;
 import org.ch.chalendarviewer.objects.google.GoogleCalendar;
@@ -91,9 +91,9 @@ public class ResourceManager {
         
         // Form an array specifying which columns to return. 
         String[] projection = new String[] {
-                Resource._ID,
-                Resource.NAME,
-                Resource.ACTIVE
+                ResourceColumns._ID,
+                ResourceColumns.NAME,
+                ResourceColumns.ACTIVE
         };
         
 
@@ -106,7 +106,7 @@ public class ResourceManager {
                 null,       // Which rows to return (all rows)
                 null,       // Selection arguments (none)
                 // Put the results in ascending order by email
-                Resource._ID + " ASC"); 
+                ResourceColumns._ID + " ASC"); 
         
         return managedCursor;
     }
@@ -149,7 +149,7 @@ public class ResourceManager {
         
         // Form an array specifying which columns to return. 
         String[] projection = new String[] {
-                Resource.LINK,
+                ResourceColumns.LINK,
         };
 
         // Get the base URI for the Resources table.
@@ -161,11 +161,11 @@ public class ResourceManager {
                 null,       // Which rows to return (all rows)
                 null,       // Selection arguments (none)
                 // Put the results in ascending order by email
-                Resource._ID + " ASC");       
+                ResourceColumns._ID + " ASC");       
 
         if (managedCursor.moveToFirst()) {
 
-            int linkColumn = managedCursor.getColumnIndex(Resource.LINK); 
+            int linkColumn = managedCursor.getColumnIndex(ResourceColumns.LINK); 
             
             do {
                 String link = managedCursor.getString(linkColumn);
@@ -187,10 +187,10 @@ public class ResourceManager {
     private void addResourceToDatabase(GoogleCalendar calendar) {
         ContentValues values = new ContentValues();
 
-        values.put(Resource.NAME, calendar.getTitle());
-        values.put(Resource.LINK, calendar.getSelfLink());
-        values.put(Resource.DISPLAY_NAME, calendar.getTitle());
-        values.put(Resource.ACTIVE, false);
+        values.put(ResourceColumns.NAME, calendar.getTitle());
+        values.put(ResourceColumns.LINK, calendar.getSelfLink());
+        values.put(ResourceColumns.DISPLAY_NAME, calendar.getTitle());
+        values.put(ResourceColumns.ACTIVE, false);
         Uri resources = Uri.parse(AccountColumns.CONTENT_URI + "/" + mUserManager.getActiveUserId() +"/" + "resources"); 
         Uri uri = mProvider.insert(resources, values);
         Log.d(TAG, "New calendar inserted: " + uri);
@@ -239,7 +239,7 @@ public class ResourceManager {
             sb.deleteCharAt(sb.length()-1);
         }
         
-        String where = Resource.LINK + " not in (" + sb.toString() + ")";
+        String where = ResourceColumns.LINK + " not in (" + sb.toString() + ")";
         return where;
     }
     
@@ -251,7 +251,7 @@ public class ResourceManager {
     public void changeResourceActive(String id, boolean state){
         ContentValues values = new ContentValues();
 
-        values.put(Resource.ACTIVE, state);
+        values.put(ResourceColumns.ACTIVE, state);
         
         Uri resources = Uri.parse(AccountColumns.CONTENT_URI + "/" + mUserManager.getActiveUserId() + "/" + "resources/" + id); 
         int result = mProvider.update(resources, values, null, null);
@@ -282,16 +282,16 @@ public class ResourceManager {
 
         // Form an array specifying which columns to return. 
         String[] projection = new String[] {
-                Resource._ID,
-                Resource.NAME,
-                Resource.LINK
+                ResourceColumns._ID,
+                ResourceColumns.NAME,
+                ResourceColumns.LINK
         };
 
         
         // Get the base URI for the Resources table.
         Uri resourceUri = Uri.parse(AccountColumns.CONTENT_URI + "/" + mUserManager.getActiveUserId() + "/" + "resources"); 
 
-        String where = Resource.ACTIVE + "=?";
+        String where = ResourceColumns.ACTIVE + "=?";
         String[] whereParams = new String[]{"1"};
         
         // Make the query. 
@@ -300,13 +300,13 @@ public class ResourceManager {
                 where,       // Which rows to return (all rows)
                 whereParams,       // Selection arguments (none)
                 // Put the results in ascending order by email
-                Resource._ID + " ASC");       
+                ResourceColumns._ID + " ASC");       
 
         if (managedCursor.moveToFirst()) {
 
-            int idColumn   = managedCursor.getColumnIndex(Resource._ID);
-            int nameColumn = managedCursor.getColumnIndex(Resource.NAME); 
-            int linkColumn = managedCursor.getColumnIndex(Resource.LINK);
+            int idColumn   = managedCursor.getColumnIndex(ResourceColumns._ID);
+            int nameColumn = managedCursor.getColumnIndex(ResourceColumns.NAME); 
+            int linkColumn = managedCursor.getColumnIndex(ResourceColumns.LINK);
             
             do {
                 String id = managedCursor.getString(idColumn);
@@ -377,8 +377,8 @@ public class ResourceManager {
         
         String link = null;
         String[] projection = new String[] {
-                Resource._ID,
-                Resource.LINK
+                ResourceColumns._ID,
+                ResourceColumns.LINK
         };
 
         // Get the base URI for the Resources table.
@@ -391,12 +391,12 @@ public class ResourceManager {
                 null,       // Which rows to return (all rows)
                 null,       // Selection arguments (none)
                 // Put the results in ascending order by email
-                Resource._ID + " ASC");       
+                ResourceColumns._ID + " ASC");       
 
         if (managedCursor.moveToFirst()) {
 
-            int idColumn   = managedCursor.getColumnIndex(Resource._ID);
-            int nameColumn = managedCursor.getColumnIndex(Resource.NAME);
+            int idColumn   = managedCursor.getColumnIndex(ResourceColumns._ID);
+            int nameColumn = managedCursor.getColumnIndex(ResourceColumns.NAME);
 
             String id = managedCursor.getString(idColumn);
             link = managedCursor.getString(nameColumn);
@@ -411,27 +411,33 @@ public class ResourceManager {
      * Create an event in a specified resource
      * @param resourceId id of resource
      * @param event event data
+     * @return Event generated
      * @throws ResourceNotAvaiableException In case of google invocation failure
      */
-    public void createEvent(String resourceId, Event event) throws ResourceNotAvaiableException{
+    public Event createEvent(String resourceId, Event event) throws ResourceNotAvaiableException{
        
         //Get gCalendar from a map that caches database calendar (it's a 'generic' calendar)
         GoogleCalendar gCalendar = getResourceMap().get(resourceId);
 
         GoogleCalendarApiConnector gConector = GoogleCalendarApiConnector.getInstance(mContext);
 
-        boolean result = true;
+        Event result = null;
         try{
             //completeGCalendar has more data than stored in database, so we have to call google
             GoogleCalendar completeGCalendar = gConector.getCalendarByLink(gCalendar.getSelfLink());
         
             result = gConector.setEvent(completeGCalendar, new GoogleEvent(event));
+            
+            Log.d(TAG, "CREATED => " + result);
+            
         } catch (Exception e) {
             throw new ResourceNotAvaiableException("Error invoking google while creating an event",e);
         }
-        if (!result){
+        if (result == null){
             throw new ResourceNotAvaiableException("Error creation google event");
         }
+        
+        return result;
         
     }
 

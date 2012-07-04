@@ -58,12 +58,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         + AccountColumns.EXPIRATION_DATE + " DATETIME);");
         
         db.execSQL("CREATE TABLE " + RESOURCE_TABLE_NAME + " (" 
-                + Resource._ID             + " INTEGER PRIMARY KEY AUTOINCREMENT," 
-                + Resource.AUTH_USER_ID    + " VARCHAR(255)," 
-                + Resource.NAME            + " VARCHAR(255)," 
-                + Resource.LINK            + " VARCHAR(255),"
-                + Resource.ACTIVE          + " BOOLEAN,"
-                + Resource.DISPLAY_NAME    + " VARCHAR(255));");
+                + ResourceColumns._ID             + " INTEGER PRIMARY KEY AUTOINCREMENT," 
+                + ResourceColumns.AUTH_USER_ID    + " VARCHAR(255)," 
+                + ResourceColumns.NAME            + " VARCHAR(255)," 
+                + ResourceColumns.LINK            + " VARCHAR(255),"
+                + ResourceColumns.ACTIVE          + " BOOLEAN,"
+                + ResourceColumns.DISPLAY_NAME    + " VARCHAR(255));");
     }
 
     @Override

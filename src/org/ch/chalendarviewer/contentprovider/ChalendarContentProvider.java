@@ -83,12 +83,12 @@ public class ChalendarContentProvider extends ContentProvider {
         authUserProjectionMap.put(AccountColumns.EXPIRATION_DATE, AccountColumns.EXPIRATION_DATE );
         
         resourceProjectionMap = new HashMap<String, String>();
-        resourceProjectionMap.put(Resource._ID, Resource._ID);
-        resourceProjectionMap.put(Resource.AUTH_USER_ID, Resource.AUTH_USER_ID);
-        resourceProjectionMap.put(Resource.LINK, Resource.LINK);
-        resourceProjectionMap.put(Resource.NAME, Resource.NAME);
-        resourceProjectionMap.put(Resource.DISPLAY_NAME, Resource.DISPLAY_NAME);
-        resourceProjectionMap.put(Resource.ACTIVE, Resource.ACTIVE);
+        resourceProjectionMap.put(ResourceColumns._ID, ResourceColumns._ID);
+        resourceProjectionMap.put(ResourceColumns.AUTH_USER_ID, ResourceColumns.AUTH_USER_ID);
+        resourceProjectionMap.put(ResourceColumns.LINK, ResourceColumns.LINK);
+        resourceProjectionMap.put(ResourceColumns.NAME, ResourceColumns.NAME);
+        resourceProjectionMap.put(ResourceColumns.DISPLAY_NAME, ResourceColumns.DISPLAY_NAME);
+        resourceProjectionMap.put(ResourceColumns.ACTIVE, ResourceColumns.ACTIVE);
         
     }
     
@@ -109,7 +109,7 @@ public class ChalendarContentProvider extends ContentProvider {
                 break;
             case AUTH_USER_RESOURCES:
                 //ID of user is passed in URI
-                where += " and " + Resource.AUTH_USER_ID + "=" + uri.getPathSegments().get(1);
+                where += " and " + ResourceColumns.AUTH_USER_ID + "=" + uri.getPathSegments().get(1);
                 count = db.delete(DatabaseHelper.RESOURCE_TABLE_NAME, where, whereArgs);
                 break;
             default:
@@ -126,7 +126,7 @@ public class ChalendarContentProvider extends ContentProvider {
             case AUTH_USERS:
                 return AccountColumns.CONTENT_TYPE;
             case AUTH_USER_RESOURCES:
-                return Resource.CONTENT_TYPE;
+                return ResourceColumns.CONTENT_TYPE;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -151,9 +151,9 @@ public class ChalendarContentProvider extends ContentProvider {
                 break;
             case AUTH_USER_RESOURCES:
                 table = DatabaseHelper.RESOURCE_TABLE_NAME;
-                id = Resource._ID;
+                id = ResourceColumns._ID;
                 //ID of user is passed on URI
-                values.put(Resource.AUTH_USER_ID, uri.getPathSegments().get(1));
+                values.put(ResourceColumns.AUTH_USER_ID, uri.getPathSegments().get(1));
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -188,14 +188,14 @@ public class ChalendarContentProvider extends ContentProvider {
             case AUTH_USER_RESOURCES:
                 qb.setTables(DatabaseHelper.RESOURCE_TABLE_NAME);
                 //ID of user is passed on URI
-                qb.appendWhere(Resource.AUTH_USER_ID + "=" + uri.getPathSegments().get(1));
+                qb.appendWhere(ResourceColumns.AUTH_USER_ID + "=" + uri.getPathSegments().get(1));
                 qb.setProjectionMap(resourceProjectionMap);
                 break;
             case AUTH_USER_RESOURCE_ID:
                 qb.setTables(DatabaseHelper.RESOURCE_TABLE_NAME);
                 //ID of user is passed on URI
-                qb.appendWhere(Resource.AUTH_USER_ID + "=" + uri.getPathSegments().get(1));
-                qb.appendWhere(Resource._ID + "=" + uri.getPathSegments().get(3));
+                qb.appendWhere(ResourceColumns.AUTH_USER_ID + "=" + uri.getPathSegments().get(1));
+                qb.appendWhere(ResourceColumns._ID + "=" + uri.getPathSegments().get(3));
                 qb.setProjectionMap(resourceProjectionMap);
                 break;
             default:
@@ -219,13 +219,13 @@ public class ChalendarContentProvider extends ContentProvider {
                 break;
             case AUTH_USER_RESOURCES:
                 //not using whereArgs to store user_id parameter. It is coded directly on where clause
-                where += " and " + Resource.AUTH_USER_ID + "=" + uri.getPathSegments().get(1);
+                where += " and " + ResourceColumns.AUTH_USER_ID + "=" + uri.getPathSegments().get(1);
                 count = db.update(DatabaseHelper.RESOURCE_TABLE_NAME, values, where, whereArgs);
                 break;
             case AUTH_USER_RESOURCE_ID:
                 //not using whereArgs to store user_id parameter. It is coded directly on where clause
-                String idCondition = Resource.AUTH_USER_ID + "=" + uri.getPathSegments().get(1);
-                idCondition += " and " + Resource._ID + "=" + uri.getPathSegments().get(3);
+                String idCondition = ResourceColumns.AUTH_USER_ID + "=" + uri.getPathSegments().get(1);
+                idCondition += " and " + ResourceColumns._ID + "=" + uri.getPathSegments().get(3);
                 if(where == null){
                     where = idCondition;
                 }else{

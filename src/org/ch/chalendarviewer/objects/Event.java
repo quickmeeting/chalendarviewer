@@ -1,5 +1,6 @@
 package org.ch.chalendarviewer.objects;
 
+import java.sql.Date;
 import java.util.Calendar;
 
 /**
@@ -98,5 +99,28 @@ public class Event {
     public void setEnd(Calendar end) {
         this.mEnd = end;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[EVENT] {");
+            sb.append("ID = ").append(this.mId).append("; ");
+            sb.append("TITLE = ").append(this.mTitle).append("; ");
+            sb.append("DETAILS = ").append(this.mDetails).append("; ");
+            sb.append("BEGIN = ").
+                append(mBegin.get(Calendar.MONTH) + 1).append("/").
+                append(mBegin.get(Calendar.DAY_OF_MONTH)).append(" ").
+                append(mBegin.get(Calendar.HOUR)).append(":").
+                append(mBegin.get(Calendar.MINUTE)).append("; ");
+            sb.append("END = ").
+                append(mEnd.get(Calendar.MONTH) + 1).append("/").
+                append(mEnd.get(Calendar.DAY_OF_MONTH)).append(" ").
+                append(mEnd.get(Calendar.HOUR)).append(":").
+                append(mEnd.get(Calendar.MINUTE)).append("; ");
+        sb.append("}");
+        return sb.toString();
+    }
+    
+    
 
 }

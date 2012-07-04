@@ -30,7 +30,7 @@ import android.widget.ResourceCursorAdapter;
 import org.ch.chalendarviewer.R;
 import org.ch.chalendarviewer.R.id;
 import org.ch.chalendarviewer.R.layout;
-import org.ch.chalendarviewer.contentprovider.Resource;
+import org.ch.chalendarviewer.contentprovider.ResourceColumns;
 import org.ch.chalendarviewer.service.ResourceManager;
 
 /**
@@ -70,9 +70,9 @@ public class CustomResourceAdapter extends ResourceCursorAdapter {
         CheckBox cbListCheck = (CheckBox)view.findViewById(R.id.checkResourceActive);
 
         //Get data from cursor
-        final String checkId = cur.getString(cur.getColumnIndex(Resource._ID));
-        int active = cur.getInt(cur.getColumnIndex(Resource.ACTIVE));
-        String name = cur.getString(cur.getColumnIndex(Resource.NAME));
+        final String checkId = cur.getString(cur.getColumnIndex(ResourceColumns._ID));
+        int active = cur.getInt(cur.getColumnIndex(ResourceColumns.ACTIVE));
+        String name = cur.getString(cur.getColumnIndex(ResourceColumns.NAME));
         
         //Bind data to UI
         cbListCheck.setText(name);

@@ -41,7 +41,7 @@ import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.ch.chalendarviewer.contentprovider.AccountColumns;
 import org.ch.chalendarviewer.contentprovider.ChalendarContentProvider;
-import org.ch.chalendarviewer.contentprovider.Resource;
+import org.ch.chalendarviewer.contentprovider.ResourceColumns;
 import org.ch.chalendarviewer.objects.User;
 import org.ch.chalendarviewer.util.ConnectionUtils;
 import org.json.JSONException;

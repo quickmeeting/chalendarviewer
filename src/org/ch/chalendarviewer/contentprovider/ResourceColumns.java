@@ -25,7 +25,7 @@ import android.provider.BaseColumns;
  * @author vitor
  * 
  */
-public class Resource implements BaseColumns{
+public class ResourceColumns implements BaseColumns{
     
     /** Column name: auth_user foreign key */
     public static final String AUTH_USER_ID = "auth_user_id";

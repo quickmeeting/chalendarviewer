@@ -190,6 +190,14 @@ public class GoogleCalendarApiConnector {
         return cal;
     }
     
+    
+    /**
+     * Get events from googleCalendar
+     * @param calendar calendar which contains events
+     * @param begin Begin date
+     * @param end End date
+     * @return list of events from calendar between begin and end dates
+     */
     public List<GoogleEvent> getEvents (GoogleCalendar calendar, Calendar begin, Calendar end) {
         ArrayList<GoogleEvent> events = new ArrayList<GoogleEvent>();
         
@@ -229,40 +237,10 @@ public class GoogleCalendarApiConnector {
                         
             int ilength = jsonEventsList.length();
 
-            GoogleEvent  ev;
-            JSONObject jsonEvent, jsonUser;
+            JSONObject jsonEvent;
             for (int j = 0; j < ilength; j++) {
-                ev = new GoogleEvent();
-                
                 jsonEvent = (JSONObject) jsonEventsList.get(j);
-                Log.d(TAG, "EVENT => "+ jsonEvent.toString());
-                ev.setAlternateLink(jsonEvent.getString(GoogleEvent.FIELD_ALTERNATIVE_LINK));
-                ev.setCanEdit(jsonEvent.getBoolean(GoogleEvent.FIELD_CAN_EDIT));
-                ev.setDetails(jsonEvent.getString(GoogleEvent.FIELD_DETAILS));
-                ev.setId(jsonEvent.getString(GoogleEvent.FIELD_ID));
-                ev.setLocation(jsonEvent.optString(GoogleEvent.FIELD_LOCATION));
-                ev.setSelfLink(jsonEvent.getString(GoogleEvent.FIELD_SELF_LINK));
-                ev.setStatus(jsonEvent.getString(GoogleEvent.FIELD_STATUS));
-                ev.setTitle(jsonEvent.getString(GoogleEvent.FIELD_TITLE));
-               
-                JSONArray listWhen  = (JSONArray) jsonEvent.getJSONArray(GoogleEvent.FIELD_WHEN_LIST);
-                
-                Calendar evBegin = parseGoogleDate(((JSONObject)listWhen.get(0)).getString(GoogleEvent.FIELD_BEGIN));
-                Calendar evEnd = parseGoogleDate(((JSONObject)listWhen.get(0)).getString(GoogleEvent.FIELD_END));
-                
-                ev.setBegin(evBegin);
-                ev.setEnd(evEnd);
-                
-                jsonUser = (JSONObject) jsonEvent.getJSONObject(GoogleEvent.FIELD_CREATOR);
-                ev.setCreator(new User(jsonUser.getString(User.FIELD_DISPLAY_NAME), jsonUser.getString(User.FIELD_EMAIL)));
-                
-                JSONArray listAttendees = (JSONArray) jsonEvent.getJSONArray(GoogleEvent.FIELD_ATTENDEES);
-                for (int indexAtendees = 0; indexAtendees < listAttendees.length();indexAtendees++) {
-                    jsonUser = (JSONObject) listAttendees.get(indexAtendees);
-                    ev.addAttendee(new User(jsonUser.getString(User.FIELD_DISPLAY_NAME), jsonUser.getString(User.FIELD_EMAIL)));
-                }
-                
-                events.add(ev);               
+                events.add( parseEvent(jsonEvent));               
             }            
         } catch (JSONException e) {
             // TODO Auto-generated catch block
@@ -302,7 +280,13 @@ public class GoogleCalendarApiConnector {
         return dateTime.length() == 10;
     }
     
-    public boolean setEvent(CalendarResource calendar, GoogleEvent event) {
+    /**
+     * Creates a Google Event
+     * @param calendar calendar where events is created
+     * @param event event to event
+     * @return returning event from Google with more data, like generated id
+     */
+    public GoogleEvent setEvent(CalendarResource calendar, GoogleEvent event) {
         
         JSONObject data = new JSONObject();
         JSONObject attendee = new JSONObject();
@@ -310,7 +294,7 @@ public class GoogleCalendarApiConnector {
         JSONObject when = new JSONObject();
         JSONArray whenList = new JSONArray();
         boolean retValue = true;
-        
+        GoogleEvent gEvent = null;
         try {
             attendee.put(GoogleCalendar.FIELD_RESOURCE, true);
             attendee.put(User.FIELD_DISPLAY_NAME,calendar.getTitle());
@@ -336,7 +320,18 @@ public class GoogleCalendarApiConnector {
             Log.d(TAG, data.toString());
             StringEntity stringEntity = new StringEntity(data.toString());
             stringEntity.setContentType("application/json");
-            Log.d(TAG,"RESPONSE => " + ConnectionUtils.doHttpsPost(GoogleConstants.URL_INSERT_EVENT, paramsKey, paramsValue, stringEntity));
+            String googleResponse =  ConnectionUtils.doHttpsPost(GoogleConstants.URL_INSERT_EVENT, paramsKey, paramsValue, stringEntity);
+            
+            Log.d(TAG, "RESPONSE => " + googleResponse);
+            
+            JSONObject jsonDataObj = (JSONObject) new JSONTokener(googleResponse).nextValue();
+
+            JSONObject jsonData = jsonDataObj.getJSONObject("data");
+            Log.d(TAG, "MESSAGE => " + jsonData.toString());
+
+            gEvent = parseEvent(jsonData);
+            
+            
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -356,9 +351,53 @@ public class GoogleCalendarApiConnector {
         } catch (HttpException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
             
-        return retValue;
+        return retValue ? gEvent : null;
+    }
+    
+    
+    /**
+     * Converts a JSON Object to GoogleEvent
+     * @param jsonEvent Google Event in JSON format
+     * @return GoogleEvent object
+     * @throws JSONException Error parsing JSON Object
+     * @throws ParseException Error parsing date objects
+     */
+    public GoogleEvent parseEvent(JSONObject jsonEvent) throws JSONException, ParseException{
+        GoogleEvent ev = new GoogleEvent();
+        
+        Log.d(TAG, "EVENT => "+ jsonEvent.toString());
+        ev.setAlternateLink(jsonEvent.getString(GoogleEvent.FIELD_ALTERNATIVE_LINK));
+        ev.setCanEdit(jsonEvent.getBoolean(GoogleEvent.FIELD_CAN_EDIT));
+        ev.setDetails(jsonEvent.getString(GoogleEvent.FIELD_DETAILS));
+        ev.setId(jsonEvent.getString(GoogleEvent.FIELD_ID));
+        ev.setLocation(jsonEvent.optString(GoogleEvent.FIELD_LOCATION));
+        ev.setSelfLink(jsonEvent.getString(GoogleEvent.FIELD_SELF_LINK));
+        ev.setStatus(jsonEvent.getString(GoogleEvent.FIELD_STATUS));
+        ev.setTitle(jsonEvent.getString(GoogleEvent.FIELD_TITLE));
+       
+        JSONArray listWhen  = (JSONArray) jsonEvent.getJSONArray(GoogleEvent.FIELD_WHEN_LIST);
+        
+        Calendar evBegin = parseGoogleDate(((JSONObject)listWhen.get(0)).getString(GoogleEvent.FIELD_BEGIN));
+        Calendar evEnd = parseGoogleDate(((JSONObject)listWhen.get(0)).getString(GoogleEvent.FIELD_END));
+        
+        ev.setBegin(evBegin);
+        ev.setEnd(evEnd);
+        
+        JSONObject jsonUser = (JSONObject) jsonEvent.getJSONObject(GoogleEvent.FIELD_CREATOR);
+        ev.setCreator(new User(jsonUser.getString(User.FIELD_DISPLAY_NAME), jsonUser.getString(User.FIELD_EMAIL)));
+        
+        JSONArray listAttendees = (JSONArray) jsonEvent.getJSONArray(GoogleEvent.FIELD_ATTENDEES);
+        for (int indexAtendees = 0; indexAtendees < listAttendees.length();indexAtendees++) {
+            jsonUser = (JSONObject) listAttendees.get(indexAtendees);
+            ev.addAttendee(new User(jsonUser.getString(User.FIELD_DISPLAY_NAME), jsonUser.getString(User.FIELD_EMAIL)));
+        }
+        
+        return ev;
     }
 
     /**
