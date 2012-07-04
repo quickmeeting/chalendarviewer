@@ -24,12 +24,15 @@ import java.util.Calendar;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.ContextMenu;
 import android.view.Display;
 import android.view.Gravity;
@@ -58,6 +61,7 @@ public class HomeActivity extends Activity implements Observer {
 	private UserManager mUserManager;
 	
 	private User mUser;
+	private ProgressDialog mProgress;
 	private ArrayList<GoogleEvent> mGoogleEventList;
 	private ArrayList<String> mCalendars;
 	private SimpleDateFormat mFormateador;
@@ -72,8 +76,10 @@ public class HomeActivity extends Activity implements Observer {
 	private Calendar mCalendarEnd;
 	private CellTextView mSelectedCell;
 	private EventTextView mSelectedEvent;
+	private ArrayList<TextView> mAllEvents;
 	
-	private final int MIN_EVENT_TIME = 15;
+	private final int MIN_EVENT_TIME        = 15;
+	private final int MINUTES_BETWEEN_POLLS = 2;
 	
 	private final int MIN_EVENT_SELECTION         = 1;
 	private final int TWO_MIN_EVENTS_SELECTIONS   = 2;
@@ -91,7 +97,11 @@ public class HomeActivity extends Activity implements Observer {
         mTableLayout = (TableLayout)findViewById(R.id.mainTableLayout);
         mFrameLayout = (FrameLayout)findViewById(R.id.frameLayout);
         
+        mProgress 	 = new ProgressDialog(this);
         mFormateador = new SimpleDateFormat("HH:mm");
+        mAllEvents   = new ArrayList<TextView>();
+        
+        mProgress.setMessage(getString(R.string.download_data));
         
         mCalendarColumnWidth = getResources().getDimensionPixelSize(R.dimen.calendar_column_width);
         mFirstColumnWidth    = getResources().getDimensionPixelSize(R.dimen.first_column_width);
@@ -109,9 +119,7 @@ public class HomeActivity extends Activity implements Observer {
     @Override
     protected void onResume() {
     	super.onResume();
-    	updateTimeColumn();
-    	loadTestData();
-    	drawEvents();
+    	startPolling();
     }
 	
 	@Override
@@ -317,30 +325,20 @@ public class HomeActivity extends Activity implements Observer {
 		int column = mFirstColumnWidth + calendarPos*mCalendarColumnWidth;
 		fl.setMargins(column, mFirstRowHeight+startCellPos*mCalendarRowHeight, 0, 0);
 		mFrameLayout.addView(event,fl);
+		
+		mAllEvents.add(event);
     }
     
-    /**
-     * Return the cell position for a certain time.
-     * @param time: given time to search for their cell
-     * @param includeBounds: true for counting the time at the border.
-     * @return vertical cell position
-     */
-    private int getCellPositionAtCertainTime(Calendar time, boolean includeBounds) {
-		int count = 0;
-		Calendar loopControl = (Calendar) mCalendarBegin.clone();
-		while(loopControl.compareTo(time) < 0) {
-			loopControl.add(Calendar.MINUTE, MIN_EVENT_TIME);
-			count++;
-		}
-		if(count > 0) --count;
-		if(!includeBounds && (time.get(Calendar.MINUTE) % MIN_EVENT_TIME) ==0)  {
-			 --count;
-		}
-		return count;
+    private void destroyEvent(TextView event) {
+    	mAllEvents.remove(event);
+    	mFrameLayout.removeView(event);
     }
     
-    private void destroyEvent() {
-    	mFrameLayout.removeView(mSelectedEvent);
+    private void destroyAllEvents() {
+    	for(TextView event: mAllEvents) {
+    		mFrameLayout.removeView(event);
+    	}
+    	mAllEvents.clear();
     }
     
     public void showReservationDialog() {
@@ -368,12 +366,11 @@ public class HomeActivity extends Activity implements Observer {
     public void showCancelReservationDialog() {
     	AlertDialog.Builder b = new AlertDialog.Builder(this);
     	b.setIcon(android.R.drawable.ic_dialog_alert);
-    	b.setTitle(mSelectedCell.getCalendarId());
     	b.setMessage(getString(R.string.unreserve_question));
     	b.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
     	    @Override
     	    public void onClick(DialogInterface dialog, int which) {
-    	    	destroyEvent();
+    	    	destroyEvent(mSelectedEvent);
     	    }
     	});
     	b.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -418,7 +415,7 @@ public class HomeActivity extends Activity implements Observer {
 		return true;
 	}
     
-    private void loadTestData() {
+    private void loadData() {
     	mGoogleEventList = new ArrayList<GoogleEvent>();
     	GoogleEvent g1 = new GoogleEvent();
     	g1.setTitle("Reunion VDSL");
@@ -437,7 +434,56 @@ public class HomeActivity extends Activity implements Observer {
     	g2.setEnd((Calendar)end.clone());
     	mGoogleEventList.add(g2);
     }
+    
+    private void startPolling() {
+    	
+    	new Thread() {
+    		@Override
+    		public void run() {
+    			while(true) {
+    				try {
+    					mHandler.sendMessage(mHandler.obtainMessage(0));
+    					sleep(MINUTES_BETWEEN_POLLS*60*1000);
+    				} catch (Exception e) {
+						//Do nothing
+					}
+    			}
+    		}
+    	}.start();
+    }
 
+    private Handler mHandler = new Handler() {
+    	@Override
+    	public void handleMessage(Message msg) {
+    		if( !mProgress.isShowing() ) mProgress.show();
+        	destroyAllEvents();
+        	updateTimeColumn();
+        	loadData();
+        	drawEvents();
+    		mProgress.dismiss();
+    	}
+    };
+    
+    /**
+     * Return the cell position for a certain time.
+     * @param time: given time to search for their cell
+     * @param includeBounds: true for counting the time at the border.
+     * @return vertical cell position
+     */
+    private int getCellPositionAtCertainTime(Calendar time, boolean includeBounds) {
+		int count = 0;
+		Calendar loopControl = (Calendar) mCalendarBegin.clone();
+		while(loopControl.compareTo(time) < 0) {
+			loopControl.add(Calendar.MINUTE, MIN_EVENT_TIME);
+			count++;
+		}
+		if(count > 0) --count;
+		if(!includeBounds && (time.get(Calendar.MINUTE) % MIN_EVENT_TIME) ==0)  {
+			 --count;
+		}
+		return count;
+    }
+    
 	@Override
 	public void notify(Observable o) {
 		EventTextView e = (EventTextView) o;

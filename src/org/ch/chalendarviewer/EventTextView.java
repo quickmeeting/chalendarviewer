@@ -12,12 +12,12 @@ import android.widget.TextView;
 
 public class EventTextView extends TextView implements Observable {
 
-	private Observer obs;
-	private boolean isUserEvent;
+	private Observer mObs;
+	private boolean mIsUserEvent;
 	
 	public EventTextView(Context context, boolean isUserEvent) {
 		super(context);
-		this.isUserEvent = isUserEvent;
+		this.mIsUserEvent = isUserEvent;
 		init();
 	}
 	
@@ -35,7 +35,7 @@ public class EventTextView extends TextView implements Observable {
     
     private void init() {
 		setTextColor(Color.BLACK);
-		if(isUserEvent) {
+		if(mIsUserEvent) {
 			setBackgroundResource(R.drawable.user_event_background);
 		}
 		else {
@@ -50,19 +50,19 @@ public class EventTextView extends TextView implements Observable {
     }
 
 	public boolean isUserEvent() {
-		return isUserEvent;
+		return mIsUserEvent;
 	}
 
 	public void setUserEvent(boolean isUserEvent) {
-		this.isUserEvent = isUserEvent;
+		this.mIsUserEvent = isUserEvent;
 	}
 
 	public void notifyObserver() {
-		if(obs!=null) obs.notify(this);
+		if(mObs!=null) mObs.notify(this);
 	}
 	
 	@Override
 	public void setObserver(Observer o) {
-		obs = o;
+		mObs = o;
 	}
 }
