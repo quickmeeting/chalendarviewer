@@ -30,6 +30,7 @@ import org.ch.chalendarviewer.objects.CalendarResource;
 import org.ch.chalendarviewer.objects.Event;
 import org.ch.chalendarviewer.objects.google.GoogleCalendar;
 import org.ch.chalendarviewer.objects.google.GoogleEvent;
+import org.ch.chalendarviewer.service.exception.ResourceNotAvaiableException;
 import org.ch.chalendarviewer.service.exception.SyncFailedException;
 
 import java.util.ArrayList;
@@ -86,7 +87,7 @@ public class ResourceManager {
      * Get resources cursor.  Each row has following columns: ID, NAME, ACTIVE
      * @return a cursor of resources.
      */
-    public Cursor getResources(){
+    public Cursor getResources() {
         
         // Form an array specifying which columns to return. 
         String[] projection = new String[] {
@@ -323,29 +324,47 @@ public class ResourceManager {
     /**
      * Return a list of active resources
      * @return List of active resources
+     * @throws ResourceNotAvaiableException In case of google invokation failure
      */
-    public List<CalendarResource> getActiveResources(){
+    public List<CalendarResource> getActiveResources() throws ResourceNotAvaiableException{
         if (activeResources == null){
-            refreshActiveResources();
+            try{
+                refreshActiveResources();
+            }catch (Exception e) {
+                throw new ResourceNotAvaiableException("Cannot get calendars from Google",e);
+            }
         }
         return activeResources;
     }
     
     /**
-     * Get events of a resource 
+     * Get events of a resource
      * @param resourceId id of resource
      * @param begin Calendar begin
      * @param end Calendar end
      * @return list of events of selected resource in interval (begin,end)
+     * @throws ResourceNotAvaiableException In case of google invocation failure
      */
-    public List<? extends Event> getEvents(String resourceId, Calendar begin, Calendar end){
+    public List<? extends Event> getEvents(String resourceId, Calendar begin, Calendar end) throws ResourceNotAvaiableException{
         
+        List<? extends Event> events = null; 
+        
+        //Get gCalendar from a map that caches database calendar (it's a 'generic' calendar)
         GoogleCalendar gCalendar = getResourceMap().get(resourceId);
         
         GoogleCalendarApiConnector gConector = GoogleCalendarApiConnector.getInstance(mContext);
         
-        GoogleCalendar completeGCalendar = gConector.getCalendarByLink(gCalendar.getSelfLink());
-        return gConector.getEvents(completeGCalendar, begin, end);
+        try{
+            
+            //completeGCalendar has more data than stored in database, so we have to call google
+            GoogleCalendar completeGCalendar = gConector.getCalendarByLink(gCalendar.getSelfLink());
+            
+            events = gConector.getEvents(completeGCalendar, begin, end);
+        } catch (Exception e) {
+            throw new ResourceNotAvaiableException(e);
+        }
+        
+        return events;
         
     }
     
@@ -392,15 +411,28 @@ public class ResourceManager {
      * Create an event in a specified resource
      * @param resourceId id of resource
      * @param event event data
+     * @throws ResourceNotAvaiableException In case of google invocation failure
      */
-    public void createEvent(String resourceId, Event event){
+    public void createEvent(String resourceId, Event event) throws ResourceNotAvaiableException{
+       
+        //Get gCalendar from a map that caches database calendar (it's a 'generic' calendar)
         GoogleCalendar gCalendar = getResourceMap().get(resourceId);
 
         GoogleCalendarApiConnector gConector = GoogleCalendarApiConnector.getInstance(mContext);
 
-        GoogleCalendar completeGCalendar = gConector.getCalendarByLink(gCalendar.getSelfLink());
+        boolean result = true;
+        try{
+            //completeGCalendar has more data than stored in database, so we have to call google
+            GoogleCalendar completeGCalendar = gConector.getCalendarByLink(gCalendar.getSelfLink());
         
-        Log.d(TAG, Boolean.toString(gConector.setEvent(completeGCalendar, new GoogleEvent(event))));
+            result = gConector.setEvent(completeGCalendar, new GoogleEvent(event));
+        } catch (Exception e) {
+            throw new ResourceNotAvaiableException("Error invoking google while creating an event",e);
+        }
+        if (!result){
+            throw new ResourceNotAvaiableException("Error creation google event");
+        }
+        
     }
 
 
