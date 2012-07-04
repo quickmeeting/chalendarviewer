@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.ch.chalendarviewer.adapter.CustomResourceAdapter;
 import org.ch.chalendarviewer.service.ResourceManager;
 import org.ch.chalendarviewer.service.exception.SyncFailedException;
 
@@ -45,7 +46,7 @@ public class ResourceManagerActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        progress = ProgressDialog.show(this, getString(R.string.app_name), getString(R.string.synchronizing));
+        progress = ProgressDialog.show(this, getString(R.string.app_name), getString(R.string.synchronizingCalendars));
         new ResourceAsyncTask().execute();
         
     }
