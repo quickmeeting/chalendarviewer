@@ -15,23 +15,38 @@ public class EventTextView extends TextView implements Observable {
 	private Observer obs;
 	private boolean isUserEvent;
 	
-	public EventTextView(Context context) {
+	public EventTextView(Context context, boolean isUserEvent) {
 		super(context);
-		setBackgroundResource(R.drawable.event_background);
-		setTextColor(Color.BLACK);
-		setOnTouchListener(new OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				return true;
-			}
-		});
+		this.isUserEvent = isUserEvent;
+		init();
 	}
 	
-	public EventTextView(Context context, AttributeSet attrs) {
+	private EventTextView(Context context) {
+		super(context);
+	}
+	
+	private EventTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-    public EventTextView(Context context, AttributeSet attrs, int defStyle) {
+	
+	private EventTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+    }
+    
+    private void init() {
+		setTextColor(Color.BLACK);
+		if(isUserEvent) {
+			setBackgroundResource(R.drawable.user_event_background);
+		}
+		else {
+			setBackgroundResource(R.drawable.event_background);
+		}
+		setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            	notifyObserver();
+            }
+        });
     }
 
 	public boolean isUserEvent() {
@@ -40,21 +55,6 @@ public class EventTextView extends TextView implements Observable {
 
 	public void setUserEvent(boolean isUserEvent) {
 		this.isUserEvent = isUserEvent;
-		if(isUserEvent) {
-			setBackgroundResource(R.drawable.user_event_background);
-			setOnTouchListener(new OnTouchListener() {
-				@Override
-				public boolean onTouch(View v, MotionEvent event) {
-					return false;
-				}
-			});
-			setOnClickListener(new OnClickListener() {
-	            @Override
-	            public void onClick(View v) {
-	            	notifyObserver();
-	            }
-	        });
-		}
 	}
 
 	public void notifyObserver() {

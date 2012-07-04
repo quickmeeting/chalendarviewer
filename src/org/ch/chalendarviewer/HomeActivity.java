@@ -306,14 +306,11 @@ public class HomeActivity extends Activity implements Observer {
     }
     
     private void createEvent(int calendarPos, int startCellPos, String text, int height, boolean isAppUser) {
-		EventTextView event = new EventTextView(this);
+		EventTextView event = new EventTextView(this, isAppUser);
 		event.setWidth(mCalendarColumnWidth);
 		event.setHeight(height*mCalendarRowHeight);
 		event.setText(text);
-		if(isAppUser) {
-			event.setUserEvent(true);
-			event.setObserver(this);
-		}
+		event.setObserver(this);
 		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(
 		        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
 		        (Gravity.LEFT | Gravity.TOP));
@@ -443,7 +440,10 @@ public class HomeActivity extends Activity implements Observer {
 
 	@Override
 	public void notify(Observable o) {
-		mSelectedEvent = (EventTextView) o;
-		showCancelReservationDialog();
+		EventTextView e = (EventTextView) o;
+		if( e.isUserEvent() ) {
+			mSelectedEvent = e;
+			showCancelReservationDialog();
+		}
 	}
 }
