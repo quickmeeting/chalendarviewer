@@ -17,18 +17,12 @@
 
 package org.ch.chalendarviewer.service;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.util.Log;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.ch.chalendarviewer.objects.CalendarResource;
 import org.ch.chalendarviewer.objects.User;
 import org.ch.chalendarviewer.objects.google.GoogleCalendar;
@@ -45,7 +39,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
@@ -59,10 +52,13 @@ import java.util.TimeZone;
  */
 public class GoogleCalendarApiConnector {
 
+    /** TAG for logging*/
     private static final String TAG = GoogleCalendarApiConnector.class.getName();
        
+    /** Singleton instance*/
     private static GoogleCalendarApiConnector _instance;
     
+    /** userManager instance*/
     private UserManager mSessionManager;
     
     /** DateTime formatter for interval events */
@@ -80,6 +76,11 @@ public class GoogleCalendarApiConnector {
         mDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
     }
 
+    /**
+     * Get a singleton instance of service
+     * @param context application context
+     * @return the unique instance of this service
+     */
     public static synchronized GoogleCalendarApiConnector getInstance(Context context) {
         if (null == _instance) {            
             _instance = new GoogleCalendarApiConnector(context);
@@ -88,6 +89,10 @@ public class GoogleCalendarApiConnector {
         return _instance;
     }
     
+    /**
+     * Get all available calendars of active user
+     * @return googlecalendar list
+     */
     public List<GoogleCalendar> getCalendars(){
         ArrayList<GoogleCalendar> calendarsList = new ArrayList<GoogleCalendar>();
         
@@ -370,7 +375,7 @@ public class GoogleCalendarApiConnector {
     public GoogleEvent parseEvent(JSONObject jsonEvent) throws JSONException, ParseException{
         GoogleEvent ev = new GoogleEvent();
         
-        Log.d(TAG, "EVENT => "+ jsonEvent.toString());
+        
         ev.setAlternateLink(jsonEvent.getString(GoogleEvent.FIELD_ALTERNATIVE_LINK));
         ev.setCanEdit(jsonEvent.getBoolean(GoogleEvent.FIELD_CAN_EDIT));
         ev.setDetails(jsonEvent.getString(GoogleEvent.FIELD_DETAILS));
@@ -397,6 +402,7 @@ public class GoogleCalendarApiConnector {
             ev.addAttendee(new User(jsonUser.getString(User.FIELD_DISPLAY_NAME), jsonUser.getString(User.FIELD_EMAIL)));
         }
         
+        Log.d(TAG, "EVENT => "+ ev);
         return ev;
     }
 
@@ -409,5 +415,22 @@ public class GoogleCalendarApiConnector {
         String email = calendar.getId().replace("http://www.google.com/calendar/feeds/default/allcalendars/full/","")
         .replace("%40", "@");
         return email;
+    }
+    
+    
+    /**
+     * Delete event from google
+     * @param gEvent event to delete
+     */
+    public void deleteEvent(GoogleEvent gEvent){
+        String eventURL = GoogleConstants.URL_INSERT_EVENT + gEvent.getId();
+        Log.d(TAG, eventURL);
+        
+        //If-Match: * header allow to delete an event, even if it was modified after its insertion
+        String[] paramsKey =   {"Authorization","If-Match"};
+        String[] paramsValue = {"Bearer " + mSessionManager.getActiveUserAccessToken(),"*"};
+        boolean response = ConnectionUtils.doHttpsDelete(eventURL, paramsKey, paramsValue);
+        Log.d(TAG, "gConnector response : " + Boolean.toString(response));
+        
     }
 }

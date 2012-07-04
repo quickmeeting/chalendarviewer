@@ -1,6 +1,5 @@
 package org.ch.chalendarviewer.objects;
 
-import java.sql.Date;
 import java.util.Calendar;
 
 /**

@@ -25,29 +25,19 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
-import org.ch.chalendarviewer.service.GoogleCalendarApiConnector;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
 
 
 
@@ -195,6 +185,52 @@ public class ConnectionUtils {
        Log.d(TAG,"getHttpsGetConnection End");
         
        return htmlResult;
+    }
+    
+    /**
+     * Executes a HTTP DELETE request
+     * @param url url to send request
+     * @param paramsKey header key params array
+     * @param paramsValue header value params array
+     * @return result of delete request
+     */
+    static public boolean doHttpsDelete(String url, String[] paramsKey, String[] paramsValue) {
+        
+        boolean result = true;
+        
+        HttpDelete httpDelete = new HttpDelete(url);
+        for (int index = 0; index < paramsKey.length; index++ ){
+            Log.d(TAG,"param = " + paramsKey[index]);
+            Log.d(TAG,"value = " + (index < paramsValue.length ? paramsValue[index] : ""));
+            httpDelete.setHeader(paramsKey[index], (index < paramsValue.length ? paramsValue[index] : ""));
+        }        
+  
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        try {
+            HttpResponse response = httpClient.execute(httpDelete);
+            int returnCode = response.getStatusLine().getStatusCode();
+            
+            if(returnCode == HTTP_OK){
+                Log.d(TAG, "DELETION OF EVENT OK");
+            }else{
+                result = false;
+                Log.e(TAG,"Delete response code is " + returnCode);
+                Log.e(TAG, "RESPONSE HTML => " + streamToString(response.getEntity().getContent()));
+            }
+            
+            
+            
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            result = false;
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            result = false;
+        }
+        
+        return result;
     }
     
 }

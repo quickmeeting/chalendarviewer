@@ -441,5 +441,17 @@ public class ResourceManager {
         
     }
 
-
+    /**
+     * Delete an event
+     * @param event Event to delete. Only ID of event is needed
+     * @throws ResourceNotAvaiableException In case of google invocation failure
+     */
+    public void deleteEvent(Event event) throws ResourceNotAvaiableException{
+        GoogleCalendarApiConnector gConector = GoogleCalendarApiConnector.getInstance(mContext);
+        try{
+            gConector.deleteEvent(new GoogleEvent(event));
+        } catch (Exception e) {
+            throw new ResourceNotAvaiableException("Error invoking google while creating an event",e);
+        }
+    }
 }

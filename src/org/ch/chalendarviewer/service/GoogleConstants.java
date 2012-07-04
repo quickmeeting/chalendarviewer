@@ -36,7 +36,7 @@ public class GoogleConstants {
     public static final String URL_ALL_CALENDARS = "https://www.google.com/calendar/feeds/default/allcalendars/full?alt=jsonc";
    
     /** Google API Insert new event Address */
-    public static final String URL_INSERT_EVENT =  "https://www.google.com/calendar/feeds/default/private/full";
+    public static final String URL_INSERT_EVENT =  "https://www.google.com/calendar/feeds/default/private/full/";
  
     /** Google API Access Token Address */
     public static final String URL_ACCESS_TOKEN = "https://accounts.google.com/o/oauth2/token";
