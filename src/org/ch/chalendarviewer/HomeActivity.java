@@ -457,22 +457,31 @@ public class HomeActivity extends Activity implements Observer {
     private Handler mHandler = new Handler() {
     	@Override
     	public void handleMessage(Message msg) {
-    		refreshEvents();
+    		if( msg.what == 1 ) {
+    			refreshEvents();
+    		}
+    		else {
+	        	destroyAllEvents();
+	    		drawEvents();
+	    		mProgress.dismiss();
+    		}
     	}
     };
     
     synchronized private void refreshEvents() {
 		mProgress.show();
-    	try {
-    		updateTimeColumn();
-    		loadData();
-        	destroyAllEvents();
-    		drawEvents();
-    	}
-    	catch (Exception e) {
-			//Do nothing
-		}
-		mProgress.dismiss();
+		updateTimeColumn();
+    	new Thread() {
+    		@Override
+    		public void run() {
+				try {
+					loadData();
+					mHandler.sendMessage(mHandler.obtainMessage(0));
+				} catch (Exception e) {
+					//Do nothing
+				}
+    		}
+    	}.start();
     }
     
     /**
