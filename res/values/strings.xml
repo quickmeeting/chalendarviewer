@@ -17,8 +17,9 @@
  -->
 <resources>
     <string name="app_name">ChalendarViewer</string>
+    <string name="about">About</string>
     
-    
+    <string name="manageAccounts">Manage Accounts</string>
     <string name="accounts">Accounts</string>
     <string name="activeAccountNotDefined">Active account not defined</string>
     <string name="addAccount">Add Account</string>
@@ -34,8 +35,9 @@
     
     <string name="problemOcurred">Oops, an error ocurred, try again please! :-)</string>    
     
-    <string name="manageAccounts">Manage Accounts</string>
+    <string name="resources">Resources</string>
     <string name="manageResources">Manage Resources</string>
+    <string name="manageResourcesHelp">Choose the calendars\' set</string>
     <string name="refresh">Refresh</string>
     <string name="configuration">Configuration</string>
     <string name="reserved">Reserved</string>

@@ -129,41 +129,18 @@ public class HomeActivity extends Activity implements Observer {
 	    return true;
 	}
 	
-	/**
-	 * Enables or disables menu options based on activity's state
-	 */
 	@Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem mnuOptRefresh =  menu.findItem(R.id.menuHomeRefresh);
-        MenuItem mnuOptManageResources =  menu.findItem(R.id.menuHomeManageResources);
-        
-        if (_userManager.hasUserActiveAccessToken() == false) {
-            mnuOptManageResources.setEnabled(false);
-            mnuOptRefresh.setEnabled(false);            
-        } else {
-            mnuOptManageResources.setEnabled(true);
-            mnuOptRefresh.setEnabled(true);
-        }
-        
-        return super.onPrepareOptionsMenu(menu);
-    }  
-	
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.menuHomeRefresh:
                 // TODO
                 return true;
-            case R.id.menuHomeManageAccounts:
+            case R.id.menuHomeConfiguration:
                 Intent intent = new Intent(this, PreferencesActivity.class);
                 startActivity(intent);
                 return true;
-            case R.id.menuHomeManageResources:
-                Intent intent2 = new Intent(this, ResourceManagerActivity.class);
-                startActivity(intent2);
-                return true;
-            case R.id.menuHomeConfiguration:
+            case R.id.menuHomeAbout:
                 // TODO
                 return true;
             default:
