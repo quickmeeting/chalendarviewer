@@ -128,6 +128,7 @@ public class HomeActivity extends Activity implements Observer {
     	super.onResume();
     	mRefresh = true;
         try {
+        	mTableLayout.removeAllViews();
         	List<CalendarResource> calendars = mResourceManager.getActiveResources();
         	mCalendarNames = new ArrayList<String>();
         	mCalendarMap = new HashMap<String, CalendarResource>();
