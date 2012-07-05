@@ -38,7 +38,7 @@
 		          android:screenOrientation="landscape">		    
 		</activity>
 		<activity android:name=".PreferencesActivity"
-		          android:label="@string/manageAccounts"
+		          android:label="@string/configuration"
 		          android:screenOrientation="landscape">		    
 		</activity>
     </application>

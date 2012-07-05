@@ -17,6 +17,7 @@
 
 package org.ch.chalendarviewer;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -42,6 +43,7 @@ public class PreferencesActivity extends PreferenceActivity {
     private Preference mAddAccountPref;
     private ListPreference mChangeActiveAccount;
     private ListPreference mDeleteAccount;
+    private Preference mManageResources;
     
     private UserManager mUserManager;
     
@@ -58,6 +60,8 @@ public class PreferencesActivity extends PreferenceActivity {
         mDeleteAccount            = (ListPreference) preferenceScreen.findPreference("deleteAccount");
         mChangeActiveAccount      = (ListPreference) preferenceScreen.findPreference("changeActiveAccount");
         
+        mManageResources          = preferenceScreen.findPreference("manageResources");
+        
         mUserManager = UserManager.getInstance(this);
         
         setListeners();        
@@ -71,7 +75,20 @@ public class PreferencesActivity extends PreferenceActivity {
                 callAuthorizeActivity();
                 return true;
             }
-        });        
+        });   
+        
+        mManageResources.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = new Intent(PreferencesActivity.this, ResourceManagerActivity.class);
+                startActivity(intent); 
+                return true;
+            }
+        });   
+    }
+
+    protected void callManagerResourceActivity() {
+        
     }
 
     private void refreshScreenBasedOnAccounts() {
@@ -79,6 +96,7 @@ public class PreferencesActivity extends PreferenceActivity {
             mCurrentActiveAccountPref.setSummary(mUserManager.getActiveUserEmail());
             mDeleteAccount.setEnabled(true);
             mChangeActiveAccount.setEnabled(true);
+            mManageResources.setEnabled(true);
             
             Cursor cursor = mUserManager.getAllAccountsIdEmail();
             String[] emailList = new String[cursor.getCount()];
@@ -106,6 +124,7 @@ public class PreferencesActivity extends PreferenceActivity {
             mCurrentActiveAccountPref.setSummary(R.string.activeAccountNotDefined);
             mDeleteAccount.setEnabled(false);
             mChangeActiveAccount.setEnabled(false);
+            mManageResources.setEnabled(false);
         }
         
     }
