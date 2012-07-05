@@ -247,7 +247,7 @@ public class HomeActivity extends Activity implements Observer {
         int screen_width_pixels = display.getHeight();
         int scaledFontSize = getResources().getDimensionPixelSize(R.dimen.time_font_size);
         
-        mNumberOfRows = screen_width_pixels/mCalendarRowHeight-2;
+        mNumberOfRows = 4*10;//screen_width_pixels/mCalendarRowHeight-2;
         for(int i = 0; i<mNumberOfRows; i++) {
         	
         	//Adding time cell
@@ -290,6 +290,7 @@ public class HomeActivity extends Activity implements Observer {
     
     private void updateTimeColumn() {
         Calendar now = Calendar.getInstance();
+        now.add(Calendar.HOUR_OF_DAY, -8);
         int minutes = now.get(Calendar.MINUTE);
         int calendarMinutes = 0;
         while( minutes >= (calendarMinutes+MIN_EVENT_TIME) ) {
@@ -313,22 +314,16 @@ public class HomeActivity extends Activity implements Observer {
     private void drawEvents() {
         
     	for(String calendarName: mEventMap.keySet()) {
-    		SimpleDateFormat formater = new SimpleDateFormat("HH:mm");
     		List<? extends Event> eventList = mEventMap.get(calendarName);
     		for( Event e: eventList ) {
-    			Log.i("HomeActivity", "begin *******");
 	    		String title = e.getTitle();
 	    		Calendar begin = e.getBegin();
 	    		Calendar end = e.getEnd();
 	    		//User u = e.getCreator();
 	    		if( end.before(mCalendarBegin) || begin.after(mCalendarEnd)) {
-	    			Log.i("HomeActivity", "title " + title);
-	    			Log.i("HomeActivity", "begin raw " + begin);
-	    			Log.i("HomeActivity", "begin " + formater.format(begin));
-	    			Log.i("HomeActivity", "end " + formater.format(end));
 	    			
-		    		int startCellPos = 1;//getCellPositionAtCertainTime(begin, true);
-		    		int endCellPos = 3;//getCellPositionAtCertainTime(end, false)+1;
+		    		int startCellPos = getCellPosition(begin, true);
+		    		int endCellPos = getCellPosition(end, false)+1;
 		    		
 		    		//simulamos la columna a la que pertenece
 		    		int calendarPos = mCalendarNames.indexOf(calendarName);
@@ -338,7 +333,6 @@ public class HomeActivity extends Activity implements Observer {
 		    				+ mFormateador.format(end.getTime());
 		    		createEvent(calendarPos, startCellPos, text, endCellPos-startCellPos, false);
 	    		}
-	    		Log.i("HomeActivity", "end *******");
     		}
     	}
     }
@@ -491,8 +485,8 @@ public class HomeActivity extends Activity implements Observer {
     synchronized private void refreshEvents() {
 		if( !mProgress.isShowing() ) mProgress.show();
     	try {
-    		loadData();
     		updateTimeColumn();
+    		loadData();
         	destroyAllEvents();
     		drawEvents();
     	}
@@ -508,7 +502,7 @@ public class HomeActivity extends Activity implements Observer {
      * @param includeBounds: true for counting the time at the border.
      * @return vertical cell position
      */
-    private int getCellPositionAtCertainTime(Calendar time, boolean includeBounds) {
+    private int getCellPosition(Calendar time, boolean includeBounds) {
 		int count = 0;
 		Calendar loopControl = (Calendar) mCalendarBegin.clone();
 		while(loopControl.compareTo(time) < 0) {
