@@ -26,7 +26,7 @@ import android.provider.BaseColumns;
  * @author vitor
  * 
  */
-public class AuthUser implements BaseColumns{
+public class AccountColumns implements BaseColumns{
     
     /** Column name: authorization_code */
     public static final String REFRESH_TOKEN = "refresh_token";

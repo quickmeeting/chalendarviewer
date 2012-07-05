@@ -35,7 +35,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /** SQLite Database name */
     private static final String DATABASE_NAME = "config.db";
     /** SQLite Database version */
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 4;
     /** TAG for log entries */
     private static final String TAG = "DatabaseHelper";
     
@@ -50,19 +50,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + AUTH_USER_TABLE_NAME + " (" 
-                        + AuthUser._ID             + " INTEGER PRIMARY KEY AUTOINCREMENT," 
-                        + AuthUser.ACCESS_TOKEN    + " VARCHAR(255)," 
-                        + AuthUser.REFRESH_TOKEN   + " VARCHAR(255)," 
-                        + AuthUser.EMAIL           + " VARCHAR(255),"
-                        + AuthUser.ACTIVE_USER     + " BOOLEAN,"
-                        + AuthUser.EXPIRATION_DATE + " DATETIME);");
+                        + AccountColumns._ID             + " INTEGER PRIMARY KEY AUTOINCREMENT," 
+                        + AccountColumns.ACCESS_TOKEN    + " VARCHAR(255)," 
+                        + AccountColumns.REFRESH_TOKEN   + " VARCHAR(255)," 
+                        + AccountColumns.EMAIL           + " VARCHAR(255),"
+                        + AccountColumns.ACTIVE_USER     + " BOOLEAN,"
+                        + AccountColumns.EXPIRATION_DATE + " DATETIME);");
         
         db.execSQL("CREATE TABLE " + RESOURCE_TABLE_NAME + " (" 
-                + Resource._ID             + " INTEGER PRIMARY KEY AUTOINCREMENT," 
-                + Resource.AUTH_USER_ID    + " VARCHAR(255)," 
-                + Resource.NAME            + " VARCHAR(255)," 
-                + Resource.EMAIL           + " VARCHAR(255),"
-                + Resource.DISPLAY_NAME     + " VARCHAR(255));");
+                + ResourceColumns._ID             + " INTEGER PRIMARY KEY AUTOINCREMENT," 
+                + ResourceColumns.AUTH_USER_ID    + " VARCHAR(255)," 
+                + ResourceColumns.NAME            + " VARCHAR(255)," 
+                + ResourceColumns.LINK            + " VARCHAR(255),"
+                + ResourceColumns.ACTIVE          + " BOOLEAN,"
+                + ResourceColumns.DISPLAY_NAME    + " VARCHAR(255));");
     }
 
     @Override
@@ -70,6 +71,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion
                 + ", which will destroy all old data");
         db.execSQL("DROP TABLE IF EXISTS " + AUTH_USER_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + RESOURCE_TABLE_NAME);
         onCreate(db);
     }
 }

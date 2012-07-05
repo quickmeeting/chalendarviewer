@@ -15,9 +15,9 @@
     along with ChalendarViewer.  If not, see <http://www.gnu.org/licenses/>.    
 */
 
-package org.ch.chalendarviewer.objects;
+package org.ch.chalendarviewer.objects.google;
 
-import android.graphics.Color;
+import org.ch.chalendarviewer.objects.CalendarResource;
 
 import java.util.TimeZone;
 
@@ -28,9 +28,9 @@ import java.util.TimeZone;
  * @version 1.0
  */
 // TODO comment code
-public class GoogleCalendar {
-    
-     
+public class GoogleCalendar extends CalendarResource {
+   
+
     static public final String FIELD_ID = "id";
     static public final String FIELD_TITLE = "title";
     static public final String FIELD_EVENT_FEED_LINK = "eventFeedLink";
@@ -45,10 +45,6 @@ public class GoogleCalendar {
     
     private int mType;
     
-    private String mId;
-    
-    private String mTitle;
-    
     private String mEventFeedLik;
     
     private String mSelfLink;
@@ -56,21 +52,15 @@ public class GoogleCalendar {
     private String mColor;
     
     private TimeZone mTimeZone;
-
-    public String getId() {
-        return mId;
+    
+    
+    public GoogleCalendar(){
+        super();
     }
 
-    public void setId(String id) {
-        this.mId = id;
-    }
-
-    public String getTitle() {
-        return mTitle;
-    }
-
-    public void setTitle(String title) {
-        this.mTitle = title;
+    public GoogleCalendar(String id, String name, String link) {
+        super(id,name);
+        this.mSelfLink = link;
     }
 
     public String getEventFeedLik() {

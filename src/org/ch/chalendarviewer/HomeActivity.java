@@ -49,7 +49,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import org.ch.chalendarviewer.objects.GoogleEvent;
+import org.ch.chalendarviewer.objects.Event;
 import org.ch.chalendarviewer.objects.User;
 import org.ch.chalendarviewer.service.UserManager;
 import org.ch.chalendarviewer.util.Observable;
@@ -62,7 +62,7 @@ public class HomeActivity extends Activity implements Observer {
 	
 	private User mUser;
 	private ProgressDialog mProgress;
-	private ArrayList<GoogleEvent> mGoogleEventList;
+	private ArrayList<Event> mEventList;
 	private ArrayList<String> mCalendars;
 	private SimpleDateFormat mFormateador;
 	private TableLayout mTableLayout;
@@ -156,11 +156,12 @@ public class HomeActivity extends Activity implements Observer {
                 // TODO
                 return true;
             case R.id.menuHomeManageAccounts:
-                Intent intent = new Intent(this, AccountManagerActivity.class);
+                Intent intent = new Intent(this, PreferencesActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.menuHomeManageResources:
-                // TODO
+                Intent intent2 = new Intent(this, ResourceManagerActivity.class);
+                startActivity(intent2);
                 return true;
             case R.id.menuHomeConfiguration:
                 // TODO
@@ -288,11 +289,11 @@ public class HomeActivity extends Activity implements Observer {
     private void drawEvents() {
     	boolean test = true;
         
-    	for(GoogleEvent e: mGoogleEventList) {
+    	for(Event e: mEventList) {
     		String title = e.getTitle();
     		Calendar begin = e.getBegin();
     		Calendar end = e.getEnd();
-    		User u = e.getCreator();
+    		//User u = e.getCreator();
     		if( end.before(mCalendarBegin) || begin.after(mCalendarEnd)) {
     			//Event out of range
     			break;
@@ -416,8 +417,8 @@ public class HomeActivity extends Activity implements Observer {
 	}
     
     private void loadData() {
-    	mGoogleEventList = new ArrayList<GoogleEvent>();
-    	GoogleEvent g1 = new GoogleEvent();
+    	mEventList = new ArrayList<Event>();
+    	Event g1 = new Event();
     	g1.setTitle("Reunion VDSL");
     	Calendar now = Calendar.getInstance();
     	g1.setBegin((Calendar)now.clone());
@@ -425,14 +426,14 @@ public class HomeActivity extends Activity implements Observer {
     	end.add(Calendar.HOUR, 1);
     	end.set(Calendar.MINUTE, 0);
     	g1.setEnd((Calendar)end.clone());
-    	mGoogleEventList.add(g1);
+    	mEventList.add(g1);
     	
-    	GoogleEvent g2 = new GoogleEvent();
+    	Event g2 = new Event();
     	g2.setTitle("Traslados (JANDON)");
     	g2.setBegin((Calendar)end.clone());
     	end.add(Calendar.HOUR, 1);
     	g2.setEnd((Calendar)end.clone());
-    	mGoogleEventList.add(g2);
+    	mEventList.add(g2);
     }
     
     private void startPolling() {

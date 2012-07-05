@@ -26,8 +26,9 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.util.Log;
 
-import org.ch.chalendarviewer.contentprovider.AuthUser;
+import org.ch.chalendarviewer.contentprovider.AccountColumns;
 import org.ch.chalendarviewer.contentprovider.DatabaseHelper;
 
 import java.util.HashMap;
@@ -74,19 +75,20 @@ public class ChalendarContentProvider extends ContentProvider {
                 + DatabaseHelper.RESOURCE_TABLE_NAME + "/#", AUTH_USER_RESOURCE_ID);
 
         authUserProjectionMap = new HashMap<String, String>();
-        authUserProjectionMap.put(AuthUser._ID, AuthUser._ID);
-        authUserProjectionMap.put(AuthUser.ACCESS_TOKEN, AuthUser.ACCESS_TOKEN);
-        authUserProjectionMap.put(AuthUser.REFRESH_TOKEN, AuthUser.REFRESH_TOKEN);
-        authUserProjectionMap.put(AuthUser.EMAIL, AuthUser.EMAIL );
-        authUserProjectionMap.put(AuthUser.ACTIVE_USER, AuthUser.ACTIVE_USER );
-        authUserProjectionMap.put(AuthUser.EXPIRATION_DATE, AuthUser.EXPIRATION_DATE );
+        authUserProjectionMap.put(AccountColumns._ID, AccountColumns._ID);
+        authUserProjectionMap.put(AccountColumns.ACCESS_TOKEN, AccountColumns.ACCESS_TOKEN);
+        authUserProjectionMap.put(AccountColumns.REFRESH_TOKEN, AccountColumns.REFRESH_TOKEN);
+        authUserProjectionMap.put(AccountColumns.EMAIL, AccountColumns.EMAIL );
+        authUserProjectionMap.put(AccountColumns.ACTIVE_USER, AccountColumns.ACTIVE_USER );
+        authUserProjectionMap.put(AccountColumns.EXPIRATION_DATE, AccountColumns.EXPIRATION_DATE );
         
         resourceProjectionMap = new HashMap<String, String>();
-        resourceProjectionMap.put(Resource._ID, Resource._ID);
-        resourceProjectionMap.put(Resource.AUTH_USER_ID, Resource.AUTH_USER_ID);
-        resourceProjectionMap.put(Resource.EMAIL, Resource.EMAIL);
-        resourceProjectionMap.put(Resource.NAME, Resource.NAME);
-        resourceProjectionMap.put(Resource.DISPLAY_NAME, Resource.DISPLAY_NAME);
+        resourceProjectionMap.put(ResourceColumns._ID, ResourceColumns._ID);
+        resourceProjectionMap.put(ResourceColumns.AUTH_USER_ID, ResourceColumns.AUTH_USER_ID);
+        resourceProjectionMap.put(ResourceColumns.LINK, ResourceColumns.LINK);
+        resourceProjectionMap.put(ResourceColumns.NAME, ResourceColumns.NAME);
+        resourceProjectionMap.put(ResourceColumns.DISPLAY_NAME, ResourceColumns.DISPLAY_NAME);
+        resourceProjectionMap.put(ResourceColumns.ACTIVE, ResourceColumns.ACTIVE);
         
     }
     
@@ -107,7 +109,7 @@ public class ChalendarContentProvider extends ContentProvider {
                 break;
             case AUTH_USER_RESOURCES:
                 //ID of user is passed in URI
-                where += " and " + Resource.AUTH_USER_ID + "=" + uri.getPathSegments().get(1);
+                where += " and " + ResourceColumns.AUTH_USER_ID + "=" + uri.getPathSegments().get(1);
                 count = db.delete(DatabaseHelper.RESOURCE_TABLE_NAME, where, whereArgs);
                 break;
             default:
@@ -122,9 +124,9 @@ public class ChalendarContentProvider extends ContentProvider {
     public String getType(Uri uri) {
         switch (sUriMatcher.match(uri)) {
             case AUTH_USERS:
-                return AuthUser.CONTENT_TYPE;
+                return AccountColumns.CONTENT_TYPE;
             case AUTH_USER_RESOURCES:
-                return Resource.CONTENT_TYPE;
+                return ResourceColumns.CONTENT_TYPE;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -145,13 +147,13 @@ public class ChalendarContentProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
             case AUTH_USERS:
                 table = DatabaseHelper.AUTH_USER_TABLE_NAME; 
-                id = AuthUser._ID;
+                id = AccountColumns._ID;
                 break;
             case AUTH_USER_RESOURCES:
                 table = DatabaseHelper.RESOURCE_TABLE_NAME;
-                id = Resource._ID;
+                id = ResourceColumns._ID;
                 //ID of user is passed on URI
-                values.put(Resource.AUTH_USER_ID, uri.getPathSegments().get(1));
+                values.put(ResourceColumns.AUTH_USER_ID, uri.getPathSegments().get(1));
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -160,7 +162,7 @@ public class ChalendarContentProvider extends ContentProvider {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         long rowId = db.insert(table, id, values);
         if (rowId > 0) {
-            Uri noteUri = ContentUris.withAppendedId(AuthUser.CONTENT_URI, rowId);
+            Uri noteUri = ContentUris.withAppendedId(uri, rowId);
             getContext().getContentResolver().notifyChange(noteUri, null);
             return noteUri;
         }
@@ -181,19 +183,19 @@ public class ChalendarContentProvider extends ContentProvider {
             case AUTH_USER_ID:
                 qb.setTables(DatabaseHelper.AUTH_USER_TABLE_NAME);
                 //ID of user is passed on URI
-                qb.appendWhere(AuthUser._ID + "=" + uri.getPathSegments().get(1));
+                qb.appendWhere(AccountColumns._ID + "=" + uri.getPathSegments().get(1));
                 break;
             case AUTH_USER_RESOURCES:
                 qb.setTables(DatabaseHelper.RESOURCE_TABLE_NAME);
                 //ID of user is passed on URI
-                qb.appendWhere(Resource.AUTH_USER_ID + "=" + uri.getPathSegments().get(1));
+                qb.appendWhere(ResourceColumns.AUTH_USER_ID + "=" + uri.getPathSegments().get(1));
                 qb.setProjectionMap(resourceProjectionMap);
                 break;
             case AUTH_USER_RESOURCE_ID:
                 qb.setTables(DatabaseHelper.RESOURCE_TABLE_NAME);
                 //ID of user is passed on URI
-                qb.appendWhere(Resource.AUTH_USER_ID + "=" + uri.getPathSegments().get(1));
-                qb.appendWhere(Resource._ID + "=" + uri.getPathSegments().get(3));
+                qb.appendWhere(ResourceColumns.AUTH_USER_ID + "=" + uri.getPathSegments().get(1));
+                qb.appendWhere(ResourceColumns._ID + "=" + uri.getPathSegments().get(3));
                 qb.setProjectionMap(resourceProjectionMap);
                 break;
             default:
@@ -210,14 +212,26 @@ public class ChalendarContentProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String where, String[] whereArgs) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        int count;
+        int count = 1;
         switch (sUriMatcher.match(uri)) {
             case AUTH_USERS:
                 count = db.update(DatabaseHelper.AUTH_USER_TABLE_NAME, values, where, whereArgs);
                 break;
             case AUTH_USER_RESOURCES:
                 //not using whereArgs to store user_id parameter. It is coded directly on where clause
-                where += " and " + Resource.AUTH_USER_ID + "=" + uri.getPathSegments().get(1);
+                where += " and " + ResourceColumns.AUTH_USER_ID + "=" + uri.getPathSegments().get(1);
+                count = db.update(DatabaseHelper.RESOURCE_TABLE_NAME, values, where, whereArgs);
+                break;
+            case AUTH_USER_RESOURCE_ID:
+                //not using whereArgs to store user_id parameter. It is coded directly on where clause
+                String idCondition = ResourceColumns.AUTH_USER_ID + "=" + uri.getPathSegments().get(1);
+                idCondition += " and " + ResourceColumns._ID + "=" + uri.getPathSegments().get(3);
+                if(where == null){
+                    where = idCondition;
+                }else{
+                    where = idCondition + " and " + where;
+                }
+                Log.d("WHERE", where);
                 count = db.update(DatabaseHelper.RESOURCE_TABLE_NAME, values, where, whereArgs);
                 break;
             default:

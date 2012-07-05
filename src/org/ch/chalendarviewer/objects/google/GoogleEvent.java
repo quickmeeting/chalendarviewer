@@ -15,14 +15,16 @@
     along with ChalendarViewer.  If not, see <http://www.gnu.org/licenses/>.    
 */
 
-package org.ch.chalendarviewer.objects;
+package org.ch.chalendarviewer.objects.google;
+
+import org.ch.chalendarviewer.objects.Event;
+import org.ch.chalendarviewer.objects.User;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 //TODO populate this class
-public class GoogleEvent {
+public class GoogleEvent extends Event{
 
     static public final String FIELD_ID = "id";
     static public final String FIELD_SELF_LINK = "selfLink";
@@ -39,18 +41,12 @@ public class GoogleEvent {
     public static final String FIELD_WHEN_LIST = "when";
 
     
-    private String mId;
-    
     private String mSelfLink;
     
     private String mAlternateLink;
     
     private boolean mCanEdit;
 
-    private String mTitle;
-    
-    private String mDetails;
-    
     private String mStatus;
     
     private User mCreator;
@@ -59,21 +55,20 @@ public class GoogleEvent {
     
     private ArrayList<User> mAttendees;
         
-    private Calendar mBegin;
-    
-    private Calendar mEnd;
-    
-    
     public GoogleEvent() {
         mAttendees = new ArrayList<User>();
     }
-
-    public String getId() {
-        return mId;
-    }
-
-    public void setId(String id) {
-        this.mId = id;
+    
+    /**
+     * Build GoogleEvent class from superclass
+     * @param ev
+     */
+    public GoogleEvent(Event ev){
+        this.mBegin = ev.getBegin();
+        this.mEnd = ev.getEnd();
+        this.mId = ev.getId();
+        this.mTitle = ev.getTitle();
+        this.mDetails = ev.getDetails();
     }
 
     public String getSelfLink() {
@@ -98,22 +93,6 @@ public class GoogleEvent {
 
     public void setCanEdit(boolean canEdit) {
         this.mCanEdit = canEdit;
-    }
-
-    public String getTitle() {
-        return mTitle;
-    }
-
-    public void setTitle(String title) {
-        this.mTitle = title;
-    }
-
-    public String getDetails() {
-        return mDetails;
-    }
-
-    public void setDetails(String details) {
-        this.mDetails = details;
     }
 
     public String getStatus() {
@@ -154,22 +133,6 @@ public class GoogleEvent {
 
     public void removeAllAttendees() {
         mAttendees.clear();
-    }
-    
-    public Calendar getBegin() {
-        return mBegin;
-    }
-
-    public void setBegin(Calendar begin) {
-        this.mBegin = begin;
-    }
-
-    public Calendar getEnd() {
-        return mEnd;
-    }
-
-    public void setEnd(Calendar end) {
-        this.mEnd = end;
     }    
    
     

@@ -18,16 +18,21 @@
 <resources>
     <string name="app_name">ChalendarViewer</string>
     
-    <string name="loading">Loading</string>
     
-    
+    <string name="accounts">Accounts</string>
+    <string name="activeAccountNotDefined">Active account not defined</string>
     <string name="addAccount">Add Account</string>
-    <string name="addFirstAccount">Add the first Account</string>
+    <string name="addAccountHelp">Add an account to see the its calendars</string>
     <string name="deleteAccount">Delete Account</string>
+    <string name="deleteAccountHelp">Delete an unused account</string>
+    <string name="currentActiveAccount">Current Active Account</string>
+    <string name="changeActiveAccount">Change Active Account</string>
+    <string name="changeActiveAccountHelp">Define a stored account as active</string>
     
     
     <string name="neilArmstrongsPhrase">That\'s one small step for a man, a giant leap for mankind</string>
-    <string name="problemOcurred">Oops, an error ocurred, try again please! :-)</string>
+    
+    <string name="problemOcurred">Oops, an error ocurred, try again please! :-)</string>    
     
     <string name="manageAccounts">Manage Accounts</string>
     <string name="manageResources">Manage Resources</string>
@@ -39,5 +44,11 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="download_data">Downloading data...</string>
+    
+    <string name="loading">Loading</string>
+    <string name="loadingAccounts">Loading Accounts</string>
+    
+    <string name="synchronizingCalendars">Synchronizing Calendars</string>
+    <string name="synchronizingError">Error Synchronizing Calendars</string>
     
 </resources>
