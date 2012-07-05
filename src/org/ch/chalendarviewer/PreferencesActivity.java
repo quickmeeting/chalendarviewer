@@ -96,6 +96,7 @@ public class PreferencesActivity extends PreferenceActivity {
             mCurrentActiveAccountPref.setSummary(mUserManager.getActiveUserEmail());
             mDeleteAccount.setEnabled(true);
             mChangeActiveAccount.setEnabled(true);
+            mManageResources.setEnabled(true);
             
             Cursor cursor = mUserManager.getAllAccountsIdEmail();
             String[] emailList = new String[cursor.getCount()];
@@ -123,6 +124,7 @@ public class PreferencesActivity extends PreferenceActivity {
             mCurrentActiveAccountPref.setSummary(R.string.activeAccountNotDefined);
             mDeleteAccount.setEnabled(false);
             mChangeActiveAccount.setEnabled(false);
+            mManageResources.setEnabled(false);
         }
         
     }
