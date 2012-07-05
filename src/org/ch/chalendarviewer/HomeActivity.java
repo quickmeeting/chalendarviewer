@@ -313,27 +313,32 @@ public class HomeActivity extends Activity implements Observer {
     private void drawEvents() {
         
     	for(String calendarName: mEventMap.keySet()) {
-	    		List<? extends Event> eventList = mEventMap.get(calendarName);
-	    		for( Event e: eventList ) {
+    		SimpleDateFormat formater = new SimpleDateFormat("HH:mm");
+    		List<? extends Event> eventList = mEventMap.get(calendarName);
+    		for( Event e: eventList ) {
+    			Log.i("HomeActivity", "begin *******");
 	    		String title = e.getTitle();
 	    		Calendar begin = e.getBegin();
 	    		Calendar end = e.getEnd();
 	    		//User u = e.getCreator();
 	    		if( end.before(mCalendarBegin) || begin.after(mCalendarEnd)) {
-	    			//Event out of range
-	    			break;
+	    			Log.i("HomeActivity", "title " + title);
+	    			Log.i("HomeActivity", "begin raw " + begin);
+	    			Log.i("HomeActivity", "begin " + formater.format(begin));
+	    			Log.i("HomeActivity", "end " + formater.format(end));
+	    			
+		    		int startCellPos = 1;//getCellPositionAtCertainTime(begin, true);
+		    		int endCellPos = 3;//getCellPositionAtCertainTime(end, false)+1;
+		    		
+		    		//simulamos la columna a la que pertenece
+		    		int calendarPos = mCalendarNames.indexOf(calendarName);
+		    		
+		    		String text = title + "\n" 
+		    				+ mFormateador.format(begin.getTime()) + " - " 
+		    				+ mFormateador.format(end.getTime());
+		    		createEvent(calendarPos, startCellPos, text, endCellPos-startCellPos, false);
 	    		}
-	    		
-	    		int startCellPos = getCellPositionAtCertainTime(begin, true);
-	    		int endCellPos = getCellPositionAtCertainTime(end, false)+1;
-	    		
-	    		//simulamos la columna a la que pertenece
-	    		int calendarPos = mCalendarNames.indexOf(calendarName);
-	    		
-	    		String text = title + "\n" 
-	    				+ mFormateador.format(begin.getTime()) + " - " 
-	    				+ mFormateador.format(end.getTime());
-	    		createEvent(calendarPos, startCellPos, text, endCellPos-startCellPos, false);
+	    		Log.i("HomeActivity", "end *******");
     		}
     	}
     }
@@ -442,14 +447,11 @@ public class HomeActivity extends Activity implements Observer {
     
     private void loadData() {
     	mEventMap = new HashMap<String, List<? extends Event>>();
-    	Calendar now = Calendar.getInstance();
-    	Calendar end = (Calendar)now.clone();
-    	end.add(Calendar.HOUR, 1);
-    	end.set(Calendar.MINUTE, 0);
     	for(String key : mCalendarMap.keySet()) {
     		CalendarResource calendar = mCalendarMap.get(key);
     		try {
-				List<? extends Event> events = mResourceManager.getEvents(calendar.getId(), now, end);
+				List<? extends Event> events = 
+						mResourceManager.getEvents(calendar.getId(), mCalendarBegin, mCalendarEnd);
 				mEventMap.put(key, events);
 			} catch (ResourceNotAvaiableException e) {
 				// TODO Auto-generated catch block
