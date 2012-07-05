@@ -137,6 +137,7 @@ public class HomeActivity extends Activity implements Observer {
         		mCalendarNames.add(calendar.getTitle());
         	}
             drawBackground();
+            refreshEvents();
             startPolling();
         } catch (Exception e) {
 			// TODO: handle exception
@@ -440,10 +441,10 @@ public class HomeActivity extends Activity implements Observer {
 	    		public void run() {
 	    			while(true) {
 	    				try {
+	    					sleep(MINUTES_BETWEEN_POLLS*60*1000);
 	    					if(mRefresh) {
 	    						mHandler.sendMessage(mHandler.obtainMessage(0));
 	    					}
-	    					sleep(MINUTES_BETWEEN_POLLS*60*1000);
 	    				} catch (Exception e) {
 							//Do nothing
 						}
@@ -461,7 +462,7 @@ public class HomeActivity extends Activity implements Observer {
     };
     
     synchronized private void refreshEvents() {
-		if( !mProgress.isShowing() ) mProgress.show();
+		mProgress.show();
     	try {
     		updateTimeColumn();
     		loadData();
