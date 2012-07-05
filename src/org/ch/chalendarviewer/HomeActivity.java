@@ -19,8 +19,11 @@ package org.ch.chalendarviewer;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -33,6 +36,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Display;
 import android.view.Gravity;
@@ -49,21 +53,25 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import org.ch.chalendarviewer.objects.CalendarResource;
 import org.ch.chalendarviewer.objects.Event;
 import org.ch.chalendarviewer.objects.User;
+import org.ch.chalendarviewer.service.ResourceManager;
 import org.ch.chalendarviewer.service.UserManager;
+import org.ch.chalendarviewer.service.exception.ResourceNotAvaiableException;
 import org.ch.chalendarviewer.util.Observable;
 import org.ch.chalendarviewer.util.Observer;
 import org.ch.chalendarviewer.R;
 
 public class HomeActivity extends Activity implements Observer {
 	
-	private UserManager mUserManager;
+	private ResourceManager mResourceManager;
 	
 	private User mUser;
 	private ProgressDialog mProgress;
-	private ArrayList<Event> mEventList;
-	private ArrayList<String> mCalendars;
+	private List<String> mCalendarNames;
+	Map<String,CalendarResource>  mCalendarMap;
+	Map<String, List<? extends Event>> mEventMap;
 	private SimpleDateFormat mFormateador;
 	private TableLayout mTableLayout;
 	private FrameLayout mFrameLayout;
@@ -77,6 +85,8 @@ public class HomeActivity extends Activity implements Observer {
 	private CellTextView mSelectedCell;
 	private EventTextView mSelectedEvent;
 	private ArrayList<TextView> mAllEvents;
+	private boolean mPoll;
+	private boolean mRefresh;
 	
 	private final int MIN_EVENT_TIME        = 15;
 	private final int MINUTES_BETWEEN_POLLS = 2;
@@ -86,7 +96,7 @@ public class HomeActivity extends Activity implements Observer {
 	private final int THREE_MIN_EVENTS_SELECTIONS = 3;
 	private final int FOUR_MIN_EVENTS_SELECTIONS  = 4;
 	
-	UserManager _userManager = null;
+	UserManager mUserManager = null;
 	
     /** Called when the activity is first created. */
     @Override
@@ -108,18 +118,35 @@ public class HomeActivity extends Activity implements Observer {
         mFirstRowHeight      = getResources().getDimensionPixelSize(R.dimen.first_row_height);
         mCalendarRowHeight   = getResources().getDimensionPixelSize(R.dimen.calendar_row_height);
         
-        mCalendars = new ArrayList<String>(
-        	    Arrays.asList("Sala 1", "Sala 2", "Sala 3", "Sala 4"));
         
-        drawBackground();
-        
-        _userManager = UserManager.getInstance(this);
+        mUserManager     = UserManager.getInstance(this); 
+        mResourceManager = ResourceManager.getInstance(this);
     }
     
     @Override
     protected void onResume() {
     	super.onResume();
-    	startPolling();
+    	mRefresh = true;
+        try {
+        	List<CalendarResource> calendars = mResourceManager.getActiveResources();
+        	mCalendarNames = new ArrayList<String>();
+        	mCalendarMap = new HashMap<String, CalendarResource>();
+        	for( CalendarResource calendar:  calendars) {
+        		mCalendarMap.put(calendar.getTitle(), calendar);
+        		mCalendarNames.add(calendar.getTitle());
+        	}
+            drawBackground();
+            startPolling();
+        } catch (Exception e) {
+			// TODO: handle exception
+        	Log.i("HomeActivity", e.getMessage());
+		}
+    }
+    
+    @Override
+    protected void onPause() {
+    	super.onPause();
+    	mRefresh = false;
     }
 	
 	@Override
@@ -137,7 +164,7 @@ public class HomeActivity extends Activity implements Observer {
         MenuItem mnuOptRefresh =  menu.findItem(R.id.menuHomeRefresh);
         MenuItem mnuOptManageResources =  menu.findItem(R.id.menuHomeManageResources);
         
-        if (_userManager.hasUserActiveAccessToken() == false) {
+        if (mUserManager.hasUserActiveAccessToken() == false) {
             mnuOptManageResources.setEnabled(false);
             mnuOptRefresh.setEnabled(false);            
         } else {
@@ -153,7 +180,7 @@ public class HomeActivity extends Activity implements Observer {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.menuHomeRefresh:
-                // TODO
+            	refreshEvents();
                 return true;
             case R.id.menuHomeManageAccounts:
                 Intent intent = new Intent(this, PreferencesActivity.class);
@@ -178,8 +205,6 @@ public class HomeActivity extends Activity implements Observer {
     
     private void drawFirstRow() {
     	
-    	ArrayList<String> al = mCalendars;
-    	
     	//Adding time column
     	TableRow tr = new TableRow(this);
         tr.setLayoutParams(new LayoutParams(
@@ -194,14 +219,14 @@ public class HomeActivity extends Activity implements Observer {
     	
     	//Adding calendar columns
         int scaledFontSize = getResources().getDimensionPixelSize(R.dimen.calendar_name_font_size);
-    	for(String calendar_name: al) {
+    	for(String cal: mCalendarNames) {
         	TableRow tr_cal = new TableRow(this);
         	tr_cal.setLayoutParams(new LayoutParams(
         				   LayoutParams.FILL_PARENT,
                            LayoutParams.WRAP_CONTENT));
         	
             TextView calendar = new TextView(this);
-            calendar.setText(calendar_name);
+            calendar.setText(cal);
             calendar.setTextColor(Color.BLACK);
             calendar.setTypeface(null,Typeface.BOLD);
             calendar.setTextSize(scaledFontSize);
@@ -217,7 +242,6 @@ public class HomeActivity extends Activity implements Observer {
     }
     
     private void drawBackgroundCells() {
-    	ArrayList<String> al = mCalendars;
     	
         Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         int screen_width_pixels = display.getHeight();
@@ -240,9 +264,9 @@ public class HomeActivity extends Activity implements Observer {
              tr.addView(tv);
              
              //Adding calendars cells
-             for(int j=0; j<al.size(); j++) {                 
+             for(int j=0; j<mCalendarNames.size(); j++) {                 
                  final CellTextView cell = new CellTextView(this);
-                 cell.setCalendarId(al.get(j));
+                 cell.setCalendarId(mCalendarNames.get(j));
                  cell.setPosition(i);
                  cell.setTextSize(scaledFontSize);
                  cell.setWidth(mCalendarColumnWidth);
@@ -287,30 +311,30 @@ public class HomeActivity extends Activity implements Observer {
     }
     
     private void drawEvents() {
-    	boolean test = true;
         
-    	for(Event e: mEventList) {
-    		String title = e.getTitle();
-    		Calendar begin = e.getBegin();
-    		Calendar end = e.getEnd();
-    		//User u = e.getCreator();
-    		if( end.before(mCalendarBegin) || begin.after(mCalendarEnd)) {
-    			//Event out of range
-    			break;
+    	for(String calendarName: mEventMap.keySet()) {
+	    		List<? extends Event> eventList = mEventMap.get(calendarName);
+	    		for( Event e: eventList ) {
+	    		String title = e.getTitle();
+	    		Calendar begin = e.getBegin();
+	    		Calendar end = e.getEnd();
+	    		//User u = e.getCreator();
+	    		if( end.before(mCalendarBegin) || begin.after(mCalendarEnd)) {
+	    			//Event out of range
+	    			break;
+	    		}
+	    		
+	    		int startCellPos = getCellPositionAtCertainTime(begin, true);
+	    		int endCellPos = getCellPositionAtCertainTime(end, false)+1;
+	    		
+	    		//simulamos la columna a la que pertenece
+	    		int calendarPos = mCalendarNames.indexOf(calendarName);
+	    		
+	    		String text = title + "\n" 
+	    				+ mFormateador.format(begin.getTime()) + " - " 
+	    				+ mFormateador.format(end.getTime());
+	    		createEvent(calendarPos, startCellPos, text, endCellPos-startCellPos, false);
     		}
-    		
-    		int startCellPos = getCellPositionAtCertainTime(begin, true);
-    		int endCellPos = getCellPositionAtCertainTime(end, false)+1;
-    		
-    		//simulamos la columna a la que pertenece
-    		int calendarPos = 0;
-    		if(test) test = false;
-    		else calendarPos = 2;
-    		
-    		String text = title + "\n" 
-    				+ mFormateador.format(begin.getTime()) + " - " 
-    				+ mFormateador.format(end.getTime());
-    		createEvent(calendarPos, startCellPos, text, endCellPos-startCellPos, false);
     	}
     }
     
@@ -409,7 +433,7 @@ public class HomeActivity extends Activity implements Observer {
 		default:
 		    return super.onContextItemSelected(item);
 		}
-    	int calendarPos = mCalendars.indexOf(mSelectedCell.getCalendarId());
+    	int calendarPos = mCalendarNames.indexOf(mSelectedCell.getCalendarId());
     	String text = getString(R.string.reserved);
     	int startCellPos = mSelectedCell.getPosition();
     	createEvent(calendarPos, startCellPos, text, height, true);
@@ -417,53 +441,64 @@ public class HomeActivity extends Activity implements Observer {
 	}
     
     private void loadData() {
-    	mEventList = new ArrayList<Event>();
-    	Event g1 = new Event();
-    	g1.setTitle("Reunion VDSL");
+    	mEventMap = new HashMap<String, List<? extends Event>>();
     	Calendar now = Calendar.getInstance();
-    	g1.setBegin((Calendar)now.clone());
     	Calendar end = (Calendar)now.clone();
     	end.add(Calendar.HOUR, 1);
     	end.set(Calendar.MINUTE, 0);
-    	g1.setEnd((Calendar)end.clone());
-    	mEventList.add(g1);
-    	
-    	Event g2 = new Event();
-    	g2.setTitle("Traslados (JANDON)");
-    	g2.setBegin((Calendar)end.clone());
-    	end.add(Calendar.HOUR, 1);
-    	g2.setEnd((Calendar)end.clone());
-    	mEventList.add(g2);
+    	for(String key : mCalendarMap.keySet()) {
+    		CalendarResource calendar = mCalendarMap.get(key);
+    		try {
+				List<? extends Event> events = mResourceManager.getEvents(calendar.getId(), now, end);
+				mEventMap.put(key, events);
+			} catch (ResourceNotAvaiableException e) {
+				// TODO Auto-generated catch block
+			}
+    	}
     }
     
     private void startPolling() {
     	
-    	new Thread() {
-    		@Override
-    		public void run() {
-    			while(true) {
-    				try {
-    					mHandler.sendMessage(mHandler.obtainMessage(0));
-    					sleep(MINUTES_BETWEEN_POLLS*60*1000);
-    				} catch (Exception e) {
-						//Do nothing
-					}
-    			}
-    		}
-    	}.start();
+    	if( !mPoll ) {
+        	mPoll = true;
+	    	new Thread() {
+	    		@Override
+	    		public void run() {
+	    			while(true) {
+	    				try {
+	    					if(mRefresh) {
+	    						mHandler.sendMessage(mHandler.obtainMessage(0));
+	    					}
+	    					sleep(MINUTES_BETWEEN_POLLS*60*1000);
+	    				} catch (Exception e) {
+							//Do nothing
+						}
+	    			}
+	    		}
+	    	}.start();
+    	}
     }
 
     private Handler mHandler = new Handler() {
     	@Override
     	public void handleMessage(Message msg) {
-    		if( !mProgress.isShowing() ) mProgress.show();
-        	destroyAllEvents();
-        	updateTimeColumn();
-        	loadData();
-        	drawEvents();
-    		mProgress.dismiss();
+    		refreshEvents();
     	}
     };
+    
+    synchronized private void refreshEvents() {
+		if( !mProgress.isShowing() ) mProgress.show();
+    	try {
+    		loadData();
+    		updateTimeColumn();
+        	destroyAllEvents();
+    		drawEvents();
+    	}
+    	catch (Exception e) {
+			//Do nothing
+		}
+		mProgress.dismiss();
+    }
     
     /**
      * Return the cell position for a certain time.
