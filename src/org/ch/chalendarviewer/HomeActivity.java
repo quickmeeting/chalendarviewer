@@ -96,6 +96,8 @@ public class HomeActivity extends Activity implements Observer {
 	private final int THREE_MIN_EVENTS_SELECTIONS = 3;
 	private final int FOUR_MIN_EVENTS_SELECTIONS  = 4;
 	
+	private final String TAG = "**** HomeActivity";
+	
 	UserManager mUserManager = null;
 	
     /** Called when the activity is first created. */
@@ -141,7 +143,7 @@ public class HomeActivity extends Activity implements Observer {
             startPolling();
         } catch (Exception e) {
 			// TODO: handle exception
-        	Log.i("HomeActivity", e.getMessage());
+        	Log.i(TAG, e.getMessage());
 		}
     }
     
@@ -310,13 +312,13 @@ public class HomeActivity extends Activity implements Observer {
 		    		String text = title + "\n" 
 		    				+ mFormateador.format(begin.getTime()) + " - " 
 		    				+ mFormateador.format(end.getTime());
-		    		createEvent(calendarPos, startCellPos, text, endCellPos-startCellPos, false);
+		    		addEvent(calendarPos, startCellPos, text, endCellPos-startCellPos, false);
 	    		}
     		}
     	}
     }
     
-    private void createEvent(int calendarPos, int startCellPos, String text, int height, boolean isAppUser) {
+    private void addEvent(int calendarPos, int startCellPos, String text, int height, boolean isAppUser) {
 		EventTextView event = new EventTextView(this, isAppUser);
 		event.setWidth(mCalendarColumnWidth);
 		event.setHeight(height*mCalendarRowHeight);
@@ -332,12 +334,12 @@ public class HomeActivity extends Activity implements Observer {
 		mAllEvents.add(event);
     }
     
-    private void destroyEvent(TextView event) {
+    private void removeEvent(TextView event) {
     	mAllEvents.remove(event);
     	mFrameLayout.removeView(event);
     }
     
-    private void destroyAllEvents() {
+    private void removeAllEvents() {
     	for(TextView event: mAllEvents) {
     		mFrameLayout.removeView(event);
     	}
@@ -373,7 +375,7 @@ public class HomeActivity extends Activity implements Observer {
     	b.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
     	    @Override
     	    public void onClick(DialogInterface dialog, int which) {
-    	    	destroyEvent(mSelectedEvent);
+    	    	removeEvent(mSelectedEvent);
     	    }
     	});
     	b.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -414,7 +416,7 @@ public class HomeActivity extends Activity implements Observer {
     	int calendarPos = mCalendarNames.indexOf(mSelectedCell.getCalendarId());
     	String text = getString(R.string.reserved);
     	int startCellPos = mSelectedCell.getPosition();
-    	createEvent(calendarPos, startCellPos, text, height, true);
+    	addEvent(calendarPos, startCellPos, text, height, true);
 		return true;
 	}
     
@@ -443,7 +445,7 @@ public class HomeActivity extends Activity implements Observer {
 	    				try {
 	    					sleep(MINUTES_BETWEEN_POLLS*60*1000);
 	    					if(mRefresh) {
-	    						mHandler.sendMessage(mHandler.obtainMessage(0));
+	    						mPollHandler.sendMessage(mPollHandler.obtainMessage(0));
 	    					}
 	    				} catch (Exception e) {
 							//Do nothing
@@ -454,35 +456,37 @@ public class HomeActivity extends Activity implements Observer {
     	}
     }
 
-    private Handler mHandler = new Handler() {
+    private Handler mPollHandler = new Handler() {
     	@Override
     	public void handleMessage(Message msg) {
-    		if( msg.what == 1 ) {
-    			refreshEvents();
-    		}
-    		else {
-	        	destroyAllEvents();
-	    		drawEvents();
-	    		mProgress.dismiss();
-    		}
+    		refreshEvents();
     	}
     };
     
     synchronized private void refreshEvents() {
 		mProgress.show();
+		removeAllEvents();
 		updateTimeColumn();
     	new Thread() {
     		@Override
     		public void run() {
 				try {
 					loadData();
-					mHandler.sendMessage(mHandler.obtainMessage(0));
+					mRefreshHandler.sendMessage(mRefreshHandler.obtainMessage(0));
 				} catch (Exception e) {
 					//Do nothing
 				}
     		}
     	}.start();
     }
+    
+    private Handler mRefreshHandler = new Handler() {
+    	@Override
+    	public void handleMessage(Message msg) {
+    		drawEvents();
+    		mProgress.dismiss();
+    	}
+    };
     
     /**
      * Return the cell position for a certain time.
