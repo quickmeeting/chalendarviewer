@@ -70,6 +70,7 @@ public class HomeActivity extends Activity implements Observer {
 	
 	private User mUser;
 	private ProgressDialog mProgress;
+	String mToastErrorMessage;
 	private List<String> mCalendarNames;
 	Map<String,CalendarResource>  mCalendarMap;
 	Map<String, List<? extends Event>> mEventMap;
@@ -110,9 +111,11 @@ public class HomeActivity extends Activity implements Observer {
         mTableLayout = (TableLayout)findViewById(R.id.mainTableLayout);
         mFrameLayout = (FrameLayout)findViewById(R.id.frameLayout);
         
-        mProgress 	 = new ProgressDialog(this);
-        mFormateador = new SimpleDateFormat("HH:mm");
-        mAllEvents   = new ArrayList<TextView>();
+        mProgress 	       = new ProgressDialog(this);
+        mFormateador       = new SimpleDateFormat("HH:mm");
+        mAllEvents         = new ArrayList<TextView>();
+        mToastErrorMessage = getString(R.string.download_data_error);
+        mEventMap          = new HashMap<String, List<? extends Event>>();
         
         mProgress.setMessage(getString(R.string.download_data));
         
@@ -483,11 +486,10 @@ public class HomeActivity extends Activity implements Observer {
     }
     
     private Handler mRefreshHandler = new Handler() {
-    	String errorMessage = getString(R.string.download_data_error);
     	@Override
     	public void handleMessage(Message msg) {
     		if( msg.what == 1 ) {
-    			Toast.makeText(HomeActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+    			Toast.makeText(HomeActivity.this, mToastErrorMessage, Toast.LENGTH_SHORT).show();
     		}
     		drawEvents();
     		mProgress.dismiss();
