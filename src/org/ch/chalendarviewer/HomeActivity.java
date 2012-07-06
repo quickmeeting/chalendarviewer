@@ -52,6 +52,7 @@ import android.widget.FrameLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.ch.chalendarviewer.objects.CalendarResource;
 import org.ch.chalendarviewer.objects.Event;
@@ -293,7 +294,10 @@ public class HomeActivity extends Activity implements Observer {
     }
     
     private void drawEvents() {
-        
+        //Remove old events
+    	removeAllEvents();
+    	
+    	//Draw new ones
     	for(String calendarName: mEventMap.keySet()) {
     		List<? extends Event> eventList = mEventMap.get(calendarName);
     		for( Event e: eventList ) {
@@ -420,18 +424,15 @@ public class HomeActivity extends Activity implements Observer {
 		return true;
 	}
     
-    private void loadData() {
-    	mEventMap = new HashMap<String, List<? extends Event>>();
+    private void loadData() throws ResourceNotAvaiableException {
+    	Map<String, List<? extends Event>> tmp = new HashMap<String, List<? extends Event>>();
     	for(String key : mCalendarMap.keySet()) {
     		CalendarResource calendar = mCalendarMap.get(key);
-    		try {
-				List<? extends Event> events = 
+			List<? extends Event> events = 
 						mResourceManager.getEvents(calendar.getId(), mCalendarBegin, mCalendarEnd);
-				mEventMap.put(key, events);
-			} catch (ResourceNotAvaiableException e) {
-				// TODO Auto-generated catch block
-			}
+			mEventMap.put(key, events);
     	}
+    	mEventMap = tmp;
     }
     
     private void startPolling() {
@@ -465,24 +466,29 @@ public class HomeActivity extends Activity implements Observer {
     
     synchronized private void refreshEvents() {
 		mProgress.show();
-		removeAllEvents();
 		updateTimeColumn();
     	new Thread() {
     		@Override
     		public void run() {
+    			int what = 0;
 				try {
 					loadData();
-					mRefreshHandler.sendMessage(mRefreshHandler.obtainMessage(0));
 				} catch (Exception e) {
-					//Do nothing
+					what = 1;
+					Log.i(TAG, e.getMessage());
 				}
+				mRefreshHandler.sendMessage(mRefreshHandler.obtainMessage(what));
     		}
     	}.start();
     }
     
     private Handler mRefreshHandler = new Handler() {
+    	String errorMessage = getString(R.string.download_data_error);
     	@Override
     	public void handleMessage(Message msg) {
+    		if( msg.what == 1 ) {
+    			Toast.makeText(HomeActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+    		}
     		drawEvents();
     		mProgress.dismiss();
     	}
