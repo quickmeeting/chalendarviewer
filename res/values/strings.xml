@@ -54,4 +54,10 @@
     <string name="synchronizingCalendars">Synchronizing Calendars</string>
     <string name="synchronizingError">Error Synchronizing Calendars</string>
     
+    <string name="selectDuration">Select duration</string>
+    <string name="minutes">minutes</string>
+    
+    <string name="createdByChalendar">Reserved</string>   
+    <string name="creationError">Error creating event</string>
+    
 </resources>

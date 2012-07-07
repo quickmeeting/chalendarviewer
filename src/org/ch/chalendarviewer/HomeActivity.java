@@ -395,13 +395,16 @@ public class HomeActivity extends Activity implements Observer {
     
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
-		menu.setHeaderTitle("Ordenar por");
-		menu.add(0, MIN_EVENT_SELECTION, 0, String.valueOf(MIN_EVENT_TIME) + " min");
-		menu.add(0, TWO_MIN_EVENTS_SELECTIONS, 0, String.valueOf(MIN_EVENT_TIME*2) + " min");
-		menu.add(0, THREE_MIN_EVENTS_SELECTIONS, 0, String.valueOf(MIN_EVENT_TIME*3) + " min");
-		menu.add(0, FOUR_MIN_EVENTS_SELECTIONS, 0, String.valueOf(MIN_EVENT_TIME*4) + " min");
+		menu.setHeaderTitle(getString(R.string.selectDuration));
+		menu.add(0, MIN_EVENT_SELECTION, 0, String.valueOf(MIN_EVENT_TIME) + getString(R.string.minutes));
+		menu.add(0, TWO_MIN_EVENTS_SELECTIONS, 0, String.valueOf(MIN_EVENT_TIME*2) + getString(R.string.minutes));
+		menu.add(0, THREE_MIN_EVENTS_SELECTIONS, 0, String.valueOf(MIN_EVENT_TIME*3) + getString(R.string.minutes));
+		menu.add(0, FOUR_MIN_EVENTS_SELECTIONS, 0, String.valueOf(MIN_EVENT_TIME*4) + getString(R.string.minutes));
 	}
 	
+	/**
+	 * Create event manager
+	 */
 	public boolean onContextItemSelected(MenuItem item) {
 		int height = 1;
 		switch (item.getItemId()) {
@@ -419,12 +422,50 @@ public class HomeActivity extends Activity implements Observer {
 		default:
 		    return super.onContextItemSelected(item);
 		}
-    	int calendarPos = mCalendarNames.indexOf(mSelectedCell.getCalendarId());
-    	String text = getString(R.string.reserved);
+    	
+		//Obtain calendar data
+		String calendarId = mSelectedCell.getCalendarId();
+        int calendarPos = mCalendarNames.indexOf(calendarId);
+        CalendarResource calendarResource = mCalendarMap.get(calendarId);
+        
+		String text = getString(R.string.reserved);
     	int startCellPos = mSelectedCell.getPosition();
+    	
+    	Log.d(TAG, "Start Cell Pos: "+ startCellPos);
+    	
+    	
+    	Calendar eventBegin = convertCellPositionToCalendar(startCellPos, mCalendarBegin);
+    	Calendar eventEnd = convertCellPositionToCalendar(height, eventBegin);
+    	
+    	Event eventToCreate = new Event();
+    	eventToCreate.setTitle(getString(R.string.createdByChalendar));
+    	eventToCreate.setBegin(eventBegin);
+    	eventToCreate.setEnd(eventEnd);
+    	eventToCreate.setDetails(getString(R.string.createdByChalendar));
+    	
+    	try {
+            mResourceManager.createEvent(calendarResource.getId(), eventToCreate);
+        } catch (ResourceNotAvaiableException e) {
+            Toast.makeText(HomeActivity.this, getString(R.string.creationError), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    	
     	addEvent(calendarPos, startCellPos, text, height, true);
 		return true;
 	}
+
+    /**
+     * Convert a cell position or offset into a calendar, adding cells to a initial time
+     * @param cellOffset cells to add to initial time.
+     * @param initTime Reference time
+     * @return initTime + (time) cellOffset
+     */
+    private Calendar convertCellPositionToCalendar(int cellOffset, Calendar initTime) {
+        Calendar eventBegin = (Calendar) initTime.clone();
+    	int initTimeOffset = MIN_EVENT_TIME * cellOffset; 
+    	eventBegin.add(Calendar.MINUTE, initTimeOffset);
+        return eventBegin;
+    }
     
     private void loadData() throws ResourceNotAvaiableException {
     	Map<String, List<? extends Event>> tmp = new HashMap<String, List<? extends Event>>();

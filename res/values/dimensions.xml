@@ -2,7 +2,7 @@
 <resources>
     <dimen name="time_font_size" >10sp</dimen>
     <dimen name="calendar_name_font_size" >10sp</dimen>
-    <dimen name="first_row_height" >35dp</dimen>
+    <dimen name="first_row_height" >52dp</dimen>
     <dimen name="first_column_width" >50dp</dimen>
     <dimen name="calendar_row_height" >27dp</dimen>
     <dimen name="calendar_column_width" >120dp</dimen>
