@@ -23,7 +23,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -147,6 +146,7 @@ public class HomeActivity extends Activity implements Observer {
             startPolling();
         } catch (Exception e) {
 			// TODO: handle exception
+            e.printStackTrace();
         	Log.i(TAG, e.getMessage());
 		}
     }
@@ -303,22 +303,21 @@ public class HomeActivity extends Activity implements Observer {
     	//Draw new ones
     	for(String calendarName: mEventMap.keySet()) {
     		List<? extends Event> eventList = mEventMap.get(calendarName);
-    		for( Event e: eventList ) {
-	    		String title = e.getTitle();
-	    		Calendar begin = e.getBegin();
-	    		Calendar end = e.getEnd();
-	    		//User u = e.getCreator();
-	    		if( end.before(mCalendarBegin) || begin.after(mCalendarEnd)) {
-	    			
-		    		int startCellPos = getCellPosition(begin, true);
-		    		int endCellPos = getCellPosition(end, false)+1;
+    		for( Event event: eventList ) {
+	    		String title = event.getTitle();
+	    		Calendar eventBegin = event.getBegin();
+	    		Calendar eventEnd = event.getEnd();
+
+	    		if( !(eventEnd.before(mCalendarBegin) || eventBegin.after(mCalendarEnd)) ) {
+		    		int startCellPos = getCellPosition(eventBegin, true);
+		    		int endCellPos = getCellPosition(eventEnd, false)+1;
 		    		
 		    		//simulamos la columna a la que pertenece
 		    		int calendarPos = mCalendarNames.indexOf(calendarName);
 		    		
 		    		String text = title + "\n" 
-		    				+ mFormateador.format(begin.getTime()) + " - " 
-		    				+ mFormateador.format(end.getTime());
+		    				+ mFormateador.format(eventBegin.getTime()) + " - " 
+		    				+ mFormateador.format(eventEnd.getTime());
 		    		addEvent(calendarPos, startCellPos, text, endCellPos-startCellPos, false);
 	    		}
     		}
@@ -326,7 +325,7 @@ public class HomeActivity extends Activity implements Observer {
     }
     
     private void addEvent(int calendarPos, int startCellPos, String text, int height, boolean isAppUser) {
-		EventTextView event = new EventTextView(this, isAppUser);
+        EventTextView event = new EventTextView(this, isAppUser);
 		event.setWidth(mCalendarColumnWidth);
 		event.setHeight(height*mCalendarRowHeight);
 		event.setText(text);
@@ -433,9 +432,10 @@ public class HomeActivity extends Activity implements Observer {
     		CalendarResource calendar = mCalendarMap.get(key);
 			List<? extends Event> events = 
 						mResourceManager.getEvents(calendar.getId(), mCalendarBegin, mCalendarEnd);
+			Log.d(TAG, "=> Event list size: " + events.size());
 			mEventMap.put(key, events);
     	}
-    	mEventMap = tmp;
+    	//mEventMap = tmp;
     }
     
     private void startPolling() {
@@ -452,7 +452,7 @@ public class HomeActivity extends Activity implements Observer {
 	    						mPollHandler.sendMessage(mPollHandler.obtainMessage(0));
 	    					}
 	    				} catch (Exception e) {
-							//Do nothing
+							e.printStackTrace();
 						}
 	    			}
 	    		}
@@ -479,6 +479,7 @@ public class HomeActivity extends Activity implements Observer {
 				} catch (Exception e) {
 					what = 1;
 					Log.i(TAG, e.getMessage());
+					e.printStackTrace();
 				}
 				mRefreshHandler.sendMessage(mRefreshHandler.obtainMessage(what));
     		}
@@ -509,7 +510,8 @@ public class HomeActivity extends Activity implements Observer {
 			loopControl.add(Calendar.MINUTE, MIN_EVENT_TIME);
 			count++;
 		}
-		if(count > 0) --count;
+		//TODO: WHY???
+		//if(count > 0) --count;
 		if(!includeBounds && (time.get(Calendar.MINUTE) % MIN_EVENT_TIME) ==0)  {
 			 --count;
 		}

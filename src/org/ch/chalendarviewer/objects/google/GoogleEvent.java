@@ -69,6 +69,7 @@ public class GoogleEvent extends Event{
         this.mId = ev.getId();
         this.mTitle = ev.getTitle();
         this.mDetails = ev.getDetails();
+        mAttendees = new ArrayList<User>();
     }
 
     public String getSelfLink() {

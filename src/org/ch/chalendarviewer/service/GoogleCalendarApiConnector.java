@@ -18,6 +18,7 @@
 package org.ch.chalendarviewer.service;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import org.apache.http.HttpException;
@@ -72,7 +73,7 @@ public class GoogleCalendarApiConnector {
      */
     private GoogleCalendarApiConnector(Context context) {
         mSessionManager = UserManager.getInstance(context);
-        mDateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+        mDateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         mDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
     }
 
@@ -206,12 +207,19 @@ public class GoogleCalendarApiConnector {
     public List<GoogleEvent> getEvents (GoogleCalendar calendar, Calendar begin, Calendar end) {
         ArrayList<GoogleEvent> events = new ArrayList<GoogleEvent>();
         
-        begin.setTimeZone(calendar.getTimeZone());
-        end.setTimeZone(calendar.getTimeZone());
         
+        
+//        begin.setTimeZone(calendar.getTimeZone());
+//        end.setTimeZone(calendar.getTimeZone());
         //pattern 2011-11-23T00:00:00
        
-        String url = calendar.getEventFeedLik() +  "?alt=jsonc&start-min=" + mDateTimeFormatter.format(begin.getTime()) + "&start-max="+ mDateTimeFormatter.format(end.getTime());
+        String googleDateInit = formatToGoogleDateTime(begin);
+        String googleDateEnd = formatToGoogleDateTime(end);
+        
+        String url = calendar.getEventFeedLik() 
+                           +  "?alt=jsonc&start-min=" + googleDateInit
+                           + "&start-max="+ googleDateEnd
+                           + "&ctz=Europe/Madrid" ;
                 
         String[] paramsKey =  {"Authorization"};
         String[] paramsValue = {"Bearer " + mSessionManager.getActiveUserAccessToken()};
@@ -257,6 +265,22 @@ public class GoogleCalendarApiConnector {
         
         return events;
     }
+
+    /**
+     * Format a Calendar to a google valid date
+     * @param begin Example 2012-07-07 11:15:19+02:00
+     * @return output example: 2012-07-07T11%3A15%3A19%2B02%3A00
+     */
+    private String formatToGoogleDateTime(Calendar begin) {
+        String preFormattedDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(begin.getTime());
+        StringBuffer sb = new StringBuffer(preFormattedDate); 
+        
+        sb.insert(22, ':');
+        String googleFormattedDate = Uri.encode(sb.toString());
+        
+        Log.d(TAG, "Date to google"+ googleFormattedDate);
+        return googleFormattedDate;
+    }
     
     
     /**
@@ -270,7 +294,6 @@ public class GoogleCalendarApiConnector {
         if(isCompleteDayEvent(dateTime)){
             formatter = mDateFormatter;
         }
-        
         Calendar evCalendar = new GregorianCalendar();
         evCalendar.setTime(formatter.parse(dateTime));
         return evCalendar;
