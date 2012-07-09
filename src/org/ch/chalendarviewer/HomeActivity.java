@@ -602,6 +602,10 @@ public class HomeActivity extends Activity implements Observer {
     	
     	int cellPosition = 0;
     	
+    	Log.i(TAG, "time: " + mFormateador.format(time.getTime()));
+    	Log.i(TAG, "mCalendarBegin: " + mFormateador.format(mCalendarBegin.getTime()));
+    	Log.i(TAG, "mCalendarEnd: " + mFormateador.format(mCalendarEnd.getTime()));
+    	
     	long timeInMilli  = time.getTimeInMillis();
     	long beginInMilli = mCalendarBegin.getTimeInMillis();
     	long endInMilli   = mCalendarEnd.getTimeInMillis();
@@ -613,8 +617,15 @@ public class HomeActivity extends Activity implements Observer {
     	//The time ends after the last cell from the calendar
     	if( endDiffMin <= 0 ) return (mNumberOfRows-1);
     	
-    	cellPosition = (int) beginDiffMin/MIN_EVENT_TIME;
+    	cellPosition = (int) (beginDiffMin+1)/MIN_EVENT_TIME;
+    	
+    	Log.i(TAG, "endDiffMin: " + endDiffMin);
+    	Log.i(TAG, "beginDiffMin: " + beginDiffMin);
+    	Log.i(TAG, "cellPosition: " + cellPosition);
+    	
+    	Log.i(TAG, "includeBounds: " + includeBounds);
 		if(!includeBounds && (time.get(Calendar.MINUTE) % MIN_EVENT_TIME) ==0)  {
+			Log.i(TAG, "in includeBounds: --cellPosition");
 			 --cellPosition;
 		}
 		return cellPosition;
