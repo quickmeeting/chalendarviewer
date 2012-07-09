@@ -22,6 +22,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
@@ -84,42 +85,27 @@ public class PreferencesActivity extends PreferenceActivity {
                 startActivity(intent); 
                 return true;
             }
-        });   
-    }
-
-    protected void callManagerResourceActivity() {
+        });
         
+        mChangeActiveAccount.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+            
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                String newActiveAccount = (String) newValue;
+                Log.d(TAG,"New active account = " + newActiveAccount);
+                mUserManager.changeAccountActive(newActiveAccount);
+                refreshActiveAccount();
+                return true;
+            }
+        });
     }
 
     private void refreshScreenBasedOnAccounts() {
         if (mUserManager.hasUserActiveAccessToken()) {
-            mCurrentActiveAccountPref.setSummary(mUserManager.getActiveUserEmail());
             mDeleteAccount.setEnabled(true);
             mChangeActiveAccount.setEnabled(true);
             mManageResources.setEnabled(true);
-            
-            Cursor cursor = mUserManager.getAllAccountsIdEmail();
-            String[] emailList = new String[cursor.getCount()];
-            String[] idList = new String[cursor.getCount()];;
-            
-            if (cursor.moveToFirst()) {
-                int pos = 0;
-                do {        
-                    idList[pos] = cursor.getString(cursor.getColumnIndex(AccountColumns._ID));
-                    emailList[pos] = cursor.getString(cursor.getColumnIndex(AccountColumns.EMAIL)); 
-                    Log.d(TAG, "Inserted[" + pos +"] - " +  idList[pos] + " - "+  emailList[pos]);
-                    pos++;
-                } while (cursor.moveToNext());
-            }
-            cursor.close();
-            Log.d(TAG, "Total items = " + emailList.length);
-            
-            mChangeActiveAccount.setEntries(emailList);
-            mChangeActiveAccount.setEntryValues(idList);
-            mDeleteAccount.setEntries(emailList);
-            mDeleteAccount.setEntryValues(idList);
-            
-            
+            refreshActiveAccount();
         } else {
             mCurrentActiveAccountPref.setSummary(R.string.activeAccountNotDefined);
             mDeleteAccount.setEnabled(false);
@@ -127,6 +113,32 @@ public class PreferencesActivity extends PreferenceActivity {
             mManageResources.setEnabled(false);
         }
         
+    }
+    
+    private void refreshActiveAccount() {
+        Cursor cursor = mUserManager.getAllAccountsEmail();
+        String[] emailList = new String[cursor.getCount()];           
+        
+        if (cursor.moveToFirst()) {
+            int pos = 0;
+            do {        
+                emailList[pos] = cursor.getString(cursor.getColumnIndex(AccountColumns.EMAIL)); 
+                Log.d(TAG, "Inserted[" + pos +"] - " + emailList[pos]);
+                pos++;
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        Log.d(TAG, "Total items = " + emailList.length);
+        
+        mChangeActiveAccount.setEntries(emailList);
+        mChangeActiveAccount.setEntryValues(emailList);
+        mChangeActiveAccount.setDefaultValue(mUserManager.getActiveUserEmail());
+        
+        
+        mDeleteAccount.setEntries(emailList);
+        mDeleteAccount.setEntryValues(emailList);
+        
+        mCurrentActiveAccountPref.setSummary(mUserManager.getActiveUserEmail());        
     }
     
     private void callAuthorizeActivity() {

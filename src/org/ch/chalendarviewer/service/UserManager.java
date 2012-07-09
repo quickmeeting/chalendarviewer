@@ -36,6 +36,7 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
@@ -227,7 +228,6 @@ public class UserManager {
             refrehTokenReturn = true;
         } else {
             
-            // fill parameters
             // TODO create constants to these parameters
             String[] paramsKey =   {"cliend_id","client_secret","refresh_token","grant_type","Content-Type"};
             String[] paramsValue = {GoogleConstants.CLIENT_ID,GoogleConstants.CLIENT_SECRET,mRefreshToken,"refresh_token","application/x-www-form-urlencoded"};
@@ -527,11 +527,18 @@ public class UserManager {
         
         Log.d(TAG, "The new active user is " + mail);
         
+        if (mUserMail != null && mUserMail.equalsIgnoreCase(mail)) {
+            // Active user = new user
+            // just leave
+            Log.d(TAG, "The new active user is equal to the older one");
+            return;
+        }
+        
         //values to be inserted/updated
         ContentValues values = new ContentValues();      
         
         String where = AccountColumns.EMAIL + " = ?";
-        String[] whereParams = new String[]{mUserMail};
+        String[] whereParams = new String[]{mail};
         values.put(AccountColumns.ACTIVE_USER, true);
         
         // update the rows
@@ -542,7 +549,7 @@ public class UserManager {
         // others users should be disabled
         // where clause
         where = AccountColumns.EMAIL + " != ?";
-        whereParams = new String[]{mUserMail};
+        whereParams = new String[]{mail};
         values.clear();
         values.put(AccountColumns.ACTIVE_USER, false);
         
@@ -550,8 +557,7 @@ public class UserManager {
         rowsAffected = mProvider.update(AccountColumns.CONTENT_URI, values, where, whereParams);
 
         Log.d(TAG, rowsAffected + " lines on database were passed to inactive");
-        recoverDataFromDataBase();
-        
+        recoverDataFromDataBase();        
     }
 
     public String getActiveUserEmail() {
@@ -559,11 +565,10 @@ public class UserManager {
         return mUserMail;
     }
 
-    public Cursor getAllAccountsIdEmail() {
+    public Cursor getAllAccountsEmail() {
        
         // Form an array specifying which columns to return. 
-        String[] projection = new String[] {
-                AccountColumns._ID,
+        String[] projection = new String[] {                
                 AccountColumns.EMAIL
         };        
         // Make the query. 
@@ -572,7 +577,7 @@ public class UserManager {
                 projection,                      // Which columns to return 
                 null,                            // Which rows to return 
                 null,                            // Selection arguments 
-                AccountColumns.EMAIL + " DESC"   // Put the results in ascending order by email
+                AccountColumns.EMAIL + " ASC"   // Put the results in ascending order by email
         ); 
         return managedCursor;
     }

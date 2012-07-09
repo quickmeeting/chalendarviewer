@@ -41,8 +41,8 @@ public class GoogleConstants {
     /** Google API Access Token Address */
     public static final String URL_ACCESS_TOKEN = "https://accounts.google.com/o/oauth2/token";
     
-    /** Google App authorization site */
-    private static final String OAUTH_SITE         = "https://accounts.google.com/o/oauth2/auth";
+    /** Google App authorization site */             
+    public static final String OAUTH_SITE         = "https://accounts.google.com/o/oauth2/auth";
     /** Redirect URI (standard value for APP's */ 
     public static final String OAUTH_REDIRECT_URI  = "urn:ietf:wg:oauth:2.0:oob";
     /** Response type (standard value for APP's */
@@ -57,5 +57,7 @@ public class GoogleConstants {
                                                          "&redirect_uri=" + OAUTH_REDIRECT_URI +
                                                          "&scope=" + OAUTH_SCOPE +
                                                          "&response_type=" + OAUTH_RESPONSE_TYPE;
-    
+    public static final String URL_OAUTH_REF =  URL_ACCESS_TOKEN + "?client_id=" + CLIENT_ID +
+                                                             "&client_secret=" + CLIENT_SECRET +                                                             
+                                                             "&grant_type=refresh_token&response_type=code";   
 }

@@ -74,6 +74,7 @@ public class ConnectionUtils {
         
         if (returnCode != HTTP_OK && returnCode != HTTP_CREATED) {
             Log.e(TAG,"There was an error " + returnCode + " processing the url " + url);
+            Log.e(TAG,streamToString(entity.getContent()));
             throw new HttpException("There was an error " + returnCode + " processing the url " + url);
         }
     
@@ -138,6 +139,7 @@ public class ConnectionUtils {
         
         if (returnCode != HTTP_OK && returnCode != HTTP_CREATED) {
             Log.e(TAG,"There was an error " + returnCode + " processing the url " + url);
+            Log.e(TAG,streamToString(entity.getContent()));
             throw new HttpException("There was an error " + returnCode + " processing the url " + url);
         }
     
@@ -177,7 +179,8 @@ public class ConnectionUtils {
         
        if (returnCode != HTTP_OK && returnCode != HTTP_CREATED) {
            Log.e(TAG,"There was an error " + returnCode + " processing the url " + url);
-           throw new HttpException("There was an error " + returnCode + " processing the url " + url);
+           Log.e(TAG,streamToString(entity.getContent()));
+           throw new HttpException("There was an error " + returnCode + " processing the url " + url);           
        }
     
        String htmlResult = streamToString(entity.getContent());
