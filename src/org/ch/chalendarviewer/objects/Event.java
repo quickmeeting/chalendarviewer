@@ -19,6 +19,19 @@ public class Event {
     /** Ending date of event */
     protected Calendar mEnd;
 
+    /** Empty constructor */
+    public Event(){
+        /** Empty constructor */
+    }
+    
+    /**
+     * Constructor with id
+     * @param idEvent id of event
+     */
+    public Event(String idEvent) {
+        this.mId = idEvent;
+    }
+
     /**
      * Get id 
      * @return id of event

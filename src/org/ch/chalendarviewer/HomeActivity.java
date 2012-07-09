@@ -321,18 +321,19 @@ public class HomeActivity extends Activity implements Observer {
 		    		
 		    		boolean isCreatedByChalendar = event.getDetails().equals(getString(R.string.createdByChalendar));
 		    		
-		    		addEvent(calendarPos, startCellPos, text, endCellPos-startCellPos, isCreatedByChalendar);
+		    		addEvent(calendarPos, startCellPos, text, endCellPos-startCellPos, isCreatedByChalendar, event.getId());
 	    		}
     		}
     	}
     }
     
-    private void addEvent(int calendarPos, int startCellPos, String text, int height, boolean isAppUser) {
+    private void addEvent(int calendarPos, int startCellPos, String text, int height, boolean isAppUser, String idEvent) {
         EventTextView event = new EventTextView(this, isAppUser);
 		event.setWidth(mCalendarColumnWidth);
 		event.setHeight(height*mCalendarRowHeight);
 		event.setText(text);
 		event.setObserver(this);
+		event.setIdEvent(idEvent);
 		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(
 		        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
 		        (Gravity.LEFT | Gravity.TOP));
@@ -343,8 +344,23 @@ public class HomeActivity extends Activity implements Observer {
 		mAllEvents.add(event);
     }
     
+    /**
+     * Remove event from UI and remote calendar
+     * @param event UI component for event
+     */
     private void removeEvent(TextView event) {
-    	mAllEvents.remove(event);
+        mAllEvents.remove(event);
+    	
+    	EventTextView evTextView = (EventTextView) event;
+    	
+    	Log.d(TAG, evTextView.getIdEvent());
+    	
+    	try {
+            mResourceManager.deleteEvent(new Event(evTextView.getIdEvent()));
+        } catch (ResourceNotAvaiableException e) {
+            e.printStackTrace();
+        }
+        
     	mFrameLayout.removeView(event);
     }
     
@@ -425,35 +441,32 @@ public class HomeActivity extends Activity implements Observer {
 		default:
 		    return super.onContextItemSelected(item);
 		}
-    	
+
 		//Obtain calendar data
-		String calendarId = mSelectedCell.getCalendarId();
-        int calendarPos = mCalendarNames.indexOf(calendarId);
+        String calendarId = mSelectedCell.getCalendarId();
         CalendarResource calendarResource = mCalendarMap.get(calendarId);
         
-		String text = getString(R.string.reserved);
-    	int startCellPos = mSelectedCell.getPosition();
-    	
-    	Log.d(TAG, "Calendar resource: "+ calendarResource.getId());
-    	
-    	
-    	Calendar eventBegin = convertCellPositionToCalendar(startCellPos, mCalendarBegin);
-    	Calendar eventEnd = convertCellPositionToCalendar(height, eventBegin);
-    	
-    	Event eventToCreate = new Event();
-    	eventToCreate.setTitle(getString(R.string.createdByChalendar));
-    	eventToCreate.setBegin(eventBegin);
-    	eventToCreate.setEnd(eventEnd);
-    	eventToCreate.setDetails(getString(R.string.createdByChalendar));
-    	
-    	try {
+        int startCellPos = mSelectedCell.getPosition();
+        
+        Log.d(TAG, "Calendar resource: "+ calendarResource.getId());
+        
+        
+        Calendar eventBegin = convertCellPositionToCalendar(startCellPos, mCalendarBegin);
+        Calendar eventEnd = convertCellPositionToCalendar(height, eventBegin);
+        
+        Event eventToCreate = new Event();
+        eventToCreate.setTitle(getString(R.string.createdByChalendar));
+        eventToCreate.setBegin(eventBegin);
+        eventToCreate.setEnd(eventEnd);
+        eventToCreate.setDetails(getString(R.string.createdByChalendar));
+        
+        try {
             mResourceManager.createEvent(calendarResource.getId(), eventToCreate);
         } catch (ResourceNotAvaiableException e) {
             Toast.makeText(HomeActivity.this, getString(R.string.creationError), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
-    	
-    	addEvent(calendarPos, startCellPos, text, height, true);
+        refreshEvents();
 		return true;
 	}
 

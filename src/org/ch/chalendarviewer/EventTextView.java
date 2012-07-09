@@ -6,16 +6,39 @@ import org.ch.chalendarviewer.util.Observer;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+/**
+ * Represents an event in UI
+ * @author jlafuente
+ *
+ */
 public class EventTextView extends TextView implements Observable {
 
-	private Observer mObs;
+    private Observer mObs;
+	/** True: event was created by chalendar */
 	private boolean mIsUserEvent;
+	/** Event id*/
+	private String idEvent;
 	
-	public EventTextView(Context context, boolean isUserEvent) {
+	/**
+	 * Id of event
+	 * @return id of event
+	 */
+	public String getIdEvent() {
+        return idEvent;
+    }
+
+	/**
+	 * Id of event
+	 * @param idEvent id of event
+	 */
+    public void setIdEvent(String idEvent) {
+        this.idEvent = idEvent;
+    }
+
+    public EventTextView(Context context, boolean isUserEvent) {
 		super(context);
 		this.mIsUserEvent = isUserEvent;
 		init();
