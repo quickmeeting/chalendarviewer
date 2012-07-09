@@ -318,7 +318,10 @@ public class HomeActivity extends Activity implements Observer {
 		    		String text = title + "\n" 
 		    				+ mFormateador.format(eventBegin.getTime()) + " - " 
 		    				+ mFormateador.format(eventEnd.getTime());
-		    		addEvent(calendarPos, startCellPos, text, endCellPos-startCellPos, false);
+		    		
+		    		boolean isCreatedByChalendar = event.getDetails().equals(getString(R.string.createdByChalendar));
+		    		
+		    		addEvent(calendarPos, startCellPos, text, endCellPos-startCellPos, isCreatedByChalendar);
 	    		}
     		}
     	}
@@ -431,7 +434,7 @@ public class HomeActivity extends Activity implements Observer {
 		String text = getString(R.string.reserved);
     	int startCellPos = mSelectedCell.getPosition();
     	
-    	Log.d(TAG, "Start Cell Pos: "+ startCellPos);
+    	Log.d(TAG, "Calendar resource: "+ calendarResource.getId());
     	
     	
     	Calendar eventBegin = convertCellPositionToCalendar(startCellPos, mCalendarBegin);
@@ -540,8 +543,8 @@ public class HomeActivity extends Activity implements Observer {
     
     /**
      * Return the cell position for a certain time.
-     * @param time: given time to search for their cell
-     * @param includeBounds: true for counting the time at the border.
+     * @param time given time to search for their cell
+     * @param includeBounds true for counting the time at the border.
      * @return vertical cell position
      */
     private int getCellPosition(Calendar time, boolean includeBounds) {
