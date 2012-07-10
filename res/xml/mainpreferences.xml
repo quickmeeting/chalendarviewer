@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/currentActiveAccount">
+        <Preference android:key="currentActiveAccount" 
+                    android:enabled="false"/>
+    </PreferenceCategory>             
     <PreferenceCategory android:title="@string/resources" android:key="resources">
         <Preference android:key="manageResources" android:title="@string/manageResources" android:summary="@string/manageResourcesHelp"/>
-    </PreferenceCategory>
-    
+    </PreferenceCategory>    
     <PreferenceCategory android:title="@string/accounts" 
                         android:key="accounts">
-        <Preference android:title="@string/currentActiveAccount" 
-                    android:key="currentActiveAccount" 
-                    android:enabled="false"/>
         <Preference android:key="addAccount"
                     android:title="@string/addAccount" 
                     android:summary="@string/addAccountHelp" />
