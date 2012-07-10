@@ -303,6 +303,9 @@ public class HomeActivity extends Activity implements Observer {
             	if( tmp.get(Calendar.MINUTE)%(2*MIN_EVENT_TIME) == 0 ) {
             		tv.setText(mFormateador.format(tmp.getTime()));
             	}
+            	else {
+            		tv.setText("");
+            	}
             	tmp.add(Calendar.MINUTE, MIN_EVENT_TIME);
             }
     	}
