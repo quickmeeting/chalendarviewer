@@ -327,8 +327,8 @@ public class HomeActivity extends Activity implements Observer {
 	    		Calendar eventEnd = event.getEnd();
 
 	    		if( !(eventEnd.before(mCalendarBegin) || eventBegin.after(mCalendarEnd)) ) {
-		    		int startCellPos = converCalendarToCellPosition(eventBegin, true);
-		    		int endCellPos = converCalendarToCellPosition(eventEnd, false)+1;
+		    		int startCellPos = convertCalendarToCellPosition(eventBegin, true);
+		    		int endCellPos = convertCalendarToCellPosition(eventEnd, false)+1;
 		    		
 		    		//simulamos la columna a la que pertenece
 		    		int calendarPos = mCalendarNames.indexOf(calendarName);
@@ -598,7 +598,7 @@ public class HomeActivity extends Activity implements Observer {
      * @param includeBounds true for counting the time at the border.
      * @return vertical cell position
      */
-    private int converCalendarToCellPosition(Calendar time, boolean includeBounds) {
+    private int convertCalendarToCellPosition(Calendar time, boolean includeBounds) {
     	
     	int cellPosition = 0;
     	
