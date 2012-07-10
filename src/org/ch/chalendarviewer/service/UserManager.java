@@ -229,13 +229,13 @@ public class UserManager {
         } else {
             
             // TODO create constants to these parameters
-            String[] paramsKey =   {"cliend_id","client_secret","refresh_token","grant_type","Content-Type"};
-            String[] paramsValue = {GoogleConstants.CLIENT_ID,GoogleConstants.CLIENT_SECRET,mRefreshToken,"refresh_token","application/x-www-form-urlencoded"};
+            String[] paramsKey =   {"client_id","client_secret","refresh_token","grant_type"};
+            String[] paramsValue = {GoogleConstants.CLIENT_ID,GoogleConstants.CLIENT_SECRET,mRefreshToken,"refresh_token"};
             
             // connect to google and get the response
             String googleResponse = null;
             try {
-                googleResponse = ConnectionUtils.getHttpsGetConnection(GoogleConstants.URL_ACCESS_TOKEN, paramsKey, paramsValue);
+                googleResponse = ConnectionUtils.doHttpsPostFormUrlEncoded(GoogleConstants.URL_ACCESS_TOKEN, paramsKey, paramsValue);
                 
                 /************ Parse the response ************/
                 jsonTokenObj = (JSONObject) new JSONTokener(googleResponse).nextValue();

@@ -174,12 +174,14 @@ public class ConnectionUtils {
        HttpEntity   entity   = response.getEntity();
         
        int returnCode = response.getStatusLine().getStatusCode();
-        
+       
+       Log.d(TAG,streamToString(entity.getContent()));
+       
        Log.d(TAG,"Response code is " + returnCode);
         
        if (returnCode != HTTP_OK && returnCode != HTTP_CREATED) {
            Log.e(TAG,"There was an error " + returnCode + " processing the url " + url);
-           Log.e(TAG,streamToString(entity.getContent()));
+           
            throw new HttpException("There was an error " + returnCode + " processing the url " + url);           
        }
     
