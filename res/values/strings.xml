@@ -59,5 +59,6 @@
     
     <string name="createdByChalendar">Reserved</string>   
     <string name="creationError">Error creating event</string>
+    <string name="deletionError">Error deleting event</string>
     
 </resources>

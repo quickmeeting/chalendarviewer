@@ -367,7 +367,7 @@ public class HomeActivity extends Activity implements Observer {
      * @param event UI component for event
      */
     private void removeEvent(TextView event) {
-        mAllEvents.remove(event);
+        //mAllEvents.remove(event);
     	
     	EventTextView evTextView = (EventTextView) event;
     	
@@ -375,11 +375,13 @@ public class HomeActivity extends Activity implements Observer {
     	
     	try {
             mResourceManager.deleteEvent(new Event(evTextView.getIdEvent()));
+            refreshEvents();
         } catch (ResourceNotAvaiableException e) {
+        	Toast.makeText(HomeActivity.this, getString(R.string.deletionError), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
         
-    	mFrameLayout.removeView(event);
+    	//mFrameLayout.removeView(event);
     }
     
     private void removeAllEvents() {
@@ -515,7 +517,7 @@ public class HomeActivity extends Activity implements Observer {
 	    			while(true) {
 	    				try {
 	    					sleep(MINUTES_BETWEEN_POLLS*60*1000);
-	    					if(mRefresh) {
+	    					if(mRefresh && !mProgress.isShowing()) {
 	    						mPollHandler.sendMessage(mPollHandler.obtainMessage(0));
 	    					}
 	    				} catch (Exception e) {
