@@ -133,6 +133,7 @@ public class HomeActivity extends Activity implements Observer {
     	super.onResume();
     	mRefresh = true;
         try {
+        	removeAllEvents();
         	mTableLayout.removeAllViews();
         	List<CalendarResource> calendars = mResourceManager.getActiveResources();
         	mCalendarNames = new ArrayList<String>();
@@ -261,8 +262,9 @@ public class HomeActivity extends Activity implements Observer {
              
              TextView tv = new TextView(this);
              tv.setBackgroundResource(R.drawable.cell_background);
-             tv.setPadding(10, 5, 10, 5);
+             tv.setPadding(10, 0, 10, 10);
              tv.setTextSize(scaledFontSize);
+             tv.setGravity(Gravity.TOP);
              
              tr.addView(tv);
              
@@ -292,33 +294,31 @@ public class HomeActivity extends Activity implements Observer {
     }
     
     private void updateTimeColumn() {
-        Calendar now = Calendar.getInstance();
-        //now.add(Calendar.HOUR_OF_DAY, -8);
-        int minutes = now.get(Calendar.MINUTE);
-        int calendarMinutes = 0;
-        while( minutes >= (calendarMinutes+MIN_EVENT_TIME) ) {
-        	calendarMinutes += MIN_EVENT_TIME;
-        }
-        now.set(Calendar.MINUTE, calendarMinutes);
-        mCalendarBegin = (Calendar)now.clone();
+        Calendar tmp = (Calendar) mCalendarBegin.clone();
         
     	for(int i=1; i<mTableLayout.getChildCount(); i++) {
     		TableRow tr = (TableRow)mTableLayout.getChildAt(i);
     		TextView tv = (TextView)tr.getChildAt(0);
             if(tv!=null) {
-            	tv.setText(mFormateador.format(now.getTime()));
-            	now.add(Calendar.MINUTE, MIN_EVENT_TIME);
+            	if( tmp.get(Calendar.MINUTE)%(2*MIN_EVENT_TIME) == 0 ) {
+            		tv.setText(mFormateador.format(tmp.getTime()));
+            	}
+            	else {
+            		tv.setText("");
+            	}
+            	tmp.add(Calendar.MINUTE, MIN_EVENT_TIME);
             }
     	}
-    	now.add(Calendar.MINUTE, -MIN_EVENT_TIME);
-    	mCalendarEnd = (Calendar)now.clone();
     }
     
     private void drawEvents() {
         //Remove old events
     	removeAllEvents();
     	
-    	//Draw new ones
+    	//Draw time cells
+    	updateTimeColumn();
+    	
+    	//Draw new events
     	for(String calendarName: mEventMap.keySet()) {
     		List<? extends Event> eventList = mEventMap.get(calendarName);
     		for( Event event: eventList ) {
@@ -497,7 +497,23 @@ public class HomeActivity extends Activity implements Observer {
         return eventBegin;
     }
     
-    private void loadData() throws ResourceNotAvaiableException {
+    synchronized private void loadData() throws ResourceNotAvaiableException {
+    	
+        Calendar now = Calendar.getInstance();
+        int minutes = now.get(Calendar.MINUTE);
+        int calendarMinutes = 0;
+        while( minutes >= (calendarMinutes+MIN_EVENT_TIME) ) {
+        	calendarMinutes += MIN_EVENT_TIME;
+        }
+        now.set(Calendar.MINUTE, calendarMinutes);
+        mCalendarBegin = (Calendar)now.clone();
+        
+        now.add(Calendar.MINUTE, (mNumberOfRows-1)*MIN_EVENT_TIME);
+    	
+    	mCalendarEnd = (Calendar)now.clone();
+    	
+    	mEventMap.clear();
+    	
     	for(String key : mCalendarMap.keySet()) {
     		CalendarResource calendar = mCalendarMap.get(key);
 			List<? extends Event> events = 
@@ -517,7 +533,8 @@ public class HomeActivity extends Activity implements Observer {
 	    			while(true) {
 	    				try {
 	    					sleep(MINUTES_BETWEEN_POLLS*60*1000);
-	    					if(mRefresh && !mProgress.isShowing()) {
+	    					if(mRefresh) {
+	    						loadData();
 	    						mPollHandler.sendMessage(mPollHandler.obtainMessage(0));
 	    					}
 	    				} catch (Exception e) {
@@ -532,7 +549,7 @@ public class HomeActivity extends Activity implements Observer {
     private Handler mPollHandler = new Handler() {
     	@Override
     	public void handleMessage(Message msg) {
-    		refreshEvents();
+    		drawEvents();
     	}
     };
     
@@ -564,9 +581,8 @@ public class HomeActivity extends Activity implements Observer {
     	}
     };
     
-    synchronized private void refreshEvents() {
+    private void refreshEvents() {
 		if(!mProgress.isShowing()) mProgress.show();
-		updateTimeColumn();
     	new Thread() {
     		@Override
     		public void run() {
