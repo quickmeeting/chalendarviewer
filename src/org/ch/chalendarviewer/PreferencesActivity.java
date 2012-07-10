@@ -30,7 +30,9 @@ import android.util.Log;
 
 import org.ch.chalendarviewer.contentprovider.AccountColumns;
 import org.ch.chalendarviewer.service.GoogleConstants;
+import org.ch.chalendarviewer.service.ResourceManager;
 import org.ch.chalendarviewer.service.UserManager;
+import org.ch.chalendarviewer.service.exception.SyncFailedException;
 import org.ch.chalendarviewer.ui.dialogs.AuthenticateDialog;
 import org.ch.chalendarviewer.ui.dialogs.AuthenticateDialogListener;
 
@@ -107,7 +109,7 @@ public class PreferencesActivity extends PreferenceActivity {
             mManageResources.setEnabled(true);
             refreshActiveAccount();
         } else {
-            mCurrentActiveAccountPref.setSummary(R.string.activeAccountNotDefined);
+            mCurrentActiveAccountPref.setTitle(R.string.activeAccountNotDefined);
             mDeleteAccount.setEnabled(false);
             mChangeActiveAccount.setEnabled(false);
             mManageResources.setEnabled(false);
@@ -138,7 +140,15 @@ public class PreferencesActivity extends PreferenceActivity {
         mDeleteAccount.setEntries(emailList);
         mDeleteAccount.setEntryValues(emailList);
         
-        mCurrentActiveAccountPref.setSummary(mUserManager.getActiveUserEmail());        
+        mCurrentActiveAccountPref.setTitle(mUserManager.getActiveUserEmail());     
+        
+        ResourceManager resourceManager = ResourceManager.getInstance(this);
+        try {
+            resourceManager.syncResources();
+        } catch (SyncFailedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
     
     private void callAuthorizeActivity() {
