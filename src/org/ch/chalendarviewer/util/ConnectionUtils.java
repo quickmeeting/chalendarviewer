@@ -19,6 +19,7 @@ package org.ch.chalendarviewer.util;
 
 import android.util.Log;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
@@ -212,13 +213,17 @@ public class ConnectionUtils {
         try {
             HttpResponse response = httpClient.execute(httpDelete);
             int returnCode = response.getStatusLine().getStatusCode();
+            for (Header h : response.getAllHeaders()){
+                Log.d(TAG, "DELETE HEADER: " + h.getName() + "=>" + h.getValue());
+            }
+            Log.d(TAG, "RESPONSE HTML => " + streamToString(response.getEntity().getContent()));
             
             if(returnCode == HTTP_OK){
                 Log.d(TAG, "DELETION OF EVENT OK");
             }else{
                 result = false;
                 Log.e(TAG,"Delete response code is " + returnCode);
-                Log.e(TAG, "RESPONSE HTML => " + streamToString(response.getEntity().getContent()));
+               
             }
             
             

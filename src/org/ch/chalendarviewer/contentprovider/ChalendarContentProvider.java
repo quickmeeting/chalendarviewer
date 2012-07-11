@@ -86,6 +86,7 @@ public class ChalendarContentProvider extends ContentProvider {
         resourceProjectionMap.put(ResourceColumns._ID, ResourceColumns._ID);
         resourceProjectionMap.put(ResourceColumns.AUTH_USER_ID, ResourceColumns.AUTH_USER_ID);
         resourceProjectionMap.put(ResourceColumns.LINK, ResourceColumns.LINK);
+        resourceProjectionMap.put(ResourceColumns.EVENTS_LINK, ResourceColumns.EVENTS_LINK);
         resourceProjectionMap.put(ResourceColumns.NAME, ResourceColumns.NAME);
         resourceProjectionMap.put(ResourceColumns.DISPLAY_NAME, ResourceColumns.DISPLAY_NAME);
         resourceProjectionMap.put(ResourceColumns.ACTIVE, ResourceColumns.ACTIVE);

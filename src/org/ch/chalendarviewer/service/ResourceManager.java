@@ -189,6 +189,7 @@ public class ResourceManager {
 
         values.put(ResourceColumns.NAME, calendar.getTitle());
         values.put(ResourceColumns.LINK, calendar.getSelfLink());
+        values.put(ResourceColumns.EVENTS_LINK, calendar.getEventFeedLink());
         values.put(ResourceColumns.DISPLAY_NAME, calendar.getTitle());
         values.put(ResourceColumns.ACTIVE, false);
         Uri resources = Uri.parse(AccountColumns.CONTENT_URI + "/" + mUserManager.getActiveUserId() +"/" + "resources"); 
@@ -284,7 +285,8 @@ public class ResourceManager {
         String[] projection = new String[] {
                 ResourceColumns._ID,
                 ResourceColumns.NAME,
-                ResourceColumns.LINK
+                ResourceColumns.LINK,
+                ResourceColumns.EVENTS_LINK
         };
 
         
@@ -307,12 +309,14 @@ public class ResourceManager {
             int idColumn   = managedCursor.getColumnIndex(ResourceColumns._ID);
             int nameColumn = managedCursor.getColumnIndex(ResourceColumns.NAME); 
             int linkColumn = managedCursor.getColumnIndex(ResourceColumns.LINK);
+            int eventsLinkColumn = managedCursor.getColumnIndex(ResourceColumns.EVENTS_LINK);
             
             do {
                 String id = managedCursor.getString(idColumn);
                 String name = managedCursor.getString(nameColumn);
                 String link = managedCursor.getString(linkColumn);
-                GoogleCalendar gCalendar = new GoogleCalendar(id,name,link);
+                String eventsLink = managedCursor.getString(eventsLinkColumn);
+                GoogleCalendar gCalendar = new GoogleCalendar(id,name,link, eventsLink);
                 activeResources.add(gCalendar);
                 resourceMap.put(id,gCalendar);
 
@@ -356,10 +360,7 @@ public class ResourceManager {
         
         try{
             
-            //completeGCalendar has more data than stored in database, so we have to call google
-            GoogleCalendar completeGCalendar = gConector.getCalendarByLink(gCalendar.getSelfLink());
-            
-            events = gConector.getEvents(completeGCalendar, begin, end);
+            events = gConector.getEvents(gCalendar, begin, end);
         } catch (Exception e) {
             throw new ResourceNotAvaiableException(e);
         }
@@ -424,7 +425,7 @@ public class ResourceManager {
         Event result = null;
         try{
             //completeGCalendar has more data than stored in database, so we have to call google
-            GoogleCalendar completeGCalendar = gConector.getCalendarByLink(gCalendar.getSelfLink());
+            CalendarResource completeGCalendar = gConector.getCalendarByLink(gCalendar.getSelfLink());
         
             result = gConector.setEvent(completeGCalendar, new GoogleEvent(event));
             

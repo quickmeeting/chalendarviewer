@@ -32,19 +32,23 @@ public class CalendarResource {
     
     /**
      * Constructor with parameters
-     * @param mId id of events
-     * @param mTitle title of events
+     * @param mId id of calendar
+     * @param mTitle title of calendar
+     * @param eventsLink feed of events link
      */
-    public CalendarResource(String mId, String mTitle) {
+    public CalendarResource(String mId, String mTitle, String eventsLink) {
         super();
         this.mId = mId;
         this.mTitle = mTitle;
+        this.mEventFeedLink = eventsLink;
     }
 
     /** Calendar resource id*/
     protected String mId;
     /** Calendar title */
     protected String mTitle;
+    /** Feed link of events */
+    protected String mEventFeedLink;
 
     /**
      * Get id
@@ -74,6 +78,22 @@ public class CalendarResource {
      */
     public void setTitle(String title) {
         this.mTitle = title;
+    }
+
+    /**
+     * Get events feed link
+     * @return events feed link
+     */
+    public String getEventFeedLink() {
+        return mEventFeedLink;
+    }
+
+    /**
+     * Get events feed link
+     * @param eventFeedLik events feed link
+     */
+    public void setEventFeedLink(String eventFeedLik) {
+        this.mEventFeedLink = eventFeedLik;
     }
 
 }

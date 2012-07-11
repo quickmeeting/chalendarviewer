@@ -35,7 +35,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /** SQLite Database name */
     private static final String DATABASE_NAME = "config.db";
     /** SQLite Database version */
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     /** TAG for log entries */
     private static final String TAG = "DatabaseHelper";
     
@@ -62,6 +62,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + ResourceColumns.AUTH_USER_ID    + " VARCHAR(255)," 
                 + ResourceColumns.NAME            + " VARCHAR(255)," 
                 + ResourceColumns.LINK            + " VARCHAR(255),"
+                + ResourceColumns.EVENTS_LINK     + " VARCHAR(255),"
                 + ResourceColumns.ACTIVE          + " BOOLEAN,"
                 + ResourceColumns.DISPLAY_NAME    + " VARCHAR(255));");
     }

@@ -131,7 +131,7 @@ public class GoogleCalendarApiConnector {
                 jsonCalendar = (JSONObject) jsonCalendarsList.get(j);
                 Log.d(TAG,jsonCalendar.toString());
                 cal.setColor(jsonCalendar.getString(GoogleCalendar.FIELD_COLOR));
-                cal.setEventFeedLik(jsonCalendar.getString(GoogleCalendar.FIELD_EVENT_FEED_LINK));
+                cal.setEventFeedLink(jsonCalendar.getString(GoogleCalendar.FIELD_EVENT_FEED_LINK));
                 cal.setId(jsonCalendar.getString(GoogleCalendar.FIELD_ID));
                 cal.setSelfLink(jsonCalendar.getString(GoogleCalendar.FIELD_SELF_LINK));
                 cal.setTimeZone(TimeZone.getTimeZone(jsonCalendar.getString(GoogleCalendar.FIELD_TIMEZONE)));
@@ -152,7 +152,7 @@ public class GoogleCalendarApiConnector {
      * @param link calendar link
      * @return a google Calendar from a link
      */
-    public GoogleCalendar getCalendarByLink(String link){
+    public CalendarResource getCalendarByLink(String link){
         Log.d(TAG,link);
         GoogleCalendar cal = new GoogleCalendar(); 
 
@@ -182,7 +182,7 @@ public class GoogleCalendarApiConnector {
             cal = new GoogleCalendar();
             Log.d(TAG,jsonCalendar.toString());
             cal.setColor(jsonCalendar.getString(GoogleCalendar.FIELD_COLOR));
-            cal.setEventFeedLik(jsonCalendar.getString(GoogleCalendar.FIELD_EVENT_FEED_LINK));
+            cal.setEventFeedLink(jsonCalendar.getString(GoogleCalendar.FIELD_EVENT_FEED_LINK));
             cal.setId(jsonCalendar.getString(GoogleCalendar.FIELD_ID));
             cal.setSelfLink(jsonCalendar.getString(GoogleCalendar.FIELD_SELF_LINK));
             cal.setTimeZone(TimeZone.getTimeZone(jsonCalendar.getString(GoogleCalendar.FIELD_TIMEZONE)));
@@ -204,19 +204,14 @@ public class GoogleCalendarApiConnector {
      * @param end End date
      * @return list of events from calendar between begin and end dates
      */
-    public List<GoogleEvent> getEvents (GoogleCalendar calendar, Calendar begin, Calendar end) {
+    public List<GoogleEvent> getEvents (CalendarResource calendar, Calendar begin, Calendar end) {
         ArrayList<GoogleEvent> events = new ArrayList<GoogleEvent>();
         
-        
-        
-//        begin.setTimeZone(calendar.getTimeZone());
-//        end.setTimeZone(calendar.getTimeZone());
-        //pattern 2011-11-23T00:00:00
        
         String googleDateInit = formatToGoogleDateTime(begin);
         String googleDateEnd = formatToGoogleDateTime(end);
         
-        String url = calendar.getEventFeedLik() 
+        String url = calendar.getEventFeedLink() 
                            +  "?alt=jsonc&start-min=" + googleDateInit
                            + "&start-max="+ googleDateEnd
                            + "&ctz=Europe/Madrid" ;
@@ -398,7 +393,7 @@ public class GoogleCalendarApiConnector {
     public GoogleEvent parseEvent(JSONObject jsonEvent) throws JSONException, ParseException{
         GoogleEvent ev = new GoogleEvent();
         
-        
+        Log.d(TAG, " ========> " +jsonEvent.toString());
         ev.setAlternateLink(jsonEvent.getString(GoogleEvent.FIELD_ALTERNATIVE_LINK));
         ev.setCanEdit(jsonEvent.getBoolean(GoogleEvent.FIELD_CAN_EDIT));
         ev.setDetails(jsonEvent.getString(GoogleEvent.FIELD_DETAILS));

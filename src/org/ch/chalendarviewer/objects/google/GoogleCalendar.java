@@ -45,8 +45,6 @@ public class GoogleCalendar extends CalendarResource {
     
     private int mType;
     
-    private String mEventFeedLik;
-    
     private String mSelfLink;
         
     private String mColor;
@@ -58,17 +56,9 @@ public class GoogleCalendar extends CalendarResource {
         super();
     }
 
-    public GoogleCalendar(String id, String name, String link) {
-        super(id,name);
+    public GoogleCalendar(String id, String name, String link, String eventsLink) {
+        super(id,name, eventsLink);
         this.mSelfLink = link;
-    }
-
-    public String getEventFeedLik() {
-        return mEventFeedLik;
-    }
-
-    public void setEventFeedLik(String eventFeedLik) {
-        this.mEventFeedLik = eventFeedLik;
     }
 
     public String getSelfLink() {

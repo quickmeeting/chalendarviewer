@@ -37,6 +37,9 @@ public class ResourceColumns implements BaseColumns{
     public static final String DISPLAY_NAME = "displayName";
     /** Column name: name to display on main screen */
     public static final String ACTIVE = "active";
+    /** Column name: name to display on main screen */
+    public static final String EVENTS_LINK = "events_link";
+    
     
 
     /** Content type */
