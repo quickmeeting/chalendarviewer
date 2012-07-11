@@ -142,7 +142,6 @@ public class HomeActivity extends Activity implements Observer {
         		mCalendarMap.put(calendar.getTitle(), calendar);
         		mCalendarNames.add(calendar.getTitle());
         	}
-            drawBackground();
             refreshEvents();
             startPolling();
         } catch (Exception e) {
@@ -251,6 +250,8 @@ public class HomeActivity extends Activity implements Observer {
         int screen_width_pixels = display.getHeight();
         int scaledFontSize = getResources().getDimensionPixelSize(R.dimen.time_font_size);
         
+        Calendar tmp = (Calendar) mCalendarBegin.clone();
+        
         mNumberOfRows = screen_width_pixels/mCalendarRowHeight-2;
         for(int i = 0; i<mNumberOfRows; i++) {
         	
@@ -261,10 +262,17 @@ public class HomeActivity extends Activity implements Observer {
                            LayoutParams.WRAP_CONTENT));
              
              TextView tv = new TextView(this);
-             tv.setBackgroundResource(R.drawable.cell_background);
-             tv.setPadding(10, 0, 10, 10);
              tv.setTextSize(scaledFontSize);
              tv.setGravity(Gravity.TOP);
+             if( tmp.get(Calendar.MINUTE)%(2*MIN_EVENT_TIME) == 0 ) {
+            	 tv.setText(mFormateador.format(tmp.getTime()));
+            	 tv.setBackgroundResource(R.drawable.cell_background_dark_top);
+             }
+             else {
+            	 tv.setText("");
+            	 tv.setBackgroundResource(R.drawable.cell_background);
+             }
+             tv.setPadding(10, 0, 10, 10);
              
              tr.addView(tv);
              
@@ -275,6 +283,13 @@ public class HomeActivity extends Activity implements Observer {
                  cell.setPosition(i);
                  cell.setTextSize(scaledFontSize);
                  cell.setWidth(mCalendarColumnWidth);
+                 if( tmp.get(Calendar.MINUTE)%(2*MIN_EVENT_TIME) == 0 ) {
+                	 cell.setBackgroundResource(R.drawable.cell_background_dark_top);
+                 }
+                 else {
+                	 cell.setBackgroundResource(R.drawable.cell_background);
+                 }
+                 cell.setPadding(10, 0, 10, 10);
                  
                  tr.addView(cell);
                  
@@ -290,33 +305,17 @@ public class HomeActivity extends Activity implements Observer {
              mTableLayout.addView(tr,new TableLayout.LayoutParams(
 	                 LayoutParams.FILL_PARENT,
 	                 LayoutParams.WRAP_CONTENT));
+             
+             tmp.add(Calendar.MINUTE, MIN_EVENT_TIME);
         }
     }
     
-    private void updateTimeColumn() {
-        Calendar tmp = (Calendar) mCalendarBegin.clone();
-        
-    	for(int i=1; i<mTableLayout.getChildCount(); i++) {
-    		TableRow tr = (TableRow)mTableLayout.getChildAt(i);
-    		TextView tv = (TextView)tr.getChildAt(0);
-            if(tv!=null) {
-            	if( tmp.get(Calendar.MINUTE)%(2*MIN_EVENT_TIME) == 0 ) {
-            		tv.setText(mFormateador.format(tmp.getTime()));
-            	}
-            	else {
-            		tv.setText("");
-            	}
-            	tmp.add(Calendar.MINUTE, MIN_EVENT_TIME);
-            }
-    	}
-    }
-    
     private void drawEvents() {
+    	//Redraw background
+    	drawBackground();
+    	
         //Remove old events
     	removeAllEvents();
-    	
-    	//Draw time cells
-    	updateTimeColumn();
     	
     	//Draw new events
     	for(String calendarName: mEventMap.keySet()) {
