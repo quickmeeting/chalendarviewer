@@ -108,8 +108,8 @@ public class HomeActivity extends Activity implements Observer {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        mTableLayout = (TableLayout)findViewById(R.id.mainTableLayout);
         mFrameLayout = (FrameLayout)findViewById(R.id.frameLayout);
+        mTableLayout = (TableLayout)findViewById(R.id.mainTableLayout);
         
         mProgress 	       = new ProgressDialog(this);
         mFormateador       = new SimpleDateFormat("HH:mm");
@@ -133,8 +133,10 @@ public class HomeActivity extends Activity implements Observer {
     	super.onResume();
     	mRefresh = true;
         try {
+        	//clear screen
         	removeAllEvents();
         	mTableLayout.removeAllViews();
+        	
         	List<CalendarResource> calendars = mResourceManager.getActiveResources();
         	mCalendarNames = new ArrayList<String>();
         	mCalendarMap = new HashMap<String, CalendarResource>();
@@ -311,11 +313,12 @@ public class HomeActivity extends Activity implements Observer {
     }
     
     private void drawEvents() {
+    	//clear screen
+    	mTableLayout.removeAllViews();
+    	removeAllEvents();
+    	
     	//Redraw background
     	drawBackground();
-    	
-        //Remove old events
-    	removeAllEvents();
     	
     	//Draw new events
     	for(String calendarName: mEventMap.keySet()) {
