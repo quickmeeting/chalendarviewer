@@ -415,11 +415,12 @@ public class GoogleCalendarApiConnector {
         ev.setCreator(new User(jsonUser.getString(User.FIELD_DISPLAY_NAME), jsonUser.getString(User.FIELD_EMAIL)));
         
         JSONArray listAttendees = (JSONArray) jsonEvent.getJSONArray(GoogleEvent.FIELD_ATTENDEES);
-        for (int indexAtendees = 0; indexAtendees < listAttendees.length();indexAtendees++) {
-            jsonUser = (JSONObject) listAttendees.get(indexAtendees);
-            ev.addAttendee(new User(jsonUser.getString(User.FIELD_DISPLAY_NAME), jsonUser.getString(User.FIELD_EMAIL)));
-        }
-        
+        if (listAttendees != null) {
+            for (int indexAtendees = 0; indexAtendees < listAttendees.length();indexAtendees++) {
+                jsonUser = (JSONObject) listAttendees.get(indexAtendees);
+                ev.addAttendee(new User(jsonUser.getString(User.FIELD_DISPLAY_NAME), jsonUser.getString(User.FIELD_EMAIL)));
+            }
+        } 
         Log.d(TAG, "EVENT => "+ ev);
         return ev;
     }
