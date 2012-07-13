@@ -44,6 +44,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
@@ -106,6 +107,14 @@ public class HomeActivity extends Activity implements Observer {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        //No title bar
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        
+        //Keep screen on
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        
         setContentView(R.layout.main);
         
         mTableLayout = (TableLayout)findViewById(R.id.mainTableLayout);
