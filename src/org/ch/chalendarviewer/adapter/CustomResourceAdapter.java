@@ -21,6 +21,7 @@ import android.database.Cursor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -28,8 +29,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ResourceCursorAdapter;
 
 import org.ch.chalendarviewer.R;
-import org.ch.chalendarviewer.R.id;
-import org.ch.chalendarviewer.R.layout;
 import org.ch.chalendarviewer.contentprovider.ResourceColumns;
 import org.ch.chalendarviewer.service.ResourceManager;
 
@@ -52,8 +51,7 @@ public class CustomResourceAdapter extends ResourceCursorAdapter {
      */
     public CustomResourceAdapter(Context context,  ResourceManager resourceManager) {
         
-        // requery parameter set to false in order to avoid refresh problems
-        super(context, R.layout.resource,resourceManager.getResources(),false);
+        super(context, R.layout.resource,resourceManager.getResources());
         _resourceManager = ResourceManager.getInstance(context);
         
                 
@@ -67,7 +65,7 @@ public class CustomResourceAdapter extends ResourceCursorAdapter {
     
     @Override
     public void bindView(View view, Context context, final Cursor cur) {
-        CheckBox cbListCheck = (CheckBox)view.findViewById(R.id.checkResourceActive);
+        final CheckBox cbListCheck = (CheckBox)view.findViewById(R.id.checkResourceActive);
 
         //Get data from cursor
         final String checkId = cur.getString(cur.getColumnIndex(ResourceColumns._ID));
@@ -77,16 +75,17 @@ public class CustomResourceAdapter extends ResourceCursorAdapter {
         //Bind data to UI
         cbListCheck.setText(name);
         cbListCheck.setChecked((active==0? false:true));
+        
 
-        //Bind UI interaction method
-        cbListCheck.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            
+        // Create a listener for the CheckBox
+        cbListCheck.setOnClickListener(new OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.d(TAG,"Changed resource " + checkId);
-                _resourceManager.changeResourceActive(checkId, isChecked);
+            public void onClick(View v) {
+                Log.d(TAG,"Changed resource " + checkId + cbListCheck.isChecked());
+                _resourceManager.changeResourceActive(checkId, cbListCheck.isChecked() );
             }
+
         });
-                
+
     }
 }
