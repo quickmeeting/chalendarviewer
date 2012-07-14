@@ -212,6 +212,9 @@ public class ConnectionUtils {
         DefaultHttpClient httpClient = new DefaultHttpClient();
         try {
             HttpResponse response = httpClient.execute(httpDelete);
+            //Double delete in order to prevent problems with google protocol
+            response = httpClient.execute(httpDelete);
+            
             int returnCode = response.getStatusLine().getStatusCode();
             for (Header h : response.getAllHeaders()){
                 Log.d(TAG, "DELETE HEADER: " + h.getName() + "=>" + h.getValue());

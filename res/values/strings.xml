@@ -16,7 +16,7 @@
     along with ChalendarViewer.  If not, see <http://www.gnu.org/licenses/>.    
  -->
 <resources>
-    <string name="app_name">ChalendarViewer</string>
+    <string name="app_name">QuickMeeting</string>
     <string name="about">About</string>
     
     <string name="manageAccounts">Manage Accounts</string>
@@ -33,7 +33,7 @@
     
     <string name="neilArmstrongsPhrase">That\'s one small step for a man, a giant leap for mankind</string>
     
-    <string name="problemOcurred">Oops, an error ocurred, try again please! :-)</string>    
+    <string name="problemOcurred">Oops, an error occurred, try again please! :-)</string>    
     
     <string name="resources">Resources</string>
     <string name="manageResources">Manage Resources</string>
