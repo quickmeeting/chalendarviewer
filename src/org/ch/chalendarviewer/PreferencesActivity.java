@@ -157,7 +157,7 @@ public class PreferencesActivity extends PreferenceActivity {
             @Override
             public void onError(String error) {
                 // TODO Auto-generated method stub
-                Log.v(TAG, error);
+                Log.e(TAG, error);
             }
             
             @Override

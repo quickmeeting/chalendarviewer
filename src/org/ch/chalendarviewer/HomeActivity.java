@@ -139,6 +139,7 @@ public class HomeActivity extends Activity implements Observer {
     
     @Override
     protected void onResume() {
+        
     	super.onResume();
     	mRefresh = true;
         try {
@@ -158,7 +159,7 @@ public class HomeActivity extends Activity implements Observer {
         } catch (Exception e) {
 			// TODO: handle exception
             e.printStackTrace();
-        	Log.i(TAG, e.getMessage());
+        	Log.d(TAG, e.getMessage());
 		}
     }
     
@@ -574,7 +575,7 @@ public class HomeActivity extends Activity implements Observer {
 					mResourceManager.createEvent(calendarId, event);
 				} catch (ResourceNotAvaiableException e) {
 					what = 1;
-					Log.i(TAG, e.getMessage());
+					Log.d(TAG, e.getMessage());
 					e.printStackTrace();
 				}
 				mCreateEventHandler.sendMessage(mRefreshHandler.obtainMessage(what));
@@ -602,7 +603,7 @@ public class HomeActivity extends Activity implements Observer {
 					loadData();
 				} catch (Exception e) {
 					what = 1;
-					Log.i(TAG, e.getMessage());
+					Log.d(TAG, e.getMessage());
 					e.printStackTrace();
 				}
 				mRefreshHandler.sendMessage(mRefreshHandler.obtainMessage(what));
@@ -631,9 +632,9 @@ public class HomeActivity extends Activity implements Observer {
     	
     	int cellPosition = 0;
     	
-    	Log.i(TAG, "time: " + mFormateador.format(time.getTime()));
-    	Log.i(TAG, "mCalendarBegin: " + mFormateador.format(mCalendarBegin.getTime()));
-    	Log.i(TAG, "mCalendarEnd: " + mFormateador.format(mCalendarEnd.getTime()));
+    	Log.d(TAG, "time: " + mFormateador.format(time.getTime()));
+    	Log.d(TAG, "mCalendarBegin: " + mFormateador.format(mCalendarBegin.getTime()));
+    	Log.d(TAG, "mCalendarEnd: " + mFormateador.format(mCalendarEnd.getTime()));
     	
     	long timeInMilli  = time.getTimeInMillis();
     	long beginInMilli = mCalendarBegin.getTimeInMillis();
@@ -648,13 +649,13 @@ public class HomeActivity extends Activity implements Observer {
     	
     	cellPosition = (int) (beginDiffMin+1)/MIN_EVENT_TIME;
     	
-    	Log.i(TAG, "endDiffMin: " + endDiffMin);
-    	Log.i(TAG, "beginDiffMin: " + beginDiffMin);
-    	Log.i(TAG, "cellPosition: " + cellPosition);
+    	Log.d(TAG, "endDiffMin: " + endDiffMin);
+    	Log.d(TAG, "beginDiffMin: " + beginDiffMin);
+    	Log.d(TAG, "cellPosition: " + cellPosition);
     	
-    	Log.i(TAG, "includeBounds: " + includeBounds);
+    	Log.d(TAG, "includeBounds: " + includeBounds);
 		if(!includeBounds && (time.get(Calendar.MINUTE) % MIN_EVENT_TIME) ==0)  {
-			Log.i(TAG, "in includeBounds: --cellPosition");
+			Log.d(TAG, "in includeBounds: --cellPosition");
 			 --cellPosition;
 		}
 		return cellPosition;
