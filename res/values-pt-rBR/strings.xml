@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+    This file is part of ChalendarViewer.
+
+    ChalendarViewer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    ChalendarViewer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with ChalendarViewer.  If not, see <http://www.gnu.org/licenses/>.    
+ -->
+<resources>
+    <string name="app_name">QuickMeeting</string>
+    <string name="about">Sobre</string>
+    
+    <string name="manageAccounts">Gestão de Contas</string>
+    <string name="accounts">Contas</string>
+    <string name="activeAccountNotDefined">Não existe uma conta ativa</string>
+    <string name="addAccount">Adicionar conta</string>
+    <string name="addAccountHelp">Adicione uma conta e para ver os calendarios</string>
+    <string name="deleteAccount">Deletar conta</string>
+    <string name="deleteAccountHelp">Deleta uma conta que não se utiliza</string>
+    <string name="currentActiveAccount">Conta ativa</string>
+    <string name="changeActiveAccount">Trocar conta ativa</string>
+    <string name="changeActiveAccountHelp">Define uma das contas armazenadas como ativa</string>
+    
+    
+    <string name="neilArmstrongsPhrase">That\'s one small step for a man, a giant leap for mankind</string>
+    
+    <string name="problemOcurred">Oops, ocorreu um erro. Tente outra vez, por favor! :-)</string>    
+    
+    <string name="resources">Recursos</string>
+    <string name="manageResources">Gestão de recursos</string>
+    <string name="manageResourcesHelp">Permite definir o conjunto de calendarios visiveis</string>
+    <string name="refresh">Atualizar</string>
+    <string name="configuration">Configuração</string>
+    <string name="reserved">Reservado</string>
+    <string name="reserve_question">Quer reservar esta sala?</string>
+    <string name="unreserve_question">Quer cancelar esta reserva?</string>
+    <string name="yes">Sim</string>
+    <string name="no">Não</string>
+    <string name="download_data">Recuperando dados...</string>
+    <string name="download_data_error">Erro recuperando dados</string>
+    
+    <string name="loading">Carregando</string>
+    <string name="loadingAccounts">Carregando calendarios</string>
+    
+    <string name="synchronizingCalendars">Sincronizando calendarios</string>
+    <string name="synchronizingError">Erro sincronizando calendarios</string>
+    
+    <string name="selectDuration">Selecione a duração</string>
+    <string name="minutes">minutos</string>
+    
+    <string name="createdByChalendar">Reservada</string>   
+    <string name="creationError">Erro criando evento</string>
+    <string name="deletionError">Erro deletando evento</string>
+    
+</resources>
