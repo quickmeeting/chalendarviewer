@@ -1,5 +1,6 @@
 package org.ch.chalendarviewer.objects;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
@@ -31,7 +32,7 @@ public class Event {
     public Event(String idEvent) {
         this.mId = idEvent;
     }
-
+    
     /**
      * Get id 
      * @return id of event
@@ -110,6 +111,23 @@ public class Event {
      */
     public void setEnd(Calendar end) {
         this.mEnd = end;
+    }
+    
+    /**
+     * Returns String with the most relevant fields for users. This method should be 
+     * overridden by subclasses
+     * @return relevant event info for the users
+     */
+    public String getEventInfo() {
+    	
+    	SimpleDateFormat formatter = new SimpleDateFormat("HH:mm"); 
+    	
+    	StringBuilder sb = new StringBuilder();
+    	//sb.append(this.mTitle).append("\n");
+    	sb.append(formatter.format(this.mBegin.getTime()));
+    	sb.append(" - ");
+    	sb.append(formatter.format(this.mEnd.getTime()));
+    	return sb.toString();
     }
 
     @Override
