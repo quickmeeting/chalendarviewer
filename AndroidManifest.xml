@@ -41,6 +41,13 @@
 		          android:label="@string/configuration"
 		          android:screenOrientation="landscape">		    
 		</activity>
+		<activity android:name=".AboutActivity"
+		          android:label="@string/about"
+		          android:screenOrientation="landscape">		    
+		</activity>
+		<activity android:name=".WebViewerActivity"		          
+		          android:screenOrientation="landscape">		    
+		</activity>
     </application>
     
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>

@@ -18,6 +18,12 @@
 <resources>
     <string name="app_name">QuickMeeting</string>
     <string name="about">About</string>
+    <string name="aboutThisSoftware">About this Software</string>
+    <string name="changeLog">Change Log</string>
+    <string name="changeLogHelp">Differences and improvements in each version</string>
+    <string name="license">License</string>
+    <string name="licenseGNU">GNU General Public License </string>
+    
     
     <string name="manageAccounts">Manage Accounts</string>
     <string name="accounts">Accounts</string>

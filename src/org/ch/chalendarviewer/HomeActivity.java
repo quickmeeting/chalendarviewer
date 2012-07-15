@@ -184,11 +184,10 @@ public class HomeActivity extends Activity implements Observer {
             	refreshEvents();
                 return true;
             case R.id.menuHomeConfiguration:
-                Intent intent = new Intent(this, PreferencesActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(this, PreferencesActivity.class));                
                 return true;
             case R.id.menuHomeAbout:
-                // TODO
+                startActivity(new Intent(this, AboutActivity.class));                
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
