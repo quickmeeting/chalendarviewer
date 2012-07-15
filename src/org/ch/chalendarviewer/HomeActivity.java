@@ -85,7 +85,6 @@ public class HomeActivity extends Activity implements Observer {
 	private Calendar mCalendarBegin;
 	private Calendar mCalendarEnd;
 	private CellTextView mSelectedCell;
-	private EventTextView mSelectedEvent;
 	private ArrayList<TextView> mAllEvents;
 	private boolean mPoll;
 	private boolean mRefresh;
@@ -263,7 +262,7 @@ public class HomeActivity extends Activity implements Observer {
         
         Calendar tmp = (Calendar) mCalendarBegin.clone();
         
-        mNumberOfRows = screen_width_pixels/mCalendarRowHeight-2;
+        mNumberOfRows = screen_width_pixels/mCalendarRowHeight-1;
         for(int i = 0; i<mNumberOfRows; i++) {
         	
         	//Adding time cell
@@ -376,15 +375,13 @@ public class HomeActivity extends Activity implements Observer {
      * Remove event from UI and remote calendar
      * @param event UI component for event
      */
-    private void removeEvent(TextView event) {
+    private void removeEvent(Event event) {
         //mAllEvents.remove(event);
     	
-    	EventTextView evTextView = (EventTextView) event;
-    	
-    	Log.d(TAG, evTextView.getEvent().getId());
+    	Log.d(TAG, event.getId());
     	
     	try {
-            mResourceManager.deleteEvent(new Event(evTextView.getEvent().getId()));
+            mResourceManager.deleteEvent(event);
             refreshEvents();
         } catch (ResourceNotAvaiableException e) {
         	Toast.makeText(HomeActivity.this, getString(R.string.deletionError), Toast.LENGTH_SHORT).show();
@@ -622,8 +619,7 @@ public class HomeActivity extends Activity implements Observer {
 	public void notify(Observable o) {
 		EventTextView e = (EventTextView) o;
 		if( e.isUserEvent() ) {
-			mSelectedEvent = e;
-			showCancelReservationDialog();
+			showCancelReservationDialog(e.getEvent());
 		}
 		else {
 			showEventInfoDialog(e.getEvent());
@@ -652,14 +648,14 @@ public class HomeActivity extends Activity implements Observer {
     	b.show();
     }
     
-    public void showCancelReservationDialog() {
+    public void showCancelReservationDialog(final Event event) {
     	AlertDialog.Builder b = new AlertDialog.Builder(this);
     	b.setIcon(android.R.drawable.ic_dialog_alert);
     	b.setMessage(getString(R.string.unreserve_question));
     	b.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
     	    @Override
     	    public void onClick(DialogInterface dialog, int which) {
-    	    	removeEvent(mSelectedEvent);
+    	    	removeEvent(event);
     	    }
     	});
     	b.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -671,7 +667,7 @@ public class HomeActivity extends Activity implements Observer {
     	b.show();
     }
     
-    public void showEventInfoDialog(Event event) {
+    public void showEventInfoDialog(final Event event) {
     	AlertDialog.Builder b = new AlertDialog.Builder(this);
     	b.setTitle(event.getTitle());
     	b.setMessage(event.getEventInfo());
