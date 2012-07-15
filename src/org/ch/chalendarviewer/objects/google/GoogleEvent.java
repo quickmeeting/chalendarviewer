@@ -144,7 +144,9 @@ public class GoogleEvent extends Event{
     	if(this.mCreator!=null) sb.append(this.mCreator.getName()).append("\n");
     	if(this.mAttendees!=null){
     		for(User attendee: this.mAttendees) {
-    			sb.append(attendee.getName()).append("\n");
+    			if(!this.mCreator.getName().equalsIgnoreCase(attendee.getName())) {
+    				sb.append(attendee.getName()).append("\n");
+    			}
     		}
     	}
     	return sb.toString();
