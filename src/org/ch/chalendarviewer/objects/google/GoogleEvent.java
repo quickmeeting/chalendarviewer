@@ -141,10 +141,10 @@ public class GoogleEvent extends Event{
     	StringBuilder sb = new StringBuilder();
     	sb.append(super.getEventInfo());
     	sb.append("\n");
-    	if(this.mCreator!=null) sb.append(this.mCreator.getName());
+    	if(this.mCreator!=null) sb.append(this.mCreator.getName()).append("\n");
     	if(this.mAttendees!=null){
     		for(User attendee: this.mAttendees) {
-    			sb.append(attendee.getName());
+    			sb.append(attendee.getName()).append("\n");
     		}
     	}
     	return sb.toString();
