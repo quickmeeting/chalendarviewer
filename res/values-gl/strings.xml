@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+    This file is part of ChalendarViewer.
+
+    ChalendarViewer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    ChalendarViewer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with ChalendarViewer.  If not, see <http://www.gnu.org/licenses/>.    
+ -->
+<resources>
+    <string name="app_name">QuickMeeting</string>
+    <string name="about">Sobre</string>
+    
+    <string name="manageAccounts">Xestión de Contas</string>
+    <string name="accounts">Contas</string>
+    <string name="activeAccountNotDefined">Non existe unha conta activa</string>
+    <string name="addAccount">Engadir conta</string>
+    <string name="addAccountHelp">Engade unha conta para ver os calendarios</string>
+    <string name="deleteAccount">Borrar conta</string>
+    <string name="deleteAccountHelp">Borra unha conta que non se utiliza</string>
+    <string name="currentActiveAccount">Conta activa</string>
+    <string name="changeActiveAccount">Trocar conta activa</string>
+    <string name="changeActiveAccountHelp">Define unha das contas almacenadas como activa</string>
+    
+    
+    <string name="neilArmstrongsPhrase">That\'s one small step for a man, a giant leap for mankind</string>
+    
+    <string name="problemOcurred">Oops, ocorreu un erro. Tente outra vez, por favor! :-)</string>    
+    
+    <string name="resources">Recursos</string>
+    <string name="manageResources">Xestión de recursos</string>
+    <string name="manageResourcesHelp">Permite definir o conxunto de calendarios visíbeis</string>
+    <string name="refresh">Actualizar</string>
+    <string name="configuration">Configuración</string>
+    <string name="reserved">Reservado</string>
+    <string name="reserve_question">Quere reservar esta sala?</string>
+    <string name="unreserve_question">Quere cancelar esta reserva?</string>
+    <string name="yes">Si</string>
+    <string name="no">Non</string>
+    <string name="ok">Ok</string>
+    <string name="download_data">Recuperando dados</string>
+    <string name="download_data_error">Erro recuperando dados</string>
+    
+    <string name="loading">Cargando</string>
+    <string name="loadingAccounts">Cargando calendarios</string>
+    
+    <string name="synchronizingCalendars">Sincronizando calendarios</string>
+    <string name="synchronizingError">Erro sincronizando calendarios</string>
+    
+    <string name="selectDuration">Seleccione a duraçión</string>
+    <string name="minutes">minutos</string>
+    
+    <string name="createdByChalendar">Reservada</string>   
+    <string name="creationError">Erro creando evento</string>
+    <string name="deletionError">Erro borrando evento</string>
+    
+</resources>
