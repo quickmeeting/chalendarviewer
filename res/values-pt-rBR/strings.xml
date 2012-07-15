@@ -45,6 +45,7 @@
     <string name="unreserve_question">Quer cancelar esta reserva?</string>
     <string name="yes">Sim</string>
     <string name="no">Não</string>
+    <string name="ok">Ok</string>
     <string name="download_data">Recuperando dados...</string>
     <string name="download_data_error">Erro recuperando dados</string>
     

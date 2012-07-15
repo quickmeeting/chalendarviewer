@@ -74,7 +74,7 @@ public class HomeActivity extends Activity implements Observer {
 	private List<String> mCalendarNames;
 	Map<String,CalendarResource>  mCalendarMap;
 	Map<String, List<? extends Event>> mEventMap;
-	private SimpleDateFormat mFormateador;
+	private SimpleDateFormat mFormatter;
 	private TableLayout mTableLayout;
 	private FrameLayout mFrameLayout;
 	private int mNumberOfRows;
@@ -121,7 +121,7 @@ public class HomeActivity extends Activity implements Observer {
         mTableLayout = (TableLayout)findViewById(R.id.mainTableLayout);
         
         mProgress 	       = new ProgressDialog(this);
-        mFormateador       = new SimpleDateFormat("HH:mm");
+        mFormatter       = new SimpleDateFormat("HH:mm");
         mAllEvents         = new ArrayList<TextView>();
         mEventMap          = new HashMap<String, List<? extends Event>>();
         mToastErrorMessage = getString(R.string.download_data_error);
@@ -277,7 +277,7 @@ public class HomeActivity extends Activity implements Observer {
              tv.setTextSize(scaledFontSize);
              tv.setGravity(Gravity.TOP);
              if( tmp.get(Calendar.MINUTE)%(2*MIN_EVENT_TIME) == 0 ) {
-            	 tv.setText(mFormateador.format(tmp.getTime()));
+            	 tv.setText(mFormatter.format(tmp.getTime()));
             	 tv.setBackgroundResource(R.drawable.cell_background_dark_top);
              }
              else {
@@ -346,32 +346,31 @@ public class HomeActivity extends Activity implements Observer {
 		    		int calendarPos = mCalendarNames.indexOf(calendarName);
 		    		
 		    		String text = title + "\n" 
-		    				+ mFormateador.format(eventBegin.getTime()) + " - " 
-		    				+ mFormateador.format(eventEnd.getTime());
+		    				+ mFormatter.format(eventBegin.getTime()) + " - " 
+		    				+ mFormatter.format(eventEnd.getTime());
 		    		
 		    		boolean isCreatedByChalendar = event.getDetails().equals(getString(R.string.createdByChalendar));
 		    		
-		    		addEvent(calendarPos, startCellPos, text, endCellPos-startCellPos, isCreatedByChalendar, event.getId());
+		    		addEvent(calendarPos, startCellPos, text, endCellPos-startCellPos, isCreatedByChalendar, event);
 	    		}
     		}
     	}
     }
     
-    private void addEvent(int calendarPos, int startCellPos, String text, int height, boolean isAppUser, String idEvent) {
-        EventTextView event = new EventTextView(this, isAppUser);
-		event.setWidth(mCalendarColumnWidth);
-		event.setHeight(height*mCalendarRowHeight);
-		event.setText(text);
-		event.setObserver(this);
-		event.setIdEvent(idEvent);
+    private void addEvent(int calendarPos, int startCellPos, String text, int height, boolean isAppUser, Event event) {
+        EventTextView eventTextView = new EventTextView(this, event, isAppUser);
+		eventTextView.setWidth(mCalendarColumnWidth);
+		eventTextView.setHeight(height*mCalendarRowHeight);
+		eventTextView.setText(text);
+		eventTextView.setObserver(this);
 		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(
 		        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
 		        (Gravity.LEFT | Gravity.TOP));
 		int column = mFirstColumnWidth + calendarPos*mCalendarColumnWidth;
 		fl.setMargins(column, mFirstRowHeight+startCellPos*mCalendarRowHeight, 0, 0);
-		mFrameLayout.addView(event,fl);
+		mFrameLayout.addView(eventTextView,fl);
 		
-		mAllEvents.add(event);
+		mAllEvents.add(eventTextView);
     }
     
     /**
@@ -383,10 +382,10 @@ public class HomeActivity extends Activity implements Observer {
     	
     	EventTextView evTextView = (EventTextView) event;
     	
-    	Log.d(TAG, evTextView.getIdEvent());
+    	Log.d(TAG, evTextView.getEvent().getId());
     	
     	try {
-            mResourceManager.deleteEvent(new Event(evTextView.getIdEvent()));
+            mResourceManager.deleteEvent(new Event(evTextView.getEvent().getId()));
             refreshEvents();
         } catch (ResourceNotAvaiableException e) {
         	Toast.makeText(HomeActivity.this, getString(R.string.deletionError), Toast.LENGTH_SHORT).show();
@@ -401,47 +400,6 @@ public class HomeActivity extends Activity implements Observer {
     		mFrameLayout.removeView(event);
     	}
     	mAllEvents.clear();
-    }
-    
-    public void showReservationDialog() {
-    	AlertDialog.Builder b = new AlertDialog.Builder(this);
-    	b.setIcon(android.R.drawable.ic_dialog_alert);
-    	b.setTitle(mSelectedCell.getCalendarId());
-    	b.setMessage(getString(R.string.reserve_question));
-    	b.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-    	    @Override
-    	    public void onClick(DialogInterface dialog, int which) {
-    	        registerForContextMenu(mFrameLayout); 
-    	        openContextMenu(mFrameLayout);
-    	        unregisterForContextMenu(mFrameLayout);
-    	    }
-    	});
-    	b.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-    	    @Override
-    	    public void onClick(DialogInterface dialog, int which) {
-    	        //Do Nothing
-    	    }
-    	});
-    	b.show();
-    }
-    
-    public void showCancelReservationDialog() {
-    	AlertDialog.Builder b = new AlertDialog.Builder(this);
-    	b.setIcon(android.R.drawable.ic_dialog_alert);
-    	b.setMessage(getString(R.string.unreserve_question));
-    	b.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-    	    @Override
-    	    public void onClick(DialogInterface dialog, int which) {
-    	    	removeEvent(mSelectedEvent);
-    	    }
-    	});
-    	b.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-    	    @Override
-    	    public void onClick(DialogInterface dialog, int which) {
-    	        //Do Nothing
-    	    }
-    	});
-    	b.show();
     }
     
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
@@ -632,9 +590,9 @@ public class HomeActivity extends Activity implements Observer {
     	
     	int cellPosition = 0;
     	
-    	Log.d(TAG, "time: " + mFormateador.format(time.getTime()));
-    	Log.d(TAG, "mCalendarBegin: " + mFormateador.format(mCalendarBegin.getTime()));
-    	Log.d(TAG, "mCalendarEnd: " + mFormateador.format(mCalendarEnd.getTime()));
+    	Log.d(TAG, "time: " + mFormatter.format(time.getTime()));
+    	Log.d(TAG, "mCalendarBegin: " + mFormatter.format(mCalendarBegin.getTime()));
+    	Log.d(TAG, "mCalendarEnd: " + mFormatter.format(mCalendarEnd.getTime()));
     	
     	long timeInMilli  = time.getTimeInMillis();
     	long beginInMilli = mCalendarBegin.getTimeInMillis();
@@ -668,5 +626,63 @@ public class HomeActivity extends Activity implements Observer {
 			mSelectedEvent = e;
 			showCancelReservationDialog();
 		}
+		else {
+			showEventInfoDialog(e.getEvent());
+		}
 	}
+	
+    public void showReservationDialog() {
+    	AlertDialog.Builder b = new AlertDialog.Builder(this);
+    	b.setIcon(android.R.drawable.ic_dialog_alert);
+    	b.setTitle(mSelectedCell.getCalendarId());
+    	b.setMessage(getString(R.string.reserve_question));
+    	b.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+    	    @Override
+    	    public void onClick(DialogInterface dialog, int which) {
+    	        registerForContextMenu(mFrameLayout); 
+    	        openContextMenu(mFrameLayout);
+    	        unregisterForContextMenu(mFrameLayout);
+    	    }
+    	});
+    	b.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+    	    @Override
+    	    public void onClick(DialogInterface dialog, int which) {
+    	        //Do Nothing
+    	    }
+    	});
+    	b.show();
+    }
+    
+    public void showCancelReservationDialog() {
+    	AlertDialog.Builder b = new AlertDialog.Builder(this);
+    	b.setIcon(android.R.drawable.ic_dialog_alert);
+    	b.setMessage(getString(R.string.unreserve_question));
+    	b.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+    	    @Override
+    	    public void onClick(DialogInterface dialog, int which) {
+    	    	removeEvent(mSelectedEvent);
+    	    }
+    	});
+    	b.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+    	    @Override
+    	    public void onClick(DialogInterface dialog, int which) {
+    	        //Do Nothing
+    	    }
+    	});
+    	b.show();
+    }
+    
+    public void showEventInfoDialog(Event event) {
+    	AlertDialog.Builder b = new AlertDialog.Builder(this);
+    	b.setTitle(event.getTitle());
+    	b.setMessage(event.getEventInfo());
+    	b.setCancelable(false);
+    	b.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+    	    @Override
+    	    public void onClick(DialogInterface dialog, int which) {
+    	    	//focus go back to main screen
+    	    }
+    	});
+    	b.show();
+    }
 }

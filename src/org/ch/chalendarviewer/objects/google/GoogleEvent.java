@@ -136,5 +136,18 @@ public class GoogleEvent extends Event{
         mAttendees.clear();
     }    
    
+    @Override
+    public String getEventInfo() {
+    	StringBuilder sb = new StringBuilder();
+    	sb.append(super.getEventInfo());
+    	sb.append("\n");
+    	if(this.mCreator!=null) sb.append(this.mCreator.getName());
+    	if(this.mAttendees!=null){
+    		for(User attendee: this.mAttendees) {
+    			sb.append(attendee.getName());
+    		}
+    	}
+    	return sb.toString();
+    }
     
 }

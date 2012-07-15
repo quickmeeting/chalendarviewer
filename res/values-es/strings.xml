@@ -43,8 +43,9 @@
     <string name="reserved">Reserved</string>
     <string name="reserve_question">Quieres reservar esta sala?</string>
     <string name="unreserve_question">Quieres cancelar esta reserva?</string>
-    <string name="yes">Si</string>
+    <string name="yes">Sí</string>
     <string name="no">No</string>
+    <string name="ok">Ok</string>
     <string name="download_data">Descargando datos...</string>
     <string name="download_data_error">Error descargando datos</string>
     

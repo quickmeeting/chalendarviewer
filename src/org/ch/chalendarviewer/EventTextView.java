@@ -1,5 +1,6 @@
 package org.ch.chalendarviewer;
 
+import org.ch.chalendarviewer.objects.Event;
 import org.ch.chalendarviewer.util.Observable;
 import org.ch.chalendarviewer.util.Observer;
 
@@ -19,28 +20,13 @@ public class EventTextView extends TextView implements Observable {
     private Observer mObs;
 	/** True: event was created by chalendar */
 	private boolean mIsUserEvent;
-	/** Event id*/
-	private String idEvent;
-	
-	/**
-	 * Id of event
-	 * @return id of event
-	 */
-	public String getIdEvent() {
-        return idEvent;
-    }
+	/** Related Event */
+	private Event mEvent;
 
-	/**
-	 * Id of event
-	 * @param idEvent id of event
-	 */
-    public void setIdEvent(String idEvent) {
-        this.idEvent = idEvent;
-    }
-
-    public EventTextView(Context context, boolean isUserEvent) {
+    public EventTextView(Context context, Event event, boolean isUserEvent) {
 		super(context);
 		this.mIsUserEvent = isUserEvent;
+		this.mEvent = event;
 		init();
 	}
 	
@@ -70,6 +56,10 @@ public class EventTextView extends TextView implements Observable {
             	notifyObserver();
             }
         });
+    }
+    
+    public Event getEvent() {
+    	return mEvent;
     }
 
 	public boolean isUserEvent() {
