@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+    This file is part of ChalendarViewer.
+
+    ChalendarViewer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    ChalendarViewer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with ChalendarViewer.  If not, see <http://www.gnu.org/licenses/>.    
+ -->
+ 
+ <!-- Entschuldigen Sie für mögliche Übersetzungsfehler. Sie können helfen um diese Anwendung zu übersetzen -->
+<resources>
+    <string name="app_name">QuickMeeting</string>
+    <string name="about">Über</string>
+    
+    <string name="manageAccounts">Konten verwalten</string>
+    <string name="accounts">Konten</string>
+    <string name="activeAccountNotDefined">Aktives Konto nicht definiert</string>
+    <string name="addAccount">Konto hinzufügen</string>
+    <string name="addAccountHelp">Fügen Sie ein Konto, um ihren Kalender zu sehen</string>
+    <string name="deleteAccount">Konto löschen</string>
+    <string name="deleteAccountHelp">Löschen Sie einer unbenutzten Konto</string>
+    <string name="currentActiveAccount">Aktuell aktives Konto</string>
+    <string name="changeActiveAccount">Ändern aktives Konto</string>
+    <string name="changeActiveAccountHelp">Definieren Sie eine gespeicherte Konto als aktive</string>
+    
+    
+    <string name="neilArmstrongsPhrase">That\'s one small step for a man, a giant leap for mankind</string>
+    
+    <string name="problemOcurred">Oops, ein Fehler hat aufgetreten, bitte versuchen Sie es erneut! :-)</string>    
+    
+    <string name="resources">Ressourcen</string>
+    <string name="manageResources">Ressourcen verwalten</string>
+    <string name="manageResourcesHelp">Wählen Sie die Kalender aus</string>
+    <string name="refresh">Aktualisieren</string>
+    <string name="configuration">Einstellungen</string>
+    <string name="reserved">Reserviert</string>
+    <string name="reserve_question">Wollen Sie diesen Raum reservieren?</string>
+    <string name="unreserve_question">Wollen Sie diese Reservierung löschen?</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+    <string name="ok">Ok</string>
+    <string name="download_data">Wird herunterladen</string>
+    <string name="download_data_error">Fehler bei herunterlanden Daten</string>
+    
+    <string name="loading">Wird geladen</string>
+    <string name="loadingAccounts">Konten werden geladen</string>
+    
+    <string name="synchronizingCalendars">Kalender werden synchronisieren</string>
+    <string name="synchronizingError">Fehler beim synchronisieren Kalender</string>
+    
+    <string name="selectDuration">Wählen Sie die Zeitdauer aus</string>
+    <string name="minutes">minuten</string>
+    
+    <string name="createdByChalendar">Reserviert</string>   
+    <string name="creationError">Fehler beim Erstellen der Veranstaltung</string>
+    <string name="deletionError">Fehler beim Löschen der Veranstaltung</string>
+    
+</resources>
