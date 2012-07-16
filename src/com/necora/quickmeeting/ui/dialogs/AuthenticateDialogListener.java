@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- 
+/**
     This file is part of QuickMeeting.
 
     QuickMeeting is free software: you can redistribute it and/or modify
@@ -14,11 +13,19 @@
 
     You should have received a copy of the GNU General Public License
     along with QuickMeeting.  If not, see <http://www.gnu.org/licenses/>.    
- -->
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <Preference android:key="aboutAbout" android:title="@string/about" android:summary="@string/aboutThisSoftware"/>
-    <Preference android:key="aboutChangeLog" android:title="@string/changeLog" android:summary="@string/changeLogHelp"/>
-    <Preference android:key="aboutLicense" android:title="@string/license" android:summary="@string/licenseGNU"/>
     
+    
+    based on code http://www.londatiga.net/featured-articles/how-to-use-foursquare-api-on-android-application/
+*/
 
-</PreferenceScreen>
+package com.necora.quickmeeting.ui.dialogs;
+
+
+/**
+ * TODO review this class
+ *
+ */
+public interface AuthenticateDialogListener {
+    public abstract void onComplete(String authorizationCode);
+    public abstract void onError(String error);
+}

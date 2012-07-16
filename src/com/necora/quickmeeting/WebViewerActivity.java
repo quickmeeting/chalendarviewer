@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- 
+/**
     This file is part of QuickMeeting.
 
     QuickMeeting is free software: you can redistribute it and/or modify
@@ -14,11 +13,27 @@
 
     You should have received a copy of the GNU General Public License
     along with QuickMeeting.  If not, see <http://www.gnu.org/licenses/>.    
- -->
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <Preference android:key="aboutAbout" android:title="@string/about" android:summary="@string/aboutThisSoftware"/>
-    <Preference android:key="aboutChangeLog" android:title="@string/changeLog" android:summary="@string/changeLogHelp"/>
-    <Preference android:key="aboutLicense" android:title="@string/license" android:summary="@string/licenseGNU"/>
-    
+*/
 
-</PreferenceScreen>
+package com.necora.quickmeeting;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.webkit.WebView;
+
+public class WebViewerActivity extends Activity {
+
+    public static final String URL = "url";
+    public static final String FROM_ASSET = "file:///android_asset/";
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        String url = getIntent().getStringExtra(URL);
+        WebView webView = new WebView(this);
+        setContentView(webView);
+        webView.loadUrl(url);
+    }
+
+}

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>   
-<!-- 
+/**
     This file is part of QuickMeeting.
 
     QuickMeeting is free software: you can redistribute it and/or modify
@@ -14,24 +13,28 @@
 
     You should have received a copy of the GNU General Public License
     along with QuickMeeting.  If not, see <http://www.gnu.org/licenses/>.    
- -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <gradient
-        android:startColor="#00ff00"
-        android:centerColor="#006400"
-        android:endColor="#00ff00"
-        android:type="linear"
-  android:centerY="10"
-  android:centerX="10"
-        android:angle="90" />
-    <corners
-        android:radius="5dp" />
-    <padding
-        android:left="5dp"
-        android:top="5dp"
-        android:right="5dp"
-        android:bottom="5dp" />
-    <stroke 
-        android:width="0.5dp"
-        android:color="#008200"/>
-</shape>
+*/
+
+package com.necora.quickmeeting.contentprovider;
+
+import android.provider.BaseColumns;
+
+
+/**
+ * Configuration class for Database access
+ * @author vitor
+ * 
+ */
+public class ConfigColumns implements BaseColumns{
+    
+    /** Column name: auth_user foreign key */
+    public static final String PROPERTY = "property_name";
+    /** Column name: email */
+    public static final String VALUE = "property_value";
+    /** Column name: name */
+    public static final String DEFAULT = "property_default";
+
+    /** Content type */
+    public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.config";
+    
+}
