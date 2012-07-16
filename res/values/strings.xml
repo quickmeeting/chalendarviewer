@@ -42,7 +42,7 @@
     
     <string name="problemOcurred">Oops, an error occurred, try again please! :-)</string>    
     <string name="noResourceSelected">No Resource Selected</string>
-    <string name="noResourceSelectedHelp">Please, select an account and related resources to use!</string>
+    <string name="noResourceSelectedHelp">Please, select an account and resources to use!</string>
     
     <string name="resources">Resources</string>
     <string name="manageResources">Manage Resources</string>
