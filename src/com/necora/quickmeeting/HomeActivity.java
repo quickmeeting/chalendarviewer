@@ -139,6 +139,10 @@ public class HomeActivity extends Activity implements Observer {
     protected void onResume() {
         
     	super.onResume();
+    	
+    	//Verify if there is at least one account
+    	forceToCreateAnAccount();
+    	
     	mRefresh = true;
         try {
         	//clear screen
@@ -161,6 +165,32 @@ public class HomeActivity extends Activity implements Observer {
 		}
     }
     
+    private void forceToCreateAnAccount() {
+        List<CalendarResource> resourceList = null;
+        try {
+            resourceList = mResourceManager.getActiveResources();
+        } catch (ResourceNotAvaiableException e) {
+            e.printStackTrace();
+            Log.d(TAG, e.getMessage());
+        }
+        if (resourceList == null || resourceList.size() == 0) {
+            AlertDialog.Builder b = new AlertDialog.Builder(this);
+            b.setIcon(android.R.drawable.ic_dialog_alert);
+            b.setTitle(getString(R.string.noResourceSelected));
+            b.setMessage(getString(R.string.noResourceSelectedHelp));
+            b.setCancelable(false);
+            b.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    startActivity(new Intent(HomeActivity.this, PreferencesActivity.class));            
+                }
+            });            
+            b.show();
+        }
+
+    }
+
     @Override
     protected void onPause() {
     	super.onPause();
