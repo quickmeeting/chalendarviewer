@@ -81,6 +81,7 @@ public class HomeActivity extends Activity implements Observer {
 	private int mCalendarRowHeight;
 	private int mFirstColumnWidth;
 	private int mFirstRowHeight;
+	private int mEventTextSize;
 	private Calendar mCalendarBegin;
 	private Calendar mCalendarEnd;
 	private CellTextView mSelectedCell;
@@ -126,10 +127,10 @@ public class HomeActivity extends Activity implements Observer {
         
         mProgress.setMessage(getString(R.string.download_data));
         
-        mCalendarColumnWidth = getResources().getDimensionPixelSize(R.dimen.calendar_column_width);
         mFirstColumnWidth    = getResources().getDimensionPixelSize(R.dimen.first_column_width);
         mFirstRowHeight      = getResources().getDimensionPixelSize(R.dimen.first_row_height);
         mCalendarRowHeight   = getResources().getDimensionPixelSize(R.dimen.calendar_row_height);
+        mEventTextSize       = getResources().getDimensionPixelSize(R.dimen.event_font_size);
         
         mUserManager     = UserManager.getInstance(this); 
         mResourceManager = ResourceManager.getInstance(this);
@@ -291,7 +292,7 @@ public class HomeActivity extends Activity implements Observer {
         
         Calendar tmp = (Calendar) mCalendarBegin.clone();
         
-        mNumberOfRows = screen_width_pixels/mCalendarRowHeight-1;
+        mNumberOfRows = screen_width_pixels/mCalendarRowHeight;
         for(int i = 0; i<mNumberOfRows; i++) {
         	
         	//Adding time cell
@@ -388,6 +389,7 @@ public class HomeActivity extends Activity implements Observer {
         EventTextView eventTextView = new EventTextView(this, event, isAppUser);
 		eventTextView.setWidth(mCalendarColumnWidth);
 		eventTextView.setHeight(height*mCalendarRowHeight);
+		eventTextView.setTextSize(mEventTextSize);
 		eventTextView.setText(text);
 		eventTextView.setObserver(this);
 		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(
