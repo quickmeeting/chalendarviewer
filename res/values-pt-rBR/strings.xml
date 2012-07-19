@@ -18,12 +18,19 @@
 <resources>
     <string name="app_name">QuickMeeting</string>
     <string name="about">Sobre</string>
+    <string name="aboutThisSoftware">Sobre este software</string>
+    <string name="changeLog">Change Log</string>
+    <string name="changeLogHelp">Diferenças e melhorias em cada versão</string>
+    <string name="license">Licença</string>
+    <string name="licenseGNU">GNU General Public License</string>
     
-    <string name="manageAccounts">Gestão de Contas</string>
+    
+    
+    <string name="manageAccounts">Gestão de contas</string>
     <string name="accounts">Contas</string>
     <string name="activeAccountNotDefined">Não existe uma conta ativa</string>
     <string name="addAccount">Adicionar conta</string>
-    <string name="addAccountHelp">Adicione uma conta para ver os calendarios</string>
+    <string name="addAccountHelp">Adicione uma conta para ver os recursos</string>
     <string name="deleteAccount">Deletar conta</string>
     <string name="deleteAccountHelp">Deleta uma conta que não se utiliza</string>
     <string name="currentActiveAccount">Conta ativa</string>
@@ -31,35 +38,35 @@
     <string name="changeActiveAccountHelp">Define uma das contas armazenadas como ativa</string>
     
     
-    <string name="neilArmstrongsPhrase">That\'s one small step for a man, a giant leap for mankind</string>
-    
-    <string name="problemOcurred">Oops, ocorreu um erro. Tente outra vez, por favor! :-)</string>    
+    <string name="problemOcurred">Oops, ocorreu um erro. Por favor, tente outra vez!</string>    
+    <string name="noResourceSelected">Nenhum recurso selecionado</string>
+    <string name="noResourceSelectedHelp">Por favor, selecione uma conta e recursos para utilizar!</string>
     
     <string name="resources">Recursos</string>
     <string name="manageResources">Gestão de recursos</string>
-    <string name="manageResourcesHelp">Permite definir o conjunto de calendarios visiveis</string>
+    <string name="manageResourcesHelp">Escolha os recursos visiveis</string>
     <string name="refresh">Atualizar</string>
     <string name="configuration">Configuração</string>
     <string name="reserved">Reservado</string>
-    <string name="reserve_question">Quer reservar esta sala?</string>
-    <string name="unreserve_question">Quer cancelar esta reserva?</string>
+    <string name="reserve_question">Deseja fazer uma reserva?</string>
+    <string name="unreserve_question">Deseja cancelar esta reserva?</string>
     <string name="yes">Sim</string>
     <string name="no">Não</string>
-    <string name="ok">Ok</string>
-    <string name="download_data">Recuperando dados...</string>
+    <string name="download_data">Recuperando dados</string>   
+
     <string name="download_data_error">Erro recuperando dados</string>
     
     <string name="loading">Carregando</string>
-    <string name="loadingAccounts">Carregando calendarios</string>
+    <string name="loadingAccounts">Carregando recursos</string>
     
-    <string name="synchronizingCalendars">Sincronizando calendarios</string>
-    <string name="synchronizingError">Erro sincronizando calendarios</string>
+    <string name="synchronizingCalendars">Sincronizando recursos</string>
+    <string name="synchronizingError">Erro sincronizando recursos</string>
     
-    <string name="selectDuration">Selecione a duração</string>
+    <string name="selectDuration">Selecione duração</string>
     <string name="minutes">minutos</string>
     
-    <string name="createdByQuickMeeting">Reservada</string>   
+    <string name="createdByQuickMeeting">Reservado</string>   
     <string name="creationError">Erro criando evento</string>
-    <string name="deletionError">Erro deletando evento</string>
+    <string name="deletionError">Erro deletado evento</string>
     
 </resources>
