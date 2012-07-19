@@ -89,6 +89,7 @@ public class HomeActivity extends Activity implements Observer {
 	private boolean mPoll;
 	private boolean mRefresh;
 	
+	private final int HOURS_IN_CALENDAR     = 5;
 	private final int MIN_EVENT_TIME        = 15;
 	private final int MINUTES_BETWEEN_POLLS = 2;
 	
@@ -135,9 +136,10 @@ public class HomeActivity extends Activity implements Observer {
         mUserManager     = UserManager.getInstance(this); 
         mResourceManager = ResourceManager.getInstance(this);
         
-        Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        screen_width_pixels = display.getHeight();
-        mNumberOfRows = screen_width_pixels/mCalendarRowHeight;
+        //Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        //int screen_width_pixels = display.getHeight();
+        //mNumberOfRows = screen_width_pixels/mCalendarRowHeight;
+        mNumberOfRows = HOURS_IN_CALENDAR*(60/MIN_EVENT_TIME);
     }
     
     @Override
@@ -608,7 +610,6 @@ public class HomeActivity extends Activity implements Observer {
     		mProgress.dismiss();
     	}
     };
-    private int screen_width_pixels;
     
     /**
      * Return the cell position for a certain time.
