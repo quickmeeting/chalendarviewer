@@ -18,11 +18,11 @@
 <resources>
     <string name="app_name">QuickMeeting</string>
     <string name="about">About</string>
-    <string name="aboutThisSoftware">About this Software</string>
+    <string name="aboutThisSoftware">About this software</string>
     <string name="changeLog">Change Log</string>
     <string name="changeLogHelp">Differences and improvements in each version</string>
     <string name="license">License</string>
-    <string name="licenseGNU">GNU General Public License </string>
+    <string name="licenseGNU">GNU General Public License</string>
     
     
     
@@ -30,7 +30,7 @@
     <string name="accounts">Accounts</string>
     <string name="activeAccountNotDefined">Active account not defined</string>
     <string name="addAccount">Add Account</string>
-    <string name="addAccountHelp">Add an account to see the its calendars</string>
+    <string name="addAccountHelp">Add an account to see the resources</string>
     <string name="deleteAccount">Delete Account</string>
     <string name="deleteAccountHelp">Delete an unused account</string>
     <string name="currentActiveAccount">Current Active Account</string>
@@ -38,15 +38,14 @@
     <string name="changeActiveAccountHelp">Define a stored account as active</string>
     
     
-    <string name="neilArmstrongsPhrase">That\'s one small step for a man, a giant leap for mankind</string>
     
-    <string name="problemOcurred">Oops, an error occurred, try again please! :-)</string>    
+    <string name="problemOcurred">Oops, an error occurred, please try again! :-)</string>    
     <string name="noResourceSelected">No Resource Selected</string>
     <string name="noResourceSelectedHelp">Please, select an account and resources to use!</string>
     
     <string name="resources">Resources</string>
     <string name="manageResources">Manage Resources</string>
-    <string name="manageResourcesHelp">Choose the calendars\' set</string>
+    <string name="manageResourcesHelp">Choose the resources\' set</string>
     <string name="refresh">Refresh</string>
     <string name="configuration">Configuration</string>
     <string name="reserved">Reserved</string>
@@ -61,8 +60,8 @@
     <string name="loading">Loading</string>
     <string name="loadingAccounts">Loading Accounts</string>
     
-    <string name="synchronizingCalendars">Synchronizing Calendars</string>
-    <string name="synchronizingError">Error Synchronizing Calendars</string>
+    <string name="synchronizingCalendars">Synchronizing Resources</string>
+    <string name="synchronizingError">Error Synchronizing Resources</string>
     
     <string name="selectDuration">Select duration</string>
     <string name="minutes">minutes</string>
