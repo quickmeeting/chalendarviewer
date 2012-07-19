@@ -134,6 +134,10 @@ public class HomeActivity extends Activity implements Observer {
         
         mUserManager     = UserManager.getInstance(this); 
         mResourceManager = ResourceManager.getInstance(this);
+        
+        Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        screen_width_pixels = display.getHeight();
+        mNumberOfRows = screen_width_pixels/mCalendarRowHeight;
     }
     
     @Override
@@ -286,13 +290,11 @@ public class HomeActivity extends Activity implements Observer {
     
     private void drawBackgroundCells() {
     	
-        Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        int screen_width_pixels = display.getHeight();
         int scaledFontSize = getResources().getDimensionPixelSize(R.dimen.time_font_size);
         
         Calendar tmp = (Calendar) mCalendarBegin.clone();
         
-        mNumberOfRows = screen_width_pixels/mCalendarRowHeight;
+        
         for(int i = 0; i<mNumberOfRows; i++) {
         	
         	//Adding time cell
@@ -606,6 +608,7 @@ public class HomeActivity extends Activity implements Observer {
     		mProgress.dismiss();
     	}
     };
+    private int screen_width_pixels;
     
     /**
      * Return the cell position for a certain time.
