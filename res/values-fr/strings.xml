@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+    This file is part of QuickMeeting.
+
+    QuickMeeting is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    QuickMeeting is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with QuickMeeting.  If not, see <http://www.gnu.org/licenses/>.    
+ -->
+<resources>
+    <string name="app_name">QuickMeeting</string>
+    <string name="about">A propos</string>
+    <string name="aboutThisSoftware">A propos de ce logiciel</string>
+    <string name="changeLog">Quoi de neuf</string>
+    <string name="changeLogHelp">Les changements de chaque version</string>
+    <string name="license">License</string>
+    <string name="licenseGNU">GNU General Public License</string>
+    
+    
+    
+    <string name="manageAccounts">Gestion de comptes</string>
+    <string name="accounts">Des comptes</string>
+    <string name="activeAccountNotDefined">Il n\'existe pas un compte active</string>
+    <string name="addAccount">Ajouter un compte</string>
+    <string name="addAccountHelp">Ajoutez un compte et voyez les ressources</string>
+    <string name="deleteAccount">Éffacez compte</string>
+    <string name="deleteAccountHelp">Éffacez un compte inactive</string>
+    <string name="currentActiveAccount">Compte active</string>
+    <string name="changeActiveAccount">Changez le compte active</string>
+    <string name="changeActiveAccountHelp">Choississez un compte comme active</string>
+    
+    
+    <string name="problemOcurred">Boof, un érreur y est arrivée. S\'il vous plaît, éssayez une autre fois!</string>    
+    <string name="noResourceSelected">Aucun ressource selectionné</string>
+    
+    
+    <string name="noResourceSelectedHelp">Por favor, selecione uma conta e recursos para utilizar!</string>
+    
+    <string name="resources">Recursos</string>
+    <string name="manageResources">Gestão de recursos</string>
+    <string name="manageResourcesHelp">Escolha os recursos visiveis</string>
+    <string name="refresh">Atualizar</string>
+    <string name="configuration">Configuração</string>
+    <string name="reserved">Reservado</string>
+    <string name="reserve_question">Deseja fazer uma reserva?</string>
+    <string name="unreserve_question">Deseja cancelar esta reserva?</string>
+    <string name="yes">Sim</string>
+    <string name="no">Não</string>
+    <string name="download_data">Recuperando dados</string>   
+
+    <string name="download_data_error">Erro recuperando dados</string>
+    
+    <string name="loading">Carregando</string>
+    <string name="loadingAccounts">Carregando recursos</string>
+    
+    <string name="synchronizingCalendars">Sincronizando recursos</string>
+    <string name="synchronizingError">Erro sincronizando recursos</string>
+    
+    <string name="selectDuration">Selecione duração</string>
+    <string name="minutes">minutos</string>
+    
+    <string name="createdByQuickMeeting">Reservado</string>   
+    <string name="creationError">Erro criando evento</string>
+    <string name="deletionError">Erro deletado evento</string>
+    
+</resources>
