@@ -42,33 +42,33 @@
     <string name="noResourceSelected">Aucun ressource selectionné</string>
     
     
-    <string name="noResourceSelectedHelp">Por favor, selecione uma conta e recursos para utilizar!</string>
+    <string name="noResourceSelectedHelp">S\'il vous plaît, sélectionnez un compte et les ressources!</string>
     
-    <string name="resources">Recursos</string>
-    <string name="manageResources">Gestão de recursos</string>
-    <string name="manageResourcesHelp">Escolha os recursos visiveis</string>
-    <string name="refresh">Atualizar</string>
-    <string name="configuration">Configuração</string>
-    <string name="reserved">Reservado</string>
-    <string name="reserve_question">Deseja fazer uma reserva?</string>
-    <string name="unreserve_question">Deseja cancelar esta reserva?</string>
-    <string name="yes">Sim</string>
-    <string name="no">Não</string>
-    <string name="download_data">Recuperando dados</string>   
+    <string name="resources">Ressources</string>
+    <string name="manageResources">Gestion des ressources</string>
+    <string name="manageResourcesHelp">Choisissez les ressources visibles</string>
+    <string name="refresh">Mettre à jour</string>
+    <string name="configuration">Configuration</string>
+    <string name="reserved">Reservé</string>
+    <string name="reserve_question">Vous voulez faire une réservation?</string>
+    <string name="unreserve_question">Vous voulez annuler cette réservation?</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
+    <string name="download_data">Chargement de données</string>   
 
-    <string name="download_data_error">Erro recuperando dados</string>
+    <string name="download_data_error">Erreur dans le chargement de données</string>
     
-    <string name="loading">Carregando</string>
-    <string name="loadingAccounts">Carregando recursos</string>
+    <string name="loading">Chargement</string>
+    <string name="loadingAccounts">Chargement des ressources</string>
     
-    <string name="synchronizingCalendars">Sincronizando recursos</string>
-    <string name="synchronizingError">Erro sincronizando recursos</string>
+    <string name="synchronizingCalendars">Synchronisation des ressources</string>
+    <string name="synchronizingError">Erreur dans la synchronisation des ressources</string>
     
-    <string name="selectDuration">Selecione duração</string>
-    <string name="minutes">minutos</string>
+    <string name="selectDuration">Sélectionnez la durée</string>
+    <string name="minutes">minutes</string>
     
-    <string name="createdByQuickMeeting">Reservado</string>   
-    <string name="creationError">Erro criando evento</string>
-    <string name="deletionError">Erro deletado evento</string>
+    <string name="createdByQuickMeeting">Reservé</string>   
+    <string name="creationError">Erreur dans la création de l'événement</string>
+    <string name="deletionError">Erreur dans l'éffacement de l'événement</string>
     
 </resources>
