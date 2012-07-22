@@ -82,7 +82,6 @@ public class HomeActivity extends Activity implements Observer {
 	private int mCalendarColumnWidth;
 	private int mCalendarRowHeight;
 	private int mFirstColumnWidth;
-	private int mFirstRowHeight;
 	private int mEventTextSize;
 	private Calendar mCalendarBegin;
 	private Calendar mCalendarEnd;
@@ -132,7 +131,6 @@ public class HomeActivity extends Activity implements Observer {
         mProgress.setMessage(getString(R.string.download_data));
         
         mFirstColumnWidth    = getResources().getDimensionPixelSize(R.dimen.first_column_width);
-        mFirstRowHeight      = getResources().getDimensionPixelSize(R.dimen.first_row_height);
         mCalendarRowHeight   = getResources().getDimensionPixelSize(R.dimen.calendar_row_height);
         mEventTextSize       = getResources().getDimensionPixelSize(R.dimen.event_font_size);
         

@@ -15,28 +15,27 @@
     You should have received a copy of the GNU General Public License
     along with QuickMeeting.  If not, see <http://www.gnu.org/licenses/>.    
  -->
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:id="@+id/HorizontalScrollView01" 
+       android:layout_width="wrap_content" 
+       android:layout_height="wrap_content">
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="#FFFFFF" >
+    android:layout_height="fill_parent" 
+    android:background="#FFFFFF">
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ll_calendar_names"
     android:orientation="horizontal"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:background="#FFFFFF" >
+    android:layout_height="wrap_content">
 </LinearLayout>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
     android:id="@+id/ScrlView" 
     android:layout_width="fill_parent" 
-    android:layout_height="fill_parent" 
-    android:background="#FFFFFF">
-	<HorizontalScrollView android:id="@+id/HorizontalScrollView01" 
-        android:layout_width="wrap_content" 
-        android:layout_height="wrap_content">
+    android:layout_height="fill_parent">
 		<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		    android:id="@+id/frameLayout"
 	    	android:layout_width="fill_parent"
@@ -47,6 +46,6 @@
 			    android:layout_height="fill_parent" >
 			</TableLayout>
 		</FrameLayout>
-	</HorizontalScrollView>
 </ScrollView>
 </LinearLayout>
+</HorizontalScrollView>
