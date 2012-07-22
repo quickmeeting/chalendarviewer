@@ -15,6 +15,20 @@
     You should have received a copy of the GNU General Public License
     along with QuickMeeting.  If not, see <http://www.gnu.org/licenses/>.    
  -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFFFFF" >
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_calendar_names"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF" >
+</LinearLayout>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
     android:id="@+id/ScrlView" 
     android:layout_width="fill_parent" 
@@ -35,3 +49,4 @@
 		</FrameLayout>
 	</HorizontalScrollView>
 </ScrollView>
+</LinearLayout>

@@ -50,6 +50,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -76,6 +77,7 @@ public class HomeActivity extends Activity implements Observer {
 	private SimpleDateFormat mFormatter;
 	private TableLayout mTableLayout;
 	private FrameLayout mFrameLayout;
+	private LinearLayout mCalendarNamesLayout;
 	private int mNumberOfRows;
 	private int mCalendarColumnWidth;
 	private int mCalendarRowHeight;
@@ -117,11 +119,12 @@ public class HomeActivity extends Activity implements Observer {
         
         setContentView(R.layout.main);
         
-        mFrameLayout = (FrameLayout)findViewById(R.id.frameLayout);
-        mTableLayout = (TableLayout)findViewById(R.id.mainTableLayout);
+        mCalendarNamesLayout = (LinearLayout)findViewById(R.id.ll_calendar_names);
+        mFrameLayout         = (FrameLayout)findViewById(R.id.frameLayout);
+        mTableLayout         = (TableLayout)findViewById(R.id.mainTableLayout);
         
         mProgress 	       = new ProgressDialog(this);
-        mFormatter       = new SimpleDateFormat("HH:mm");
+        mFormatter         = new SimpleDateFormat("HH:mm");
         mAllEvents         = new ArrayList<TextView>();
         mEventMap          = new HashMap<String, List<? extends Event>>();
         mToastErrorMessage = getString(R.string.download_data_error);
@@ -253,25 +256,19 @@ public class HomeActivity extends Activity implements Observer {
     private void drawFirstRow() {
     	
     	//Adding time column
-    	TableRow tr = new TableRow(this);
-        tr.setLayoutParams(new LayoutParams(
-        			   LayoutParams.FILL_PARENT,
-                       LayoutParams.WRAP_CONTENT));
         TextView tv = new TextView(this);
+        tv.setWidth(mFirstColumnWidth);
+        tv.setLayoutParams(new LayoutParams(
+                			   LayoutParams.WRAP_CONTENT,
+                               LayoutParams.WRAP_CONTENT));
         
-        tr.addView(tv);
-        mTableLayout.addView(tr,new TableLayout.LayoutParams(
-                LayoutParams.FILL_PARENT,
+        mCalendarNamesLayout.addView(tv,new LinearLayout.LayoutParams(
+                LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT));
     	
     	//Adding calendar columns
         int scaledFontSize = getResources().getDimensionPixelSize(R.dimen.calendar_name_font_size);
     	for(String cal: mCalendarNames) {
-        	TableRow tr_cal = new TableRow(this);
-        	tr_cal.setLayoutParams(new LayoutParams(
-        				   LayoutParams.FILL_PARENT,
-                           LayoutParams.WRAP_CONTENT));
-        	
             TextView calendar = new TextView(this);
             calendar.setText(cal);
             calendar.setTextColor(Color.BLACK);
@@ -282,10 +279,12 @@ public class HomeActivity extends Activity implements Observer {
             calendar.setPadding(0, 10, 0, 10);
             calendar.setMaxLines(1);
             calendar.setEllipsize(TruncateAt.END);
+            calendar.setLayoutParams(new LayoutParams(
+            						LayoutParams.WRAP_CONTENT,
+                                    LayoutParams.WRAP_CONTENT));
             
-            tr.addView(calendar);
-            mTableLayout.addView(tr_cal,new TableLayout.LayoutParams(
-                    LayoutParams.FILL_PARENT,
+            mCalendarNamesLayout.addView(calendar,new LinearLayout.LayoutParams(
+                    LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
     	}
     }
@@ -400,7 +399,7 @@ public class HomeActivity extends Activity implements Observer {
 		        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
 		        (Gravity.LEFT | Gravity.TOP));
 		int column = mFirstColumnWidth + calendarPos*mCalendarColumnWidth;
-		fl.setMargins(column, mFirstRowHeight+startCellPos*mCalendarRowHeight, 0, 0);
+		fl.setMargins(column, startCellPos*mCalendarRowHeight, 0, 0);
 		mFrameLayout.addView(eventTextView,fl);
 		
 		mAllEvents.add(eventTextView);
