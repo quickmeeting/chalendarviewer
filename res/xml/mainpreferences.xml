@@ -21,7 +21,9 @@
                     android:enabled="false"/>
     </PreferenceCategory>             
     <PreferenceCategory android:title="@string/resources" android:key="resources">
-        <Preference android:key="manageResources" android:title="@string/manageResources" android:summary="@string/manageResourcesHelp"/>
+        <Preference android:key="manageResources" 
+        			android:title="@string/manageResources" 
+        			android:summary="@string/manageResourcesHelp"/>
     </PreferenceCategory>    
     <PreferenceCategory android:title="@string/accounts" 
                         android:key="accounts">
@@ -31,7 +33,10 @@
         <ListPreference android:title="@string/changeActiveAccount" 
                         android:summary="@string/changeActiveAccountHelp" 
                         android:key="changeActiveAccount"/>
-        <ListPreference android:title="@string/deleteAccount" android:summary="@string/deleteAccountHelp" android:key="deleteAccount"/>        
+        <ListPreference android:title="@string/deleteAccount" 
+        				android:summary="@string/deleteAccountHelp" 
+        				android:key="deleteAccount"
+        				android:visibility="gone"/>        
     </PreferenceCategory>
     
 
