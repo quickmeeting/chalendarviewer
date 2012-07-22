@@ -68,7 +68,7 @@
     <string name="minutes">minutes</string>
     
     <string name="createdByQuickMeeting">Reservé</string>   
-    <string name="creationError">Erreur dans la création de l'événement</string>
-    <string name="deletionError">Erreur dans l'éffacement de l'événement</string>
+    <string name="creationError">Erreur dans la création de l\'événement</string>
+    <string name="deletionError">Erreur dans l\'éffacement de l\'événement</string>
     
 </resources>
