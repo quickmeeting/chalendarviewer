@@ -27,7 +27,6 @@ import java.util.Map;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -156,6 +155,7 @@ public class HomeActivity extends Activity implements Observer {
         	//clear screen
         	removeAllEvents();
         	mTableLayout.removeAllViews();
+        	mCalendarNamesLayout.removeAllViews();
         	
         	List<CalendarResource> calendars = mResourceManager.getActiveResources();
         	mCalendarNames = new ArrayList<String>();
