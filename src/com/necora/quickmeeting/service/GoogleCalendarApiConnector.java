@@ -413,7 +413,7 @@ public class GoogleCalendarApiConnector {
         ev.setEnd(evEnd);
         
         JSONObject jsonUser = (JSONObject) jsonEvent.getJSONObject(GoogleEvent.FIELD_CREATOR);
-        ev.setCreator(new User(jsonUser.getString(User.FIELD_DISPLAY_NAME), jsonUser.getString(User.FIELD_EMAIL)));
+        ev.setCreator(new User(jsonUser.getString(User.FIELD_DISPLAY_NAME), jsonUser.optString(User.FIELD_EMAIL, "private")));
         
         JSONArray listAttendees = (JSONArray) jsonEvent.getJSONArray(GoogleEvent.FIELD_ATTENDEES);
         if (listAttendees != null) {

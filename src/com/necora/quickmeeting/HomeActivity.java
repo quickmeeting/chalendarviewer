@@ -363,7 +363,6 @@ public class HomeActivity extends Activity implements Observer {
     	for(String calendarName: mEventMap.keySet()) {
     		List<? extends Event> eventList = mEventMap.get(calendarName);
     		for( Event event: eventList ) {
-	    		String title = event.getTitle();
 	    		Calendar eventBegin = event.getBegin();
 	    		Calendar eventEnd = event.getEnd();
 
@@ -374,19 +373,23 @@ public class HomeActivity extends Activity implements Observer {
 		    		//simulamos la columna a la que pertenece
 		    		int calendarPos = mCalendarNames.indexOf(calendarName);
 		    		
-		    		String text = title + "\n" 
-		    				+ mFormatter.format(eventBegin.getTime()) + " - " 
-		    				+ mFormatter.format(eventEnd.getTime());
-		    		
 		    		boolean isCreatedByQuickMeeting = event.getDetails().equals(getString(R.string.createdByQuickMeeting));
 		    		
-		    		addEvent(calendarPos, startCellPos, text, endCellPos-startCellPos, isCreatedByQuickMeeting, event);
+		    		addEvent(calendarPos, startCellPos, endCellPos-startCellPos, isCreatedByQuickMeeting, event);
 	    		}
     		}
     	}
     }
     
-    private void addEvent(int calendarPos, int startCellPos, String text, int height, boolean isAppUser, Event event) {
+    private void addEvent(int calendarPos, int startCellPos, int height, boolean isAppUser, Event event) {
+		Calendar eventBegin = event.getBegin();
+		Calendar eventEnd = event.getEnd();
+    	String title = event.getTitle();
+		if( title == null || title.length() == 0) title = getString(R.string.reserved);
+		String text = title + "\n" 
+				+ mFormatter.format(eventBegin.getTime()) + " - " 
+				+ mFormatter.format(eventEnd.getTime());
+		
         EventTextView eventTextView = new EventTextView(this, event, isAppUser);
 		eventTextView.setWidth(mCalendarColumnWidth);
 		eventTextView.setHeight(height*mCalendarRowHeight);
@@ -701,7 +704,9 @@ public class HomeActivity extends Activity implements Observer {
     
     public void showEventInfoDialog(final Event event) {
     	AlertDialog.Builder b = new AlertDialog.Builder(this);
-    	b.setTitle(event.getTitle());
+    	String title = event.getTitle();
+		if( title == null || title.length() == 0) title = getString(R.string.reserved);
+    	b.setTitle(title);
     	b.setMessage(event.getEventInfo());
     	b.setCancelable(false);
     	b.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {

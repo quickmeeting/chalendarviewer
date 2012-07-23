@@ -41,7 +41,7 @@ public class PreferencesActivity extends PreferenceActivity {
     private Preference mCurrentActiveAccountPref;
     private Preference mAddAccountPref;
     private ListPreference mChangeActiveAccount;
-    private ListPreference mDeleteAccount;
+    //private ListPreference mDeleteAccount;
     private Preference mManageResources;
     
     private UserManager mUserManager;
@@ -56,7 +56,7 @@ public class PreferencesActivity extends PreferenceActivity {
         
         mCurrentActiveAccountPref = preferenceScreen.findPreference("currentActiveAccount");
         mAddAccountPref           = preferenceScreen.findPreference("addAccount");
-        mDeleteAccount            = (ListPreference) preferenceScreen.findPreference("deleteAccount");
+        //mDeleteAccount            = (ListPreference) preferenceScreen.findPreference("deleteAccount");
         mChangeActiveAccount      = (ListPreference) preferenceScreen.findPreference("changeActiveAccount");
         
         mManageResources          = preferenceScreen.findPreference("manageResources");
@@ -100,13 +100,13 @@ public class PreferencesActivity extends PreferenceActivity {
 
     private void refreshScreenBasedOnAccounts() {
         if (mUserManager.hasUserActiveAccessToken()) {
-            mDeleteAccount.setEnabled(true);
+            //mDeleteAccount.setEnabled(true);
             mChangeActiveAccount.setEnabled(true);
             mManageResources.setEnabled(true);
             refreshActiveAccount();
         } else {
             mCurrentActiveAccountPref.setTitle(R.string.activeAccountNotDefined);
-            mDeleteAccount.setEnabled(false);
+            //mDeleteAccount.setEnabled(false);
             mChangeActiveAccount.setEnabled(false);
             mManageResources.setEnabled(false);
         }
@@ -133,8 +133,8 @@ public class PreferencesActivity extends PreferenceActivity {
         mChangeActiveAccount.setDefaultValue(mUserManager.getActiveUserEmail());
         
         
-        mDeleteAccount.setEntries(emailList);
-        mDeleteAccount.setEntryValues(emailList);
+        //mDeleteAccount.setEntries(emailList);
+        //mDeleteAccount.setEntryValues(emailList);
         
         mCurrentActiveAccountPref.setTitle(mUserManager.getActiveUserEmail());     
         
