@@ -76,7 +76,7 @@ public class HomeActivity extends Activity implements Observer {
 	private SimpleDateFormat mFormatter;
 	private TableLayout mTableLayout;
 	private FrameLayout mFrameLayout;
-	private LinearLayout mCalendarNamesLayout;
+	private LinearLayout mHeaderLayout;
 	private int mNumberOfRows;
 	private int mCalendarColumnWidth;
 	private int mCalendarRowHeight;
@@ -117,7 +117,7 @@ public class HomeActivity extends Activity implements Observer {
         
         setContentView(R.layout.main);
         
-        mCalendarNamesLayout = (LinearLayout)findViewById(R.id.ll_calendar_names);
+        mHeaderLayout = (LinearLayout)findViewById(R.id.ll_calendar_names);
         mFrameLayout         = (FrameLayout)findViewById(R.id.frameLayout);
         mTableLayout         = (TableLayout)findViewById(R.id.mainTableLayout);
         
@@ -155,7 +155,7 @@ public class HomeActivity extends Activity implements Observer {
         	//clear screen
         	removeAllEvents();
         	mTableLayout.removeAllViews();
-        	mCalendarNamesLayout.removeAllViews();
+        	mHeaderLayout.removeAllViews();
         	
         	List<CalendarResource> calendars = mResourceManager.getActiveResources();
         	mCalendarNames = new ArrayList<String>();
@@ -260,7 +260,7 @@ public class HomeActivity extends Activity implements Observer {
                 			   LayoutParams.WRAP_CONTENT,
                                LayoutParams.WRAP_CONTENT));
         
-        mCalendarNamesLayout.addView(tv,new LinearLayout.LayoutParams(
+        mHeaderLayout.addView(tv,new LinearLayout.LayoutParams(
                 LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT));
     	
@@ -281,7 +281,7 @@ public class HomeActivity extends Activity implements Observer {
             						LayoutParams.WRAP_CONTENT,
                                     LayoutParams.WRAP_CONTENT));
             
-            mCalendarNamesLayout.addView(calendar,new LinearLayout.LayoutParams(
+            mHeaderLayout.addView(calendar,new LinearLayout.LayoutParams(
                     LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
     	}
@@ -354,6 +354,7 @@ public class HomeActivity extends Activity implements Observer {
     private void drawEvents() {
     	//clear screen
     	mTableLayout.removeAllViews();
+    	mHeaderLayout.removeAllViews();
     	removeAllEvents();
     	
     	//Redraw background
@@ -363,47 +364,46 @@ public class HomeActivity extends Activity implements Observer {
     	for(String calendarName: mEventMap.keySet()) {
     		List<? extends Event> eventList = mEventMap.get(calendarName);
     		for( Event event: eventList ) {
-	    		Calendar eventBegin = event.getBegin();
-	    		Calendar eventEnd = event.getEnd();
-
-	    		if( !(eventEnd.before(mCalendarBegin) || eventBegin.after(mCalendarEnd)) ) {
-		    		int startCellPos = convertCalendarToCellPosition(eventBegin, true);
-		    		int endCellPos = convertCalendarToCellPosition(eventEnd, false)+1;
-		    		
-		    		//simulamos la columna a la que pertenece
-		    		int calendarPos = mCalendarNames.indexOf(calendarName);
-		    		
-		    		boolean isCreatedByQuickMeeting = event.getDetails().equals(getString(R.string.createdByQuickMeeting));
-		    		
-		    		addEvent(calendarPos, startCellPos, endCellPos-startCellPos, isCreatedByQuickMeeting, event);
-	    		}
+		    	addEvent(calendarName, event);
     		}
     	}
     }
     
-    private void addEvent(int calendarPos, int startCellPos, int height, boolean isAppUser, Event event) {
+    private void addEvent(String calendarName, Event event) {
 		Calendar eventBegin = event.getBegin();
 		Calendar eventEnd = event.getEnd();
-    	String title = event.getTitle();
-		if( title == null || title.length() == 0) title = getString(R.string.reserved);
-		String text = title + "\n" 
-				+ mFormatter.format(eventBegin.getTime()) + " - " 
-				+ mFormatter.format(eventEnd.getTime());
-		
-        EventTextView eventTextView = new EventTextView(this, event, isAppUser);
-		eventTextView.setWidth(mCalendarColumnWidth);
-		eventTextView.setHeight(height*mCalendarRowHeight);
-		eventTextView.setTextSize(mEventTextSize);
-		eventTextView.setText(text);
-		eventTextView.setObserver(this);
-		FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(
-		        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
-		        (Gravity.LEFT | Gravity.TOP));
-		int column = mFirstColumnWidth + calendarPos*mCalendarColumnWidth;
-		fl.setMargins(column, startCellPos*mCalendarRowHeight, 0, 0);
-		mFrameLayout.addView(eventTextView,fl);
-		
-		mAllEvents.add(eventTextView);
+
+		if( !(eventEnd.before(mCalendarBegin) || eventBegin.after(mCalendarEnd)) ) {
+    		int startCellPos = convertCalendarToCellPosition(eventBegin, true);
+    		int endCellPos = convertCalendarToCellPosition(eventEnd, false)+1;
+    		int height = endCellPos-startCellPos;
+    		
+    		//get column position
+    		int calendarPos = mCalendarNames.indexOf(calendarName);
+    		
+    		boolean isCreatedByQuickMeeting = event.getDetails().equals(getString(R.string.createdByQuickMeeting));
+
+	    	String title = event.getTitle();
+			if( title == null || title.length() == 0) title = getString(R.string.reserved);
+			String text = title + "\n" 
+					+ mFormatter.format(eventBegin.getTime()) + " - " 
+					+ mFormatter.format(eventEnd.getTime());
+			
+	        EventTextView eventTextView = new EventTextView(this, event, isCreatedByQuickMeeting);
+			eventTextView.setWidth(mCalendarColumnWidth);
+			eventTextView.setHeight(height*mCalendarRowHeight);
+			eventTextView.setTextSize(mEventTextSize);
+			eventTextView.setText(text);
+			eventTextView.setObserver(this);
+			FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(
+			        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
+			        (Gravity.LEFT | Gravity.TOP));
+			int column = mFirstColumnWidth + calendarPos*mCalendarColumnWidth;
+			fl.setMargins(column, startCellPos*mCalendarRowHeight, 0, 0);
+			mFrameLayout.addView(eventTextView,fl);
+			
+			mAllEvents.add(eventTextView);
+		}
     }
     
     /**
