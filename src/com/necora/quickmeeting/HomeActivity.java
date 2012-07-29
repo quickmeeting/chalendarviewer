@@ -117,7 +117,7 @@ public class HomeActivity extends Activity implements Observer {
         
         setContentView(R.layout.main);
         
-        mHeaderLayout = (LinearLayout)findViewById(R.id.ll_calendar_names);
+        mHeaderLayout        = (LinearLayout)findViewById(R.id.ll_calendar_names);
         mFrameLayout         = (FrameLayout)findViewById(R.id.frameLayout);
         mTableLayout         = (TableLayout)findViewById(R.id.mainTableLayout);
         
