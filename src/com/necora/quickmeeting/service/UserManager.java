@@ -439,7 +439,6 @@ public class UserManager {
                     Log.d(TAG, "User " + userMail + " inserted and defined as ACTIVE");
                     userWasAdded = true;                   
                 }
-                
                 //always close a cursor, I said always
                 managedCursor.close();
                 
@@ -449,6 +448,8 @@ public class UserManager {
                     mExpirationDate = expirationDate;
                     mUserMail = userMail;
                     mRefreshToken = refreshToken;
+                    //Later will be recovered
+                    mUserId = null;
                 }
             }
         } 
@@ -562,7 +563,6 @@ public class UserManager {
     }
 
     public String getActiveUserEmail() {
-        // TODO Auto-generated method stub
         return mUserMail;
     }
 

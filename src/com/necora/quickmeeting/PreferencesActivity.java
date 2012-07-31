@@ -44,7 +44,10 @@ public class PreferencesActivity extends PreferenceActivity {
     //private ListPreference mDeleteAccount;
     private Preference mManageResources;
     
+    /** User manager singleton */
     private UserManager mUserManager;
+    /** Resources manager singleton */
+    private ResourceManager mResourceManager;
     
     static final private String TAG  =  PreferencesActivity.class.toString();
     
@@ -62,6 +65,7 @@ public class PreferencesActivity extends PreferenceActivity {
         mManageResources          = preferenceScreen.findPreference("manageResources");
         
         mUserManager = UserManager.getInstance(this);
+        mResourceManager = ResourceManager.getInstance(this);
         
         setListeners();        
         refreshScreenBasedOnAccounts();
@@ -72,6 +76,7 @@ public class PreferencesActivity extends PreferenceActivity {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 callAuthorizeActivity();
+                refreshActiveAccount();
                 return true;
             }
         });   
@@ -131,7 +136,8 @@ public class PreferencesActivity extends PreferenceActivity {
         mChangeActiveAccount.setEntries(emailList);
         mChangeActiveAccount.setEntryValues(emailList);
         mChangeActiveAccount.setDefaultValue(mUserManager.getActiveUserEmail());
-        
+        //selected account
+        mChangeActiveAccount.setValue(mUserManager.getActiveUserEmail());
         
         //mDeleteAccount.setEntries(emailList);
         //mDeleteAccount.setEntryValues(emailList);
@@ -139,12 +145,8 @@ public class PreferencesActivity extends PreferenceActivity {
         mCurrentActiveAccountPref.setTitle(mUserManager.getActiveUserEmail());     
         
         ResourceManager resourceManager = ResourceManager.getInstance(this);
-        try {
-            resourceManager.syncResources();
-        } catch (SyncFailedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+
+        mResourceManager.notifyUserHasChanged();
     }
     
     private void callAuthorizeActivity() {
@@ -160,6 +162,7 @@ public class PreferencesActivity extends PreferenceActivity {
             public void onComplete(String authorizationCode) {
                 mUserManager.addActiveUserToken(authorizationCode);
                 refreshScreenBasedOnAccounts();
+                mResourceManager.notifyUserHasChanged();
             }
         };
         
