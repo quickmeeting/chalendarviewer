@@ -65,7 +65,8 @@ import com.necora.quickmeeting.util.Observer;
 
 public class HomeActivity extends Activity implements Observer {
 	
-	private ResourceManager mResourceManager;
+	
+    private ResourceManager mResourceManager;
 	UserManager mUserManager;
 	
 	private ProgressDialog mProgress;
@@ -181,20 +182,12 @@ public class HomeActivity extends Activity implements Observer {
             e.printStackTrace();
             Log.d(TAG, e.getMessage());
         }
+        
         if (resourceList == null || resourceList.size() == 0) {
-            AlertDialog.Builder b = new AlertDialog.Builder(this);
-            b.setIcon(android.R.drawable.ic_dialog_alert);
-            b.setTitle(getString(R.string.noResourceSelected));
-            b.setMessage(getString(R.string.noResourceSelectedHelp));
-            b.setCancelable(false);
-            b.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    startActivity(new Intent(HomeActivity.this, PreferencesActivity.class));            
-                }
-            });            
-            b.show();
+            //open Welcome activity and close myself
+            Intent welcomeAct = new Intent(this, WelcomeActivity.class);
+            startActivity(welcomeAct);
+            finish();            
         }
 
     }

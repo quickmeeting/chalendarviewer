@@ -11,7 +11,6 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-
     You should have received a copy of the GNU General Public License
     along with QuickMeeting.  If not, see <http://www.gnu.org/licenses/>.    
  -->
@@ -51,8 +50,6 @@
     <string name="reserved">Reserved</string>
     <string name="reserve_question">Do you want to make a reservation?</string>
     <string name="unreserve_question">Do you want to delete this reserve?</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
     <string name="download_data">Downloading data</string>   
 
     <string name="download_data_error">Error downloading data</string>
@@ -69,5 +66,18 @@
     <string name="createdByQuickMeeting">Reserved</string>   
     <string name="creationError">Error creating event</string>
     <string name="deletionError">Error deleting event</string>
+    
+    
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="ok">OK</string>
+    <string name="maybeLater">Maybe later</string>
+    
+    <string name="welcome">Welcome</string>
+    <string name="welcomeHelp">
+        Hi, Thanks for downloading QuickMeeting\n
+        We will help you to start using this app\n
+        \n
+        Please, follow ours instructions</string>
     
 </resources>
