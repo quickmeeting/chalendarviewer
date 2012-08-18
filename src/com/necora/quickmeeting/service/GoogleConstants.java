@@ -49,14 +49,18 @@ public class GoogleConstants {
     private static final String OAUTH_RESPONSE_TYPE = "code";
     /** Needed permissions */
     private static final String OAUTH_CALENDAR_PERMS = "https://www.google.com/calendar/feeds/";
+    /**  OAuth parameter mail */
     private static final String OAUTH_USERMAIL_PERMS = "https://www.googleapis.com/auth/userinfo.email";
+    /**  OAuth parameter userinfo */
     private static final String OAUTH_USERINFO_PERMS = "https://www.googleapis.com/auth/userinfo.profile";
+    /** OAuth parameter scope */
     private static final String OAUTH_SCOPE         = OAUTH_CALENDAR_PERMS+"+"+OAUTH_USERMAIL_PERMS+"+"+OAUTH_USERINFO_PERMS; 
     /** Final big authorization URL */
     public static final String URL_OAUTH = OAUTH_SITE + "?client_id=" + CLIENT_ID + 
                                                          "&redirect_uri=" + OAUTH_REDIRECT_URI +
                                                          "&scope=" + OAUTH_SCOPE +
                                                          "&response_type=" + OAUTH_RESPONSE_TYPE;
+    /** URL OAuth reference */
     public static final String URL_OAUTH_REF =  URL_ACCESS_TOKEN + "?client_id=" + CLIENT_ID +
                                                              "&client_secret=" + CLIENT_SECRET +                                                             
                                                              "&grant_type=refresh_token&response_type=code";   

@@ -26,10 +26,11 @@ package com.necora.quickmeeting.objects;
  */
 public class User {
     
+    /** User's name */
     public static final String FIELD_EMAIL = "email";
-
+    /** User's email */
     public static final String FIELD_NAME = "name";
-
+    /** User's name to display */
     public static final String FIELD_DISPLAY_NAME = "displayName";
     
     /**

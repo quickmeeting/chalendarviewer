@@ -40,4 +40,7 @@ public class ConfigColumns implements BaseColumns{
     
     /** Content URI */
     public static final Uri CONTENT_URI = Uri.parse("content://" + QuickMeetingContentProvider.AUTHORITY + "/config_properties");
+    
+    /** Reset config URI */
+    public static final Uri CONTENT_URI_RESET = Uri.parse("content://" + QuickMeetingContentProvider.AUTHORITY + "/config_reset");
 }

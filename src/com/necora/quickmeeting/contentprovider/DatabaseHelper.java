@@ -34,6 +34,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String RESOURCE_TABLE_NAME = "resources";
     /** Config table */
     public static final String CONFIG_TABLE_NAME = "config_properties";
+    /** Reset Config table */
+    public static final String RESET_CONFIG = "config_reset";
     /** SQLite Database name */
     private static final String DATABASE_NAME = "config.db";
     /** SQLite Database version */
@@ -80,8 +82,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion
                 + ", which will destroy all old data");
-        db.execSQL("DROP TABLE IF EXISTS " + AUTH_USER_TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + RESOURCE_TABLE_NAME);
-        onCreate(db);
     }
+    
 }

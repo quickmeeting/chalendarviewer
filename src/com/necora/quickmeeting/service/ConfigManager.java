@@ -39,8 +39,6 @@ public class ConfigManager {
     
     /** instance reference */
     private static ConfigManager sInstance = null;
-    /** app context */
-    private Context mContext;
     /** QuickMeeting Provider object */
     private ContentResolver mProvider;
     /** */
@@ -122,7 +120,6 @@ public class ConfigManager {
     private ConfigManager(Context context){
         //TODO return exception if it is null
         mProvider = context.getContentResolver();
-        mContext = context;
     }
     
     /**
@@ -160,6 +157,13 @@ public class ConfigManager {
         
         Log.d(TAG, "Result update: " + result);
         
+    }
+    
+    /**
+     * Set all properties to its default value
+     */
+    public void resetProperties(){
+        mProvider.update(ConfigColumns.CONTENT_URI_RESET, null, null, null);
     }
     
 }

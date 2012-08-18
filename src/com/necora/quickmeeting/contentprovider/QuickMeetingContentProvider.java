@@ -71,6 +71,8 @@ public class QuickMeetingContentProvider extends ContentProvider {
     private static final int CONFIG = 5;
     /** CONFIG constant for Uri matcher*/
     private static final int CONFIG_ID = 6;
+    /** Reset config propertiesr*/
+    private static final int CONFIG_RESET = 7;
     
     
     
@@ -84,6 +86,7 @@ public class QuickMeetingContentProvider extends ContentProvider {
                 + DatabaseHelper.RESOURCE_TABLE_NAME + "/#", AUTH_USER_RESOURCE_ID);
         sUriMatcher.addURI(AUTHORITY, DatabaseHelper.CONFIG_TABLE_NAME, CONFIG);
         sUriMatcher.addURI(AUTHORITY, DatabaseHelper.CONFIG_TABLE_NAME + "/#", CONFIG_ID);
+        sUriMatcher.addURI(AUTHORITY, DatabaseHelper.RESET_CONFIG, CONFIG_RESET);
 
         authUserProjectionMap = new HashMap<String, String>();
         authUserProjectionMap.put(AccountColumns._ID, AccountColumns._ID);
@@ -271,7 +274,6 @@ public class QuickMeetingContentProvider extends ContentProvider {
                 }else{
                     where = idCondition + " and " + where;
                 }
-                Log.d("WHERE", where);
                 count = db.update(DatabaseHelper.RESOURCE_TABLE_NAME, values, where, whereArgs);
                 break;
             case CONFIG:
@@ -282,12 +284,26 @@ public class QuickMeetingContentProvider extends ContentProvider {
                 where += " and " + ConfigColumns._ID + "=" + uri.getPathSegments().get(1);
                 count = db.update(DatabaseHelper.CONFIG_TABLE_NAME, values, where, whereArgs);
                 break;
+            case CONFIG_RESET:
+                resetConfigProperties();
+                break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
         getContext().getContentResolver().notifyChange(uri, null);
         return count;
+    }
+    
+    /**
+     * Reset config properties
+     */
+    private void resetConfigProperties(){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Log.d("********" , "update " + DatabaseHelper.CONFIG_TABLE_NAME + 
+                " set " + ConfigColumns.VALUE + " = " + ConfigColumns.DEFAULT);
+        db.execSQL("update " + DatabaseHelper.CONFIG_TABLE_NAME + 
+                " set " + ConfigColumns.VALUE + " = " + ConfigColumns.DEFAULT);
     }
 
 }

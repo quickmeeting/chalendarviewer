@@ -17,7 +17,6 @@
 
 package com.necora.quickmeeting.service;
 
-import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -26,26 +25,11 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.necora.quickmeeting.contentprovider.AccountColumns;
-import com.necora.quickmeeting.contentprovider.QuickMeetingContentProvider;
-import com.necora.quickmeeting.contentprovider.ResourceColumns;
 import com.necora.quickmeeting.objects.User;
 import com.necora.quickmeeting.util.ConnectionUtils;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.conn.ssl.X509HostnameVerifier;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.SingleClientConnManager;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -53,18 +37,16 @@ import org.json.JSONTokener;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.logging.SimpleFormatter;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-
-
+/**
+ * Manager users
+ *
+ */
 public class UserManager {
 
+    /** Tag for logging */
      static private final String TAG = UserManager.class.toString();
 
     /** instance reference */
@@ -93,6 +75,7 @@ public class UserManager {
     
     /**
      * Internal Constructor
+     * @param context app context
      */
     private UserManager(Context context) {
         
@@ -106,6 +89,11 @@ public class UserManager {
         recoverDataFromDataBase();
     }
     
+    /**
+     * Get mail of active user
+     * @param accessToken google access token
+     * @return mail of active user
+     */
     private String getUserMail(String accessToken) {
         
         String userMail = null;
@@ -325,7 +313,11 @@ public class UserManager {
         return userWasUpdated;        
     }
     
-    
+    /**
+     * Add a active user token
+     * @param authorizationCode google authorization code
+     * @return true: OK, otherwise false
+     */
     public boolean addActiveUserToken(String authorizationCode) {
         Log.d(TAG, "addActiveUserToken begin");
         
@@ -435,7 +427,7 @@ public class UserManager {
                 } else {
                     Log.d(TAG, "User " + userMail + " is a new user!" );
 
-                    Uri uri = mProvider.insert(AccountColumns.CONTENT_URI, values);
+                    mProvider.insert(AccountColumns.CONTENT_URI, values);
                     Log.d(TAG, "User " + userMail + " inserted and defined as ACTIVE");
                     userWasAdded = true;                   
                 }
@@ -463,7 +455,7 @@ public class UserManager {
         values.put(AccountColumns.ACTIVE_USER, false);
         
         // update the rows
-        int rowsAffected = mProvider.update(AccountColumns.CONTENT_URI, values, where, whereParams);
+        mProvider.update(AccountColumns.CONTENT_URI, values, where, whereParams);
         
         Log.d(TAG, "addActiveUserToken end (result = " + userWasAdded + ")");
         return userWasAdded;
@@ -471,7 +463,7 @@ public class UserManager {
     
     /**
      * Returns a valid SessionManager
-     * @param contentResolver content resolver to be used by the object
+     * @param context app context
      * @return SessionManager instance
      */
     public static synchronized UserManager getInstance(Context context){        
@@ -524,6 +516,10 @@ public class UserManager {
         return mUserId;
     }
             
+    /**
+     * Change the active account
+     * @param mail mail of new active account
+     */
     public void changeAccountActive(String mail) {
         Log.d(TAG, "changeAccountActive begin");
         
@@ -562,10 +558,18 @@ public class UserManager {
         recoverDataFromDataBase();        
     }
 
+    /**
+     * Get the Email of the active account
+     * @return email of the active account
+     */
     public String getActiveUserEmail() {
         return mUserMail;
     }
 
+    /**
+     * Get a cursor containing all emails configurated on app
+     * @return a cursor containing all emails configurated on app
+     */
     public Cursor getAllAccountsEmail() {
        
         // Form an array specifying which columns to return. 
