@@ -63,6 +63,8 @@ import com.necora.quickmeeting.service.exception.ResourceNotAvaiableException;
 import com.necora.quickmeeting.util.Observable;
 import com.necora.quickmeeting.util.Observer;
 
+import sheetrock.panda.changelog.ChangeLog;
+
 public class HomeActivity extends Activity implements Observer {
 	
 	private ResourceManager mResourceManager;
@@ -107,6 +109,10 @@ public class HomeActivity extends Activity implements Observer {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        ChangeLog cl = new ChangeLog(this);
+        if (cl.firstRun())
+            cl.getLogDialog().show();
         
         //No title bar
         requestWindowFeature(Window.FEATURE_NO_TITLE);
