@@ -51,6 +51,9 @@
 		<activity android:name=".WelcomeActivity"	
 		          android:screenOrientation="landscape">		    
 		</activity>
+		<activity android:name=".WelcomeAccountActivity"	
+		          android:screenOrientation="landscape">		    
+		</activity>
     </application>
     
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>

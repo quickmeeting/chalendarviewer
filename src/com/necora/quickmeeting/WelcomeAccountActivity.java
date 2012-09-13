@@ -18,42 +18,34 @@
 package com.necora.quickmeeting;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.view.Window;
 
-public class WelcomeActivity extends Activity {
+import com.necora.quickmeeting.service.UserManager;
+
+public class WelcomeAccountActivity extends Activity {
+
+    private static final String TAG = "WelcomeAccountActivity";
+    
+    private UserManager mUserManager;
+
+    private ProgressDialog mSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.welcome);
         
-        setListeners();
-    }
-
-    private void setListeners() {
-        Button buttonOK     = (Button) findViewById(R.id.welcomeOk);
-        Button buttonCancel = (Button) findViewById(R.id.welcomeCancel);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.welcomeaccount);
+        
+        mUserManager = UserManager.getInstance(this);
+        
+        // Create Spinner Dialog
+        mSpinner = new ProgressDialog(this);
+        mSpinner.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mSpinner.setMessage(getResources().getText(R.string.loading));
         
         
-        buttonCancel.setOnClickListener(new OnClickListener() {            
-            @Override
-            public void onClick(View v) {
-                finish();               
-            }
-        });
-        
-        buttonOK.setOnClickListener(new OnClickListener() {
-            
-            @Override
-            public void onClick(View v) {
-                Intent nextStepInt = new Intent(WelcomeActivity.this, WelcomeAccountActivity.class);
-                startActivity(nextStepInt);
-                finish();
-            }
-        });
     }
 }
