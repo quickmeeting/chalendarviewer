@@ -50,7 +50,7 @@ public class WelcomeActivity extends Activity {
             
             @Override
             public void onClick(View v) {
-                Intent nextStepInt = new Intent(WelcomeActivity.this, WelcomeAccountActivity.class);
+                Intent nextStepInt = new Intent(WelcomeActivity.this, AccountManagerActivity.class);
                 startActivity(nextStepInt);
                 finish();
             }

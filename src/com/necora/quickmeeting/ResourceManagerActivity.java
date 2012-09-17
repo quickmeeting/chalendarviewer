@@ -46,6 +46,8 @@ public class ResourceManagerActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.resourcemanager);
+        
         progress = ProgressDialog.show(this, getString(R.string.app_name), getString(R.string.synchronizingCalendars));
         new ResourceAsyncTask().execute();
         

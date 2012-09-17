@@ -17,6 +17,7 @@
 
 package com.necora.quickmeeting.contentprovider;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 
@@ -37,4 +38,9 @@ public class ConfigColumns implements BaseColumns{
     /** Content type */
     public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.config";
     
+    /** Content URI */
+    public static final Uri CONTENT_URI = Uri.parse("content://" + QuickMeetingContentProvider.AUTHORITY + "/config_properties");
+    
+    /** Reset config URI */
+    public static final Uri CONTENT_URI_RESET = Uri.parse("content://" + QuickMeetingContentProvider.AUTHORITY + "/config_reset");
 }

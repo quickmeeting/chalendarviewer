@@ -6,17 +6,19 @@
 	android:orientation="vertical">
 	<LinearLayout
 	    android:layout_width="fill_parent"
-		android:layout_height="wrap_content" 
+		android:layout_height="0dp" 
 		android:layout_weight="1"
-        android:orientation="vertical">
-		 <TextView
+        android:orientation="vertical"
+        android:gravity="center">
+		 <TextView		 		
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/welcome"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:text="@string/followGoogleInstructions"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:padding="5dp"/>
 
 		 <android.webkit.WebView
-		     android:id="@+id/webView1"
+		     android:id="@+id/welcomeAccountWebView"
 		     android:layout_width="fill_parent"
 		     android:layout_height="fill_parent" >
 		 </android.webkit.WebView>
@@ -29,16 +31,16 @@
 		>
              <Button
                 android:layout_weight="1"
-                android:id="@+id/welcomeCancel"
+                android:id="@+id/welcomeAccountCancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/maybeLater" />
+                android:text="@string/cancel" />
 
             <Button
                 android:layout_weight="1"
-                android:id="@+id/welcomeOk"
+                android:id="@+id/welcomeAccountRestart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/ok" />
+                android:text="@string/reload" />
 	</LinearLayout>
 </LinearLayout>

@@ -53,6 +53,9 @@ public class QuickMeetingContentProvider extends ContentProvider {
     /** Map columns for resource*/
     private static HashMap<String, String> resourceProjectionMap;
     
+    /** Map columns for config*/
+    private static HashMap<String, String> configProjectionMap;
+    
     /** Database Helper */
     private DatabaseHelper dbHelper;
     
@@ -64,6 +67,13 @@ public class QuickMeetingContentProvider extends ContentProvider {
     private static final int AUTH_USER_RESOURCES = 3;
     /** AUTH_USER_RESOURCE_ID constant for Uri matcher*/
     private static final int AUTH_USER_RESOURCE_ID = 4;
+    /** CONFIG constant for Uri matcher*/
+    private static final int CONFIG = 5;
+    /** CONFIG constant for Uri matcher*/
+    private static final int CONFIG_ID = 6;
+    /** Reset config propertiesr*/
+    private static final int CONFIG_RESET = 7;
+    
     
     
     static {
@@ -74,6 +84,9 @@ public class QuickMeetingContentProvider extends ContentProvider {
                 + DatabaseHelper.RESOURCE_TABLE_NAME, AUTH_USER_RESOURCES);
         sUriMatcher.addURI(AUTHORITY, DatabaseHelper.AUTH_USER_TABLE_NAME + "/#/"
                 + DatabaseHelper.RESOURCE_TABLE_NAME + "/#", AUTH_USER_RESOURCE_ID);
+        sUriMatcher.addURI(AUTHORITY, DatabaseHelper.CONFIG_TABLE_NAME, CONFIG);
+        sUriMatcher.addURI(AUTHORITY, DatabaseHelper.CONFIG_TABLE_NAME + "/#", CONFIG_ID);
+        sUriMatcher.addURI(AUTHORITY, DatabaseHelper.RESET_CONFIG, CONFIG_RESET);
 
         authUserProjectionMap = new HashMap<String, String>();
         authUserProjectionMap.put(AccountColumns._ID, AccountColumns._ID);
@@ -92,6 +105,11 @@ public class QuickMeetingContentProvider extends ContentProvider {
         resourceProjectionMap.put(ResourceColumns.DISPLAY_NAME, ResourceColumns.DISPLAY_NAME);
         resourceProjectionMap.put(ResourceColumns.ACTIVE, ResourceColumns.ACTIVE);
         
+        configProjectionMap = new HashMap<String, String>();
+        configProjectionMap.put(ConfigColumns._ID, ConfigColumns._ID);
+        configProjectionMap.put(ConfigColumns.PROPERTY, ConfigColumns.PROPERTY);
+        configProjectionMap.put(ConfigColumns.VALUE, ConfigColumns.VALUE);
+        configProjectionMap.put(ConfigColumns.DEFAULT, ConfigColumns.DEFAULT);
     }
     
     
@@ -114,6 +132,14 @@ public class QuickMeetingContentProvider extends ContentProvider {
                 where += " and " + ResourceColumns.AUTH_USER_ID + "=" + uri.getPathSegments().get(1);
                 count = db.delete(DatabaseHelper.RESOURCE_TABLE_NAME, where, whereArgs);
                 break;
+            case CONFIG:
+                count = db.delete(DatabaseHelper.CONFIG_TABLE_NAME, where, whereArgs);
+                break;
+            case CONFIG_ID:
+                //ID of user is passed in URI
+                where += " and " + ConfigColumns._ID + "=" + uri.getPathSegments().get(1);
+                count = db.delete(DatabaseHelper.CONFIG_TABLE_NAME, where, whereArgs);
+                break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -129,6 +155,8 @@ public class QuickMeetingContentProvider extends ContentProvider {
                 return AccountColumns.CONTENT_TYPE;
             case AUTH_USER_RESOURCES:
                 return ResourceColumns.CONTENT_TYPE;
+            case CONFIG:
+                return ConfigColumns.CONTENT_TYPE;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -156,6 +184,10 @@ public class QuickMeetingContentProvider extends ContentProvider {
                 id = ResourceColumns._ID;
                 //ID of user is passed on URI
                 values.put(ResourceColumns.AUTH_USER_ID, uri.getPathSegments().get(1));
+                break;
+            case CONFIG:
+                table = DatabaseHelper.CONFIG_TABLE_NAME; 
+                id = ConfigColumns._ID;
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -200,6 +232,15 @@ public class QuickMeetingContentProvider extends ContentProvider {
                 qb.appendWhere(ResourceColumns._ID + "=" + uri.getPathSegments().get(3));
                 qb.setProjectionMap(resourceProjectionMap);
                 break;
+            case CONFIG:
+                qb.setTables(DatabaseHelper.CONFIG_TABLE_NAME);
+                qb.setProjectionMap(configProjectionMap);
+                break;
+            case CONFIG_ID:
+                qb.setTables(DatabaseHelper.CONFIG_TABLE_NAME);
+                //ID of user is passed on URI
+                qb.appendWhere(ConfigColumns._ID + "=" + uri.getPathSegments().get(1));
+                break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -233,8 +274,18 @@ public class QuickMeetingContentProvider extends ContentProvider {
                 }else{
                     where = idCondition + " and " + where;
                 }
-                Log.d("WHERE", where);
                 count = db.update(DatabaseHelper.RESOURCE_TABLE_NAME, values, where, whereArgs);
+                break;
+            case CONFIG:
+                count = db.update(DatabaseHelper.CONFIG_TABLE_NAME, values, where, whereArgs);
+                break;
+            case CONFIG_ID:
+                //not using whereArgs to store user_id parameter. It is coded directly on where clause
+                where += " and " + ConfigColumns._ID + "=" + uri.getPathSegments().get(1);
+                count = db.update(DatabaseHelper.CONFIG_TABLE_NAME, values, where, whereArgs);
+                break;
+            case CONFIG_RESET:
+                resetConfigProperties();
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -242,6 +293,17 @@ public class QuickMeetingContentProvider extends ContentProvider {
 
         getContext().getContentResolver().notifyChange(uri, null);
         return count;
+    }
+    
+    /**
+     * Reset config properties
+     */
+    private void resetConfigProperties(){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Log.d("********" , "update " + DatabaseHelper.CONFIG_TABLE_NAME + 
+                " set " + ConfigColumns.VALUE + " = " + ConfigColumns.DEFAULT);
+        db.execSQL("update " + DatabaseHelper.CONFIG_TABLE_NAME + 
+                " set " + ConfigColumns.VALUE + " = " + ConfigColumns.DEFAULT);
     }
 
 }

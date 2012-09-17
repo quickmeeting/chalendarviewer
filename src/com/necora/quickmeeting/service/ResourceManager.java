@@ -177,6 +177,7 @@ public class ResourceManager {
             } while (managedCursor.moveToNext());
 
         }
+        managedCursor.close();
         
         return resourceLinks;
     }
@@ -276,6 +277,13 @@ public class ResourceManager {
     }
     
     /**
+     * Empty cache when user has changed
+     */
+    public void notifyUserHasChanged(){
+        activeResources = null;
+    }
+    
+    /**
      * List of active calendar resources
      */
     private  void refreshActiveResources(){
@@ -324,6 +332,7 @@ public class ResourceManager {
                 Log.d(TAG, "Resource calendar loaded from db: " + id + "/" + name );
             } while (managedCursor.moveToNext());
         }
+        managedCursor.close();
     }
 
     /**
@@ -405,6 +414,7 @@ public class ResourceManager {
             
             Log.d(TAG, "Resource calendar loaded from db: " + id + "/" + link );
         }
+        managedCursor.close();
         
         return link;
     }

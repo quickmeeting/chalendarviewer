@@ -33,8 +33,6 @@ import com.necora.quickmeeting.service.GoogleConstants;
 import com.necora.quickmeeting.service.ResourceManager;
 import com.necora.quickmeeting.service.UserManager;
 import com.necora.quickmeeting.service.exception.SyncFailedException;
-import com.necora.quickmeeting.ui.dialogs.AuthenticateDialog;
-import com.necora.quickmeeting.ui.dialogs.AuthenticateDialogListener;
 
 public class PreferencesActivity extends PreferenceActivity {
 
@@ -44,7 +42,10 @@ public class PreferencesActivity extends PreferenceActivity {
     //private ListPreference mDeleteAccount;
     private Preference mManageResources;
     
+    /** User manager singleton */
     private UserManager mUserManager;
+    /** Resources manager singleton */
+    private ResourceManager mResourceManager;
     
     static final private String TAG  =  PreferencesActivity.class.toString();
     
@@ -62,6 +63,7 @@ public class PreferencesActivity extends PreferenceActivity {
         mManageResources          = preferenceScreen.findPreference("manageResources");
         
         mUserManager = UserManager.getInstance(this);
+        mResourceManager = ResourceManager.getInstance(this);
         
         setListeners();        
         refreshScreenBasedOnAccounts();
@@ -72,6 +74,7 @@ public class PreferencesActivity extends PreferenceActivity {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 callAuthorizeActivity();
+                refreshActiveAccount();
                 return true;
             }
         });   
@@ -131,7 +134,8 @@ public class PreferencesActivity extends PreferenceActivity {
         mChangeActiveAccount.setEntries(emailList);
         mChangeActiveAccount.setEntryValues(emailList);
         mChangeActiveAccount.setDefaultValue(mUserManager.getActiveUserEmail());
-        
+        //selected account
+        mChangeActiveAccount.setValue(mUserManager.getActiveUserEmail());
         
         //mDeleteAccount.setEntries(emailList);
         //mDeleteAccount.setEntryValues(emailList);
@@ -139,31 +143,16 @@ public class PreferencesActivity extends PreferenceActivity {
         mCurrentActiveAccountPref.setTitle(mUserManager.getActiveUserEmail());     
         
         ResourceManager resourceManager = ResourceManager.getInstance(this);
-        try {
-            resourceManager.syncResources();
-        } catch (SyncFailedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+
+        mResourceManager.notifyUserHasChanged();
     }
     
     private void callAuthorizeActivity() {
-        AuthenticateDialogListener listener = new AuthenticateDialogListener() {
-            
-            @Override
-            public void onError(String error) {
-                // TODO Auto-generated method stub
-                Log.e(TAG, error);
-            }
-            
-            @Override
-            public void onComplete(String authorizationCode) {
-                mUserManager.addActiveUserToken(authorizationCode);
-                refreshScreenBasedOnAccounts();
-            }
-        };
         
-        AuthenticateDialog authDialog = new AuthenticateDialog(this, GoogleConstants.URL_OAUTH, listener);
-        authDialog.show();
+        Intent nextStepInt = new Intent(PreferencesActivity.this, AccountManagerActivity.class);
+        startActivity(nextStepInt);
+        refreshScreenBasedOnAccounts();
+        mResourceManager.notifyUserHasChanged();
+        
     }
 }

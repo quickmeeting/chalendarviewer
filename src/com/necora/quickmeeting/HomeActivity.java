@@ -63,6 +63,8 @@ import com.necora.quickmeeting.service.exception.ResourceNotAvaiableException;
 import com.necora.quickmeeting.util.Observable;
 import com.necora.quickmeeting.util.Observer;
 
+import sheetrock.panda.changelog.ChangeLog;
+
 public class HomeActivity extends Activity implements Observer {
 	
 	
@@ -108,6 +110,10 @@ public class HomeActivity extends Activity implements Observer {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        ChangeLog cl = new ChangeLog(this);
+        if (cl.firstRun())
+            cl.getLogDialog().show();
         
         //No title bar
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -654,10 +660,17 @@ public class HomeActivity extends Activity implements Observer {
 		}
 	}
 	
+	/**
+	 * Display dialog to confirm a reservation
+	 */
     public void showReservationDialog() {
+    	//Get event time to show in dialog title
+        Calendar eventCalendar = convertCellPositionToCalendar(mSelectedCell.getPosition(), mCalendarBegin);
+    	String eventTime = mFormatter.format(eventCalendar.getTime());
+    	
     	AlertDialog.Builder b = new AlertDialog.Builder(this);
     	b.setIcon(android.R.drawable.ic_dialog_alert);
-    	b.setTitle(mSelectedCell.getCalendarId());
+    	b.setTitle(mSelectedCell.getCalendarId() + " - " + eventTime);
     	b.setMessage(getString(R.string.reserve_question));
     	b.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
     	    @Override

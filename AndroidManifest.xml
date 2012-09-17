@@ -51,7 +51,7 @@
 		<activity android:name=".WelcomeActivity"	
 		          android:screenOrientation="landscape">		    
 		</activity>
-		<activity android:name=".WelcomeAccountActivity"	
+		<activity android:name=".AccountManagerActivity"	
 		          android:screenOrientation="landscape">		    
 		</activity>
     </application>
