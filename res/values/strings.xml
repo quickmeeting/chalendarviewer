@@ -40,11 +40,12 @@
     
     <string name="problemOcurred">Oops, an error occurred, please try again! :-)</string>    
     <string name="noResourceSelected">No Resource Selected</string>
-    <string name="noResourceSelectedHelp">Please, select an account and resources to use!</string>
+    <string name="noResourceSelectedHelp">You should select at least one resource to use this application.\n\nDo you want to do this now?</string>
     
     <string name="resources">Resources</string>
     <string name="manageResources">Manage Resources</string>
     <string name="manageResourcesHelp">Choose the resources\' set</string>
+    <string name="selectResources">Select Resources</string>
     <string name="refresh">Refresh</string>
     <string name="configuration">Configuration</string>
     <string name="reserved">Reserved</string>
@@ -72,6 +73,7 @@
     <string name="ok">OK</string>
     <string name="maybeLater">Maybe later</string>
     <string name="reload">Reload</string>
+    <string name="finish">Finish</string>
     <string name="cancel">Cancel</string>
     
     <string name="welcome">Welcome</string>

@@ -181,21 +181,44 @@ public class HomeActivity extends Activity implements Observer {
     }
     
     private void forceToCreateAnAccount() {
+        
+        if (mUserManager.hasUserActiveAccessToken() == false) {
+            //open Welcome activity and close myself
+            Intent welcomeAct = new Intent(this, WelcomeActivity.class);
+            startActivity(welcomeAct);                     
+        }
+        
+        
         List<CalendarResource> resourceList = null;
         try {
             resourceList = mResourceManager.getActiveResources();
         } catch (ResourceNotAvaiableException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
             Log.d(TAG, e.getMessage());
         }
         
         if (resourceList == null || resourceList.size() == 0) {
-            //open Welcome activity and close myself
-            Intent welcomeAct = new Intent(this, WelcomeActivity.class);
-            startActivity(welcomeAct);
-            finish();            
+            AlertDialog.Builder b = new AlertDialog.Builder(this);
+            b.setIcon(android.R.drawable.ic_dialog_alert);
+            b.setTitle(getString(R.string.noResourceSelected));
+            b.setMessage(getString(R.string.noResourceSelectedHelp));
+            b.setCancelable(false);
+            b.setNegativeButton(R.string.maybeLater, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();                    
+                }
+            });
+            b.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    startActivity(new Intent(HomeActivity.this, ResourceManagerActivity.class));            
+                }
+            });            
+            b.show();                     
         }
-
     }
 
     @Override

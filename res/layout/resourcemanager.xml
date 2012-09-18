@@ -13,7 +13,7 @@
 		 <TextView		 		
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/followGoogleInstructions"
+                android:text="@string/selectResources"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:padding="5dp"/>
 
@@ -29,18 +29,11 @@
 		android:layout_height="wrap_content" 
 		android:layout_width="fill_parent"
 		>
-             <Button
-                android:layout_weight="1"
-                android:id="@+id/welcomeAccountCancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/cancel" />
-
             <Button
                 android:layout_weight="1"
-                android:id="@+id/welcomeAccountRestart"
+                android:id="@+id/resourceManagerFinished"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/reload" />
+                android:text="@string/finish" />
 	</LinearLayout>
 </LinearLayout>

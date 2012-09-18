@@ -21,6 +21,9 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.necora.quickmeeting.adapter.CustomResourceAdapter;
@@ -51,8 +54,21 @@ public class ResourceManagerActivity extends ListActivity {
         progress = ProgressDialog.show(this, getString(R.string.app_name), getString(R.string.synchronizingCalendars));
         new ResourceAsyncTask().execute();
         
+        setListeners();        
     }
     
+    private void setListeners() {
+        Button button = (Button)findViewById(R.id.resourceManagerFinished);
+        
+        button.setOnClickListener(new OnClickListener() {            
+            @Override
+            public void onClick(View v) {
+                finish();               
+            }
+        });
+        
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
