@@ -30,7 +30,9 @@
     <string name="changeActiveAccount">Cambiar cuenta activa</string>
     <string name="changeActiveAccountHelp">Define una de las cuentas guardadas como activa</string>
     
-    
+    <!--  Preference config -->
+    <string name="userInterface">Interfaz</string>
+    <string name="keepScreenOn">Mantener pantalla encendida</string>
     
     <string name="problemOcurred">Vaya, ha ocurrido un error. ¡Vuelve a intentarlo por favor! :-)</string>    
     

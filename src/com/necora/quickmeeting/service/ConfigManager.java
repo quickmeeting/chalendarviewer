@@ -35,7 +35,11 @@ import java.util.Map;
 public class ConfigManager {
 
     /** Log tag */
-    static private final String TAG = ConfigManager.class.toString();
+    private static final String TAG = ConfigManager.class.toString();
+    
+    /** PROPERTIES */
+    public static final String KEEP_SCREEN_ON = "keepScreenOn";
+    
     
     /** instance reference */
     private static ConfigManager sInstance = null;

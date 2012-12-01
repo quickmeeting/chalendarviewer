@@ -38,6 +38,10 @@
         				android:key="deleteAccount"
         				android:visibility="gone"/>-->   
     </PreferenceCategory>
-    
+    <PreferenceCategory android:title="@string/userInterface" android:key="resources">
+        <CheckBoxPreference android:key="keepScreenOn"
+     				android:summary="On/Off"
+     				android:title="@string/keepScreenOn" />
+	</PreferenceCategory>   
 
 </PreferenceScreen>

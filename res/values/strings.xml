@@ -38,6 +38,10 @@
     
     <string name="accountConfigured">New account configured and defined as active</string>
     
+    <!--  Preference config -->
+    <string name="userInterface">User Interface</string>
+    <string name="keepScreenOn">Keep screen on</string>
+    
     <string name="problemOcurred">Oops, an error occurred, please try again! :-)</string>    
     <string name="noResourceSelected">No Resource Selected</string>
     <string name="noResourceSelectedHelp">You should select at least one resource to use this application.\n\nDo you want to do this now?</string>

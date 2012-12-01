@@ -20,6 +20,7 @@ package com.necora.quickmeeting;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -27,8 +28,10 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.util.Log;
+import android.view.WindowManager;
 
 import com.necora.quickmeeting.contentprovider.AccountColumns;
+import com.necora.quickmeeting.service.ConfigManager;
 import com.necora.quickmeeting.service.GoogleConstants;
 import com.necora.quickmeeting.service.ResourceManager;
 import com.necora.quickmeeting.service.UserManager;
@@ -41,11 +44,14 @@ public class PreferencesActivity extends PreferenceActivity {
     private ListPreference mChangeActiveAccount;
     //private ListPreference mDeleteAccount;
     private Preference mManageResources;
+    private CheckBoxPreference mKeepScreenOnPreference;
     
     /** User manager singleton */
     private UserManager mUserManager;
     /** Resources manager singleton */
     private ResourceManager mResourceManager;
+    /** Configuration manager singleton */
+    private ConfigManager mConfigManager;
     
     static final private String TAG  =  PreferencesActivity.class.toString();
     
@@ -59,11 +65,16 @@ public class PreferencesActivity extends PreferenceActivity {
         mAddAccountPref           = preferenceScreen.findPreference("addAccount");
         //mDeleteAccount            = (ListPreference) preferenceScreen.findPreference("deleteAccount");
         mChangeActiveAccount      = (ListPreference) preferenceScreen.findPreference("changeActiveAccount");
-        
         mManageResources          = preferenceScreen.findPreference("manageResources");
+        mKeepScreenOnPreference		  = (CheckBoxPreference) preferenceScreen.findPreference("keepScreenOn");
+        
         
         mUserManager = UserManager.getInstance(this);
         mResourceManager = ResourceManager.getInstance(this);
+        mConfigManager = ConfigManager.getInstance(this);
+        
+        //Initialize keepOnScreen checkbox
+        mKeepScreenOnPreference.setChecked(Boolean.valueOf(mConfigManager.getProperty(ConfigManager.KEEP_SCREEN_ON)));
         
         setListeners();        
         refreshScreenBasedOnAccounts();
@@ -96,6 +107,22 @@ public class PreferencesActivity extends PreferenceActivity {
                 Log.d(TAG,"New active account = " + newActiveAccount);
                 mUserManager.changeAccountActive(newActiveAccount);
                 refreshActiveAccount();
+                return true;
+            }
+        });
+        
+        mKeepScreenOnPreference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+            
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                Boolean screenOn = (Boolean) newValue;
+                Log.d(TAG,"New keep screen on = " + screenOn);
+                if(screenOn) {
+                	getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                } else {
+                	getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                }
+                mConfigManager.putProperty(ConfigManager.KEEP_SCREEN_ON, screenOn.toString());
                 return true;
             }
         });

@@ -17,6 +17,8 @@
 
 package com.necora.quickmeeting.contentprovider;
 
+import com.necora.quickmeeting.service.ConfigManager;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -39,7 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /** SQLite Database name */
     private static final String DATABASE_NAME = "config.db";
     /** SQLite Database version */
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     /** TAG for log entries */
     private static final String TAG = "DatabaseHelper";
     
@@ -53,13 +55,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + AUTH_USER_TABLE_NAME + " (" 
-                        + AccountColumns._ID             + " INTEGER PRIMARY KEY AUTOINCREMENT," 
-                        + AccountColumns.ACCESS_TOKEN    + " VARCHAR(255)," 
-                        + AccountColumns.REFRESH_TOKEN   + " VARCHAR(255)," 
-                        + AccountColumns.EMAIL           + " VARCHAR(255),"
-                        + AccountColumns.ACTIVE_USER     + " BOOLEAN,"
-                        + AccountColumns.EXPIRATION_DATE + " DATETIME);");
+        initialVersion(db);
+        upgradeFrom1To2(db);
+    }
+
+	private void initialVersion(SQLiteDatabase db) {
+		db.execSQL("CREATE TABLE " + AUTH_USER_TABLE_NAME + " (" 
+                + AccountColumns._ID             + " INTEGER PRIMARY KEY AUTOINCREMENT," 
+                + AccountColumns.ACCESS_TOKEN    + " VARCHAR(255)," 
+                + AccountColumns.REFRESH_TOKEN   + " VARCHAR(255)," 
+                + AccountColumns.EMAIL           + " VARCHAR(255),"
+                + AccountColumns.ACTIVE_USER     + " BOOLEAN,"
+                + AccountColumns.EXPIRATION_DATE + " DATETIME);");
         
         db.execSQL("CREATE TABLE " + RESOURCE_TABLE_NAME + " (" 
                 + ResourceColumns._ID             + " INTEGER PRIMARY KEY AUTOINCREMENT," 
@@ -75,13 +82,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + ConfigColumns.PROPERTY        + " VARCHAR(255)," 
                 + ConfigColumns.VALUE           + " VARCHAR(255),"
                 + ConfigColumns.DEFAULT         + " VARCHAR(255));");
-        
+	}
+    
+    public void upgradeFrom1To2(SQLiteDatabase db){
+    	defineProperty(db, ConfigManager.KEEP_SCREEN_ON, "true");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion
                 + ", which will destroy all old data");
+        
+       upgradeFrom1To2(db);
+       
+       //When code version > 3, be careful with upgrade combinations.
+        
+    }
+    
+    public void defineProperty(SQLiteDatabase db, String name, String value){
+    	
+    	String sqlCode = "insert into " + CONFIG_TABLE_NAME  + " ("  
+    			+ ConfigColumns.PROPERTY        + "," 
+    			+ ConfigColumns.VALUE           + ","
+    			+ ConfigColumns.DEFAULT         + ") VALUES "  + " ('"  
+    			+ name			        + "','" 
+    			+ value                 + "','"
+    			+ value                  + "');";
+    	
+    	Log.d(TAG, "Defining property " + name + ": " + value);
+    	
+    	db.execSQL(sqlCode);
     }
     
 }

@@ -57,6 +57,7 @@ import android.widget.Toast;
 
 import com.necora.quickmeeting.objects.CalendarResource;
 import com.necora.quickmeeting.objects.Event;
+import com.necora.quickmeeting.service.ConfigManager;
 import com.necora.quickmeeting.service.ResourceManager;
 import com.necora.quickmeeting.service.UserManager;
 import com.necora.quickmeeting.service.exception.ResourceNotAvaiableException;
@@ -69,6 +70,7 @@ public class HomeActivity extends Activity implements Observer {
 	
 	
     private ResourceManager mResourceManager;
+    private ConfigManager mConfigManager;
 	UserManager mUserManager;
 	
 	private ProgressDialog mProgress;
@@ -118,9 +120,6 @@ public class HomeActivity extends Activity implements Observer {
         //No title bar
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         
-        //Keep screen on
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
         
         setContentView(R.layout.main);
         
@@ -142,6 +141,7 @@ public class HomeActivity extends Activity implements Observer {
         
         mUserManager     = UserManager.getInstance(this); 
         mResourceManager = ResourceManager.getInstance(this);
+        mConfigManager   = ConfigManager.getInstance(this);
         
         //Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         //int screen_width_pixels = display.getHeight();
@@ -154,6 +154,13 @@ public class HomeActivity extends Activity implements Observer {
         
     	super.onResume();
     	
+    	//Keep screen on
+    	if (Boolean.valueOf(mConfigManager.getProperty("keepScreenOn"))){
+    		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        } else {
+        	getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+        
     	//Verify if there is at least one account
     	forceToCreateAnAccount();
     	
@@ -417,6 +424,7 @@ public class HomeActivity extends Activity implements Observer {
 			eventTextView.setTextSize(mEventTextSize);
 			eventTextView.setText(text);
 			eventTextView.setObserver(this);
+			
 			FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(
 			        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
 			        (Gravity.LEFT | Gravity.TOP));
