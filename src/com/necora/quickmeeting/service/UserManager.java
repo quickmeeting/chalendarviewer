@@ -586,4 +586,23 @@ public class UserManager {
         ); 
         return managedCursor;
     }
+
+    /**
+     * Delete an inactive account
+     * @param account thath should be deleted
+     */
+    public boolean deleteInactiveAccount(String account) {
+        
+       if (account == null || account.equals(getActiveUserEmail())) {
+           //trying to delete null account or active account
+           return false;           
+       } else {
+           //delete user
+           String where = AccountColumns.EMAIL + "=?";
+           String[] whereParams = new String[]{account};        
+           int result = mProvider.delete(AccountColumns.CONTENT_URI, where, whereParams);
+           Log.d(TAG, "Result delete: " + result);           
+           return (result == 1);           
+       }       
+    }
 }

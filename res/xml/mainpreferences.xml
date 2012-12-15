@@ -33,10 +33,10 @@
         <ListPreference android:title="@string/changeActiveAccount" 
                         android:summary="@string/changeActiveAccountHelp" 
                         android:key="changeActiveAccount"/>
-        <!-- <ListPreference android:title="@string/deleteAccount" 
-        				android:summary="@string/deleteAccountHelp" 
+        <ListPreference android:title="@string/deleteInactiveAccount" 
+        				android:summary="@string/deleteInactiveAccountHelp" 
         				android:key="deleteAccount"
-        				android:visibility="gone"/>-->   
+        				android:visibility="gone"/>   
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/userInterface" android:key="resources">
         <CheckBoxPreference android:key="keepScreenOn"
