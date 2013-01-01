@@ -164,6 +164,9 @@ public class HomeActivity extends Activity implements Observer {
     	//Verify if there is at least one account
     	forceToCreateAnAccount();
     	
+    	//Verify if there is at least one calendar selected
+    	forceToSelectCalendars();
+    	
     	mRefresh = true;
         try {
         	//clear screen
@@ -188,14 +191,15 @@ public class HomeActivity extends Activity implements Observer {
     }
     
     private void forceToCreateAnAccount() {
-        
+        Log.d(TAG,"forceToCreateAnAccount");
         if (mUserManager.hasUserActiveAccessToken() == false) {
             //open Welcome activity and close myself
             Intent welcomeAct = new Intent(this, WelcomeActivity.class);
             startActivity(welcomeAct);                     
         }
-        
-        
+    }
+
+    private void forceToSelectCalendars() {
         List<CalendarResource> resourceList = null;
         try {
             resourceList = mResourceManager.getActiveResources();
@@ -227,7 +231,7 @@ public class HomeActivity extends Activity implements Observer {
             b.show();                     
         }
     }
-
+    
     @Override
     protected void onPause() {
     	super.onPause();
