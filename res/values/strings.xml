@@ -23,8 +23,6 @@
     <string name="license">License</string>
     <string name="licenseGNU">GNU General Public License</string>
     
-    
-    
     <string name="manageAccounts">Manage Accounts</string>
     <string name="accounts">Accounts</string>
     <string name="activeAccountNotDefined">Active account not defined</string>
@@ -85,7 +83,7 @@
         Hi, Thanks for downloading QuickMeeting\n
         We will help you to start using this app\n
         \n
-        Please, follow ours instructions</string>
+        Please, follow our instructions</string>
     
 	<string name="followGoogleInstructions">Follow Google Instructions</string>
     

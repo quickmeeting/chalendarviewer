@@ -31,12 +31,17 @@
     <string name="activeAccountNotDefined">Não existe uma conta ativa</string>
     <string name="addAccount">Adicionar conta</string>
     <string name="addAccountHelp">Adicione uma conta para ver os recursos</string>
-    <string name="deleteAccount">Deletar conta</string>
-    <string name="deleteAccountHelp">Deleta uma conta que não se utiliza</string>
+    <string name="deleteInactiveAccount">Deletar conta inativa</string>
+    <string name="deleteInactiveAccountHelp">Deleta uma conta que não se utiliza</string>
     <string name="currentActiveAccount">Conta ativa</string>
     <string name="changeActiveAccount">Trocar conta ativa</string>
     <string name="changeActiveAccountHelp">Define uma das contas armazenadas como ativa</string>
     
+    <string name="accountConfigured">Nova cota configurada e definida como ativa</string>
+    
+    <!--  Preference config -->
+    <string name="userInterface">Interface</string>
+    <string name="keepScreenOn">Manter a tela acesa</string>
     
     <string name="problemOcurred">Oops, ocorreu um erro. Por favor, tente outra vez!</string>    
     <string name="noResourceSelected">Nenhum recurso selecionado</string>
@@ -50,8 +55,6 @@
     <string name="reserved">Reservado</string>
     <string name="reserve_question">Deseja fazer uma reserva?</string>
     <string name="unreserve_question">Deseja cancelar esta reserva?</string>
-    <string name="yes">Sim</string>
-    <string name="no">Não</string>
     <string name="download_data">Recuperando dados</string>   
 
     <string name="download_data_error">Erro recuperando dados</string>
@@ -68,5 +71,29 @@
     <string name="createdByQuickMeeting">Reservado</string>   
     <string name="creationError">Erro criando evento</string>
     <string name="deletionError">Erro deletado evento</string>
+    
+    <string name="yes">Sim</string>
+    <string name="no">Não</string>
+    <string name="ok">OK</string>
+    <string name="maybeLater">Talvez más tarde</string>
+    <string name="reload">Recarregar</string>
+    <string name="finish">Final</string>
+    <string name="cancel">Cancelar</string>
+    
+    <string name="welcome">Bem-vido</string>
+    <string name="welcomeHelp">
+        Olá, Obrigado por baixar QuickMeeting \n
+         Nós vamos ajudar você a usar este aplicativo \ n
+         \ N
+         Por favor, siga as nossas instruções</string>
+    
+	<string name="followGoogleInstructions">Siga as instruçoes de Google</string>
+    
+    <!-- Change log  -->
+    <string name="changelog_full_title">Change Log</string>
+    <string name="changelog_title">Novidades</string>
+    <string name="changelog_ok_button">OK</string>
+    <string name="changelog_show_full">máis</string>
+    
     
 </resources>

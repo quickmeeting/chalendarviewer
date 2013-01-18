@@ -37,11 +37,14 @@
     <string name="changeActiveAccount">Changez le compte active</string>
     <string name="changeActiveAccountHelp">Choississez un compte comme active</string>
     
+    <string name="accountConfigured">Nouveau compte créé et défini comme active</string>
+    
+    <!--  Preference config -->
+    <string name="userInterface">Interface</string>
+    <string name="keepScreenOn">Gardez écran</string>
     
     <string name="problemOcurred">Boof, un érreur y est arrivée. S\'il vous plaît, éssayez une autre fois!</string>    
     <string name="noResourceSelected">Aucun ressource selectionné</string>
-    
-    
     <string name="noResourceSelectedHelp">S\'il vous plaît, sélectionnez un compte et les ressources!</string>
     
     <string name="resources">Ressources</string>
@@ -52,8 +55,6 @@
     <string name="reserved">Reservé</string>
     <string name="reserve_question">Vous voulez faire une réservation?</string>
     <string name="unreserve_question">Vous voulez annuler cette réservation?</string>
-    <string name="yes">Oui</string>
-    <string name="no">Non</string>
     <string name="download_data">Chargement de données</string>   
 
     <string name="download_data_error">Erreur dans le chargement de données</string>
@@ -70,5 +71,28 @@
     <string name="createdByQuickMeeting">Reservé</string>   
     <string name="creationError">Erreur dans la création de l\'événement</string>
     <string name="deletionError">Erreur dans l\'éffacement de l\'événement</string>
+    
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
+    
+    <string name="maybeLater">Peut-être plus tard</string>
+    <string name="reload">Recharger</string>
+    <string name="finish">Fin</string>
+    <string name="cancel">Annuler</string>
+    
+    <string name="welcome">Bienvenu</string>
+    <string name="welcomeHelp">
+        Bonjour, Merci d\'avoir téléchargé QuickMeeting\n
+         Nous allons vous aider à utiliser cette application\n
+         \n
+         S\'il vous plaît suivez nos instructions</string>
+    
+	<string name="followGoogleInstructions">Suivez les instructions sur Google</string>
+    
+    <!-- Change log  -->
+    <string name="changelog_full_title">Change Log</string>
+    <string name="changelog_title">Quoi de neuf?</string>
+    <string name="changelog_ok_button">OK</string>
+    <string name="changelog_show_full">plus</string>
     
 </resources>
