@@ -18,7 +18,9 @@
 <resources>
     
     <style name="tinyText" parent="android:attr/textAppearanceSmall">
-        <item name="android:textSize">30dp</item>
+    </style>
+    
+    <style name="middleText" parent="@android:style/TextAppearance.Medium">
     </style>
     
 </resources>

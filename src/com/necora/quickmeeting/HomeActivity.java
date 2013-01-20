@@ -298,13 +298,14 @@ public class HomeActivity extends Activity implements Observer {
                 LayoutParams.WRAP_CONTENT));
     	
     	//Adding calendar columns
-        int scaledFontSize = getResources().getDimensionPixelSize(R.dimen.calendar_name_font_size);
+        //int scaledFontSize = getResources().getDimensionPixelSize(R.dimen.calendar_name_font_size);
     	for(String cal: mCalendarNames) {
             TextView calendar = new TextView(this);
             calendar.setText(cal);
+            //calendar.setTextSize(scaledFontSize);
+            calendar.setTextAppearance(this, R.style.tinyText);
             calendar.setTextColor(Color.BLACK);
             calendar.setTypeface(null,Typeface.BOLD);
-            calendar.setTextSize(scaledFontSize);
             calendar.setWidth(mCalendarColumnWidth);
             calendar.setGravity(Gravity.CENTER_HORIZONTAL);
             calendar.setPadding(0, 10, 0, 10);
@@ -322,7 +323,7 @@ public class HomeActivity extends Activity implements Observer {
     
     private void drawBackgroundCells() {
     	
-        int scaledFontSize = getResources().getDimensionPixelSize(R.dimen.time_font_size);
+        //int scaledFontSize = getResources().getDimensionPixelSize(R.dimen.time_font_size);
         
         Calendar tmp = (Calendar) mCalendarBegin.clone();
         
@@ -336,7 +337,8 @@ public class HomeActivity extends Activity implements Observer {
                            LayoutParams.WRAP_CONTENT));
              
              TextView tv = new TextView(this);
-             tv.setTextSize(scaledFontSize);
+             //tv.setTextSize(scaledFontSize);
+             tv.setTextAppearance(this, R.style.tinyText);
              tv.setGravity(Gravity.TOP);
              if( tmp.get(Calendar.MINUTE)%(2*MIN_EVENT_TIME) == 0 ) {
             	 tv.setText(mFormatter.format(tmp.getTime()));
@@ -355,7 +357,8 @@ public class HomeActivity extends Activity implements Observer {
                  final CellTextView cell = new CellTextView(this);
                  cell.setCalendarId(mCalendarNames.get(j));
                  cell.setPosition(i);
-                 cell.setTextSize(scaledFontSize);
+                 //cell.setTextSize(scaledFontSize);
+                 tv.setTextAppearance(this, R.style.tinyText);
                  cell.setWidth(mCalendarColumnWidth);
                  if( tmp.get(Calendar.MINUTE)%(2*MIN_EVENT_TIME) == 0 ) {
                 	 cell.setBackgroundResource(R.drawable.cell_background_dark_top);
