@@ -367,6 +367,7 @@ public class HomeActivity extends Activity implements Observer {
                      @Override
                      public void onClick(View v) {
                     	 mSelectedCell = cell;
+                    	 cell.setBackgroundResource(R.drawable.cell_background_dark);
                     	 showReservationDialog();
                      }
                  });
@@ -714,7 +715,12 @@ public class HomeActivity extends Activity implements Observer {
     	b.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
     	    @Override
     	    public void onClick(DialogInterface dialog, int which) {
-    	        //Do Nothing
+                if( mSelectedCell.isDarkOnTop() ) {
+                	mSelectedCell.setBackgroundResource(R.drawable.cell_background_dark_top);
+                }
+                else {
+                	mSelectedCell.setBackgroundResource(R.drawable.cell_background);
+                }
     	    }
     	});
     	b.show();

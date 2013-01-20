@@ -1,0 +1,35 @@
+<!-- 
+    This file is part of QuickMeeting.
+
+    QuickMeeting is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    QuickMeeting is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with QuickMeeting.  If not, see <http://www.gnu.org/licenses/>.    
+ -->
+
+
+<!-- <shape xmlns:android="http://schemas.android.com/apk/res/android"
+     android:shape="rectangle">
+    <solid android:color="#FFF"/>
+    <stroke android:width="1px" android:color="#d5f3f3"/>
+</shape>-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:left="1dp" android:right="1dp"  android:top="1dp">
+        <shape android:shape="rectangle">
+            <stroke android:width="2dp" android:color="#B8B8B8" />
+            <solid android:color="#FFFFFF"/>
+            <corners android:radius="1dp" />
+            <size android:height="@dimen/calendar_row_height"/>
+        </shape>
+    </item>
+
+</layer-list>

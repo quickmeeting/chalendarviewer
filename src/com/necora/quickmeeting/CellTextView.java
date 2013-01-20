@@ -25,6 +25,7 @@ public class CellTextView extends TextView {
 
 	private String calendarId;
 	private int position;
+	private boolean darkOnTop;
 	
 	public CellTextView(Context context) {
 		super(context);
@@ -52,5 +53,13 @@ public class CellTextView extends TextView {
 
 	public void setPosition(int position) {
 		this.position = position;
+	}
+	
+	public boolean isDarkOnTop() {
+		return darkOnTop;
+	}
+
+	public void setDarkOnTop(boolean darkTop) {
+		this.darkOnTop = darkTop;
 	}
 }
