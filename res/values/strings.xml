@@ -23,17 +23,15 @@
     <string name="license">License</string>
     <string name="licenseGNU">GNU General Public License</string>
     
-    
-    
     <string name="manageAccounts">Manage Accounts</string>
     <string name="accounts">Accounts</string>
     <string name="activeAccountNotDefined">Active account not defined</string>
     <string name="addAccount">Add Account</string>
     <string name="addAccountHelp">Add an account to see the resources</string>
-    <string name="deleteAccount">Delete Account</string>
-    <string name="deleteAccountHelp">Delete an unused account</string>
+    <string name="deleteInactiveAccount">Delete Inactive Account</string>
+    <string name="deleteInactiveAccountHelp">Delete an unused account</string>
     <string name="currentActiveAccount">Current Active Account</string>
-    <string name="changeActiveAccount">Change Active Account</string>
+    <string name="changeActiveAccount">Define stored Account as Active</string>
     <string name="changeActiveAccountHelp">Define a stored account as active</string>
     
     <string name="accountConfigured">New account configured and defined as active</string>
@@ -85,7 +83,7 @@
         Hi, Thanks for downloading QuickMeeting\n
         We will help you to start using this app\n
         \n
-        Please, follow ours instructions</string>
+        Please, follow our instructions</string>
     
 	<string name="followGoogleInstructions">Follow Google Instructions</string>
     

@@ -18,23 +18,32 @@
 <resources>
     <string name="app_name">QuickMeeting</string>
     <string name="about">Acerca de</string>
+    <string name="aboutThisSoftware">Acerca de este software</string>
+    <string name="changeLog">Registro de cambios</string>
+    <string name="changeLogHelp">Diferencias y mejoras de cada versión</string>
+    <string name="license">Licencia</string>
+    <string name="licenseGNU">GNU General Public License</string>
     
     <string name="manageAccounts">Gestión de cuentas</string>
     <string name="accounts">Cuentas</string>
     <string name="activeAccountNotDefined">No está definida una cuenta activa</string>
     <string name="addAccount">Añadir cuenta</string>
     <string name="addAccountHelp">Añade una cuenta para ver sus recursos</string>
-    <string name="deleteAccount">Borrar cuenta</string>
-    <string name="deleteAccountHelp">Borra una cuenta en desuso</string>
+    <string name="deleteInactiveAccount">Borrar cuenta en desuso</string>
+    <string name="deleteInactiveAccountHelp">Borra una cuenta en desuso</string>
     <string name="currentActiveAccount">Cuenta activa actual</string>
     <string name="changeActiveAccount">Cambiar cuenta activa</string>
     <string name="changeActiveAccountHelp">Define una de las cuentas guardadas como activa</string>
+    
+    <string name="accountConfigured">Nueva cuenta configurada y definida como activa</string>
     
     <!--  Preference config -->
     <string name="userInterface">Interfaz</string>
     <string name="keepScreenOn">Mantener pantalla encendida</string>
     
     <string name="problemOcurred">Vaya, ha ocurrido un error. ¡Vuelve a intentarlo por favor! :-)</string>    
+    <string name="noResourceSelected">No hay recursos seleccionados</string>
+    <string name="noResourceSelectedHelp">Debe seleccionar al menos un recurso para usar esta app.\n\nQuieres seleccionarlo ahora?</string>
     
     <string name="resources">Recursos</string>
     <string name="manageResources">Gestión de recursos</string>
@@ -44,10 +53,8 @@
     <string name="reserved">Reservado</string>
     <string name="reserve_question">¿Quieres realizar esta reserva?</string>
     <string name="unreserve_question">¿Quieres cancelar esta reserva?</string>
-    <string name="yes">Sí</string>
-    <string name="no">No</string>
-    <string name="ok">OK</string>
     <string name="download_data">Descargando datos</string>
+    
     <string name="download_data_error">Error al descargar datos</string>
     
     <string name="loading">Cargando</string>
@@ -62,5 +69,29 @@
     <string name="createdByQuickMeeting">Reservado</string>   
     <string name="creationError">Error al crear el evento</string>
     <string name="deletionError">Error al borrar el evento</string>
+    
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
+    <string name="ok">OK</string>
+    
+    <string name="maybeLater">Quizás más tarde</string>
+    <string name="reload">Recargar</string>
+    <string name="finish">Fin</string>
+    <string name="cancel">Cancelar</string>
+    
+    <string name="welcome">Bienvenido</string>
+    <string name="welcomeHelp">
+        Hola, Gracias por descargar QuickMeeting\n
+        Te ayudaremos a usar esta app\n
+        \n
+        Por favor, sigue nuestras instrucciones</string>
+    
+	<string name="followGoogleInstructions">Sigue las instrucciones de Google</string>
+    
+    <!-- Change log  -->
+    <string name="changelog_full_title">Change Log</string>
+    <string name="changelog_title">Novedades</string>
+    <string name="changelog_ok_button">OK</string>
+    <string name="changelog_show_full">más</string>
     
 </resources>
