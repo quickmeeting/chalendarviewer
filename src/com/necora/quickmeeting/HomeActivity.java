@@ -362,6 +362,7 @@ public class HomeActivity extends Activity implements Observer {
                  cell.setWidth(mCalendarColumnWidth);
                  if( tmp.get(Calendar.MINUTE)%(2*MIN_EVENT_TIME) == 0 ) {
                 	 cell.setBackgroundResource(R.drawable.cell_background_dark_top);
+                	 cell.setDarkOnTop(true);
                  }
                  else {
                 	 cell.setBackgroundResource(R.drawable.cell_background);
