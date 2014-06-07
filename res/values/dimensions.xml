@@ -21,5 +21,5 @@
     <dimen name="event_font_size" >12sp</dimen>
     <dimen name="first_row_height" >35dp</dimen>
     <dimen name="first_column_width" >50dp</dimen>
-    <dimen name="calendar_row_height" >27dp</dimen>
+    <dimen name="calendar_row_height" >26dp</dimen>
 </resources>

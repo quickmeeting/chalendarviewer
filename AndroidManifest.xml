@@ -45,8 +45,7 @@
 		          android:label="@string/about"
 		          android:screenOrientation="landscape">		    
 		</activity>
-		<activity android:name=".WebViewerActivity"	
-		          android:screenOrientation="landscape">		    
+		<activity android:name=".WebViewerActivity">		    
 		</activity>
 		<activity android:name=".WelcomeActivity"	
 		          android:screenOrientation="landscape">		    
