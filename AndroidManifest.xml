@@ -34,28 +34,24 @@
 		          android:authorities="com.necora.quickmeeting.contentprovider.QuickMeetingContentProvider">		   
 		</provider>		
 		<activity android:name=".ResourceManagerActivity"
-		          android:label="@string/manageResources"
-		          android:screenOrientation="landscape">		    
+		          android:label="@string/manageResources">		    
 		</activity>
 		<activity android:name=".PreferencesActivity"
-		          android:label="@string/configuration"
-		          android:screenOrientation="landscape">		    
+		          android:label="@string/configuration">		    
 		</activity>
 		<activity android:name=".AboutActivity"
 		          android:label="@string/about"
 		          android:screenOrientation="landscape">		    
 		</activity>
-		<activity android:name=".WebViewerActivity">		    
+		<activity android:name=".WebViewerActivity"	>		    
 		</activity>
-		<activity android:name=".WelcomeActivity"	
-		          android:screenOrientation="landscape">		    
+		<activity android:name=".WelcomeActivity">		    
 		</activity>
-		<activity android:name=".AccountManagerActivity"	
-		          android:screenOrientation="landscape">		    
+		<activity android:name=".AccountManagerActivity">		    
 		</activity>
     </application>
     
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
         
 </manifest>
