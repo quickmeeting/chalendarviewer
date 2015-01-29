@@ -32,10 +32,10 @@ public class GoogleCalendar extends CalendarResource {
    
 
     static public final String FIELD_ID = "id";
-    static public final String FIELD_TITLE = "title";
+    static public final String FIELD_TITLE = "summary";
     static public final String FIELD_EVENT_FEED_LINK = "eventFeedLink";
     static public final String FIELD_SELF_LINK = "selfLink";
-    static public final String FIELD_COLOR = "color";
+    static public final String FIELD_COLOR = "backgroundColor";
     static public final String FIELD_TIMEZONE = "timeZone";
     public static final String FIELD_RESOURCE =  "resource";
     

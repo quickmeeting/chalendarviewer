@@ -35,6 +35,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils.TruncateAt;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Display;
@@ -99,7 +100,7 @@ public class HomeActivity extends Activity implements Observer {
 	private final int MINUTES_BETWEEN_POLLS = 2;
 	
 	//Maximum number of columns per screen
-	private final int MAX_NUM_OF_COLUMNS_PER_SCREEN = 4;
+	private int mMaxNumColumnsPerScreen = 4;
 	
 	private final int MIN_EVENT_SELECTION         = 1;
 	private final int TWO_MIN_EVENTS_SELECTIONS   = 2;
@@ -135,9 +136,10 @@ public class HomeActivity extends Activity implements Observer {
         
         mProgress.setMessage(getString(R.string.download_data));
         
-        mFirstColumnWidth    = getResources().getDimensionPixelSize(R.dimen.first_column_width);
-        mCalendarRowHeight   = getResources().getDimensionPixelSize(R.dimen.calendar_row_height);
-        mEventTextSize       = getResources().getDimensionPixelSize(R.dimen.event_font_size);
+        mFirstColumnWidth       = getResources().getDimensionPixelSize(R.dimen.first_column_width);
+        mCalendarRowHeight      = getResources().getDimensionPixelSize(R.dimen.calendar_row_height);
+        mEventTextSize          = getResources().getDimensionPixelSize(R.dimen.event_font_size);
+        mMaxNumColumnsPerScreen = getResources().getInteger(R.integer.max_num_columns_per_screen);
         
         mUserManager     = UserManager.getInstance(this); 
         mResourceManager = ResourceManager.getInstance(this);
@@ -270,17 +272,19 @@ public class HomeActivity extends Activity implements Observer {
     }
     
     private void setColumnWidth() {
-    	Display display = getWindowManager().getDefaultDisplay(); 
-    	int width = display.getWidth() - mFirstColumnWidth;
+    	
+    	DisplayMetrics displaymetrics = new DisplayMetrics();
+    	getWindowManager().getDefaultDisplay().getMetrics(displaymetrics); 
+    	int width = displaymetrics.widthPixels- mFirstColumnWidth;
     	int numberOfCalendars = mCalendarNames.size();
     	if( numberOfCalendars <= 1 ) {
     		mCalendarColumnWidth = width/2;
     	}
-    	else if( numberOfCalendars <= MAX_NUM_OF_COLUMNS_PER_SCREEN ) {
+    	else if( numberOfCalendars <= mMaxNumColumnsPerScreen ) {
     		mCalendarColumnWidth = width/numberOfCalendars;
     	}
     	else {
-    		mCalendarColumnWidth = width/MAX_NUM_OF_COLUMNS_PER_SCREEN;
+    		mCalendarColumnWidth = width/mMaxNumColumnsPerScreen;
     	}
     }
     
@@ -333,7 +337,7 @@ public class HomeActivity extends Activity implements Observer {
         	//Adding time cell
         	TableRow tr = new TableRow(this);
             tr.setLayoutParams(new LayoutParams(
-                           LayoutParams.FILL_PARENT,
+                           LayoutParams.MATCH_PARENT,
                            LayoutParams.WRAP_CONTENT));
              
              TextView tv = new TextView(this);
@@ -391,6 +395,8 @@ public class HomeActivity extends Activity implements Observer {
     
     private void drawEvents() {
     	//clear screen
+    	Log.d(TAG, "Drawing events. Num events: " + mEventMap.size());
+    	
     	mTableLayout.removeAllViews();
     	mHeaderLayout.removeAllViews();
     	removeAllEvents();
@@ -411,6 +417,9 @@ public class HomeActivity extends Activity implements Observer {
 		Calendar eventBegin = event.getBegin();
 		Calendar eventEnd = event.getEnd();
 
+		Log.d(TAG, "eventBegin: " + eventBegin.getTime());
+		Log.d(TAG, "eventEnd: " + eventBegin.getTime());
+		
 		if( !(eventEnd.before(mCalendarBegin) || eventBegin.after(mCalendarEnd)) ) {
     		int startCellPos = convertCalendarToCellPosition(eventBegin, true);
     		int endCellPos = convertCalendarToCellPosition(eventEnd, false)+1;

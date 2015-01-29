@@ -18,8 +18,9 @@
 <resources>
     <dimen name="time_font_size" >10sp</dimen>
     <dimen name="calendar_name_font_size" >10sp</dimen>
-    <dimen name="event_font_size" >12sp</dimen>
+    <dimen name="event_font_size" >4sp</dimen>
     <dimen name="first_row_height" >35dp</dimen>
-    <dimen name="first_column_width" >50dp</dimen>
-    <dimen name="calendar_row_height" >27dp</dimen>
+    <dimen name="first_column_width" >42dp</dimen>
+    <dimen name="calendar_row_height" >22dp</dimen>
+    <integer name="max_num_columns_per_screen">4</integer>
 </resources>

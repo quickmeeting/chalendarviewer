@@ -133,6 +133,7 @@ public class ResourceManager {
             gLinks.add(link);
             
             if( !dbLinks.contains(link) ){
+            	Log.d(TAG, "link to db: " + link);
                 addResourceToDatabase(calendar);
             }
         }
@@ -313,6 +314,8 @@ public class ResourceManager {
                 // Put the results in ascending order by email
                 ResourceColumns._ID + " ASC");       
 
+        Log.d(TAG, "Resource calendar going to be loadded from db... ");
+        
         if (managedCursor.moveToFirst()) {
 
             int idColumn   = managedCursor.getColumnIndex(ResourceColumns._ID);
@@ -329,7 +332,7 @@ public class ResourceManager {
                 activeResources.add(gCalendar);
                 resourceMap.put(id,gCalendar);
 
-                Log.d(TAG, "Resource calendar loaded from db: " + id + "/" + name );
+                Log.d(TAG, "Resource calendar loaded from db: " + id + "/link=" + link + "/eventsLink=" + eventsLink);
             } while (managedCursor.moveToNext());
         }
         managedCursor.close();

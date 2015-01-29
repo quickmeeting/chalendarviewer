@@ -218,8 +218,8 @@ public class UserManager {
         } else {
             
             // TODO create constants to these parameters
-            String[] paramsKey =   {"client_id","client_secret","refresh_token","grant_type"};
-            String[] paramsValue = {GoogleConstants.CLIENT_ID,GoogleConstants.CLIENT_SECRET,mRefreshToken,"refresh_token"};
+            String[] paramsKey =   {"client_id",/*"client_secret",*/"refresh_token","grant_type"};
+            String[] paramsValue = {GoogleConstants.CLIENT_ID,/*GoogleConstants.CLIENT_SECRET,*/mRefreshToken,"refresh_token"};
             
             // connect to google and get the response
             String googleResponse = null;
@@ -349,8 +349,8 @@ public class UserManager {
         try {
             // fill parameters
             // TODO create constants
-            String[] paramsKey = {"client_id","client_secret","code","redirect_uri","grant_type"};        
-            String[] paramsValue = {GoogleConstants.CLIENT_ID, GoogleConstants.CLIENT_SECRET, authorizationCode, GoogleConstants.OAUTH_REDIRECT_URI,"authorization_code"}; 
+            String[] paramsKey = {"client_id",/*"client_secret",*/"code","redirect_uri","grant_type"};        
+            String[] paramsValue = {GoogleConstants.CLIENT_ID, /*GoogleConstants.CLIENT_SECRET,*/ authorizationCode, GoogleConstants.OAUTH_REDIRECT_URI,"authorization_code"}; 
             HTMLresponse = ConnectionUtils.doHttpsPostFormUrlEncoded(GoogleConstants.URL_ACCESS_TOKEN, paramsKey, paramsValue);
             
             JSONObject jsonObj = (JSONObject) new JSONTokener(HTMLresponse).nextValue();

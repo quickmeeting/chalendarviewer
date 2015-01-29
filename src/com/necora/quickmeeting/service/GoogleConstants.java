@@ -24,19 +24,22 @@ package com.necora.quickmeeting.service;
 public class GoogleConstants {
     
     /** Google App Client Identification */
-    public static final String CLIENT_ID = "960151117831.apps.googleusercontent.com"; /** DONT STORE THE REAL DATA ON SOURCE CODE VERSION CONTROL */
-    
+    public static final String CLIENT_ID = "636582694832-lapd7p0tlbfuio62s3ju08kllc2i1oi5.apps.googleusercontent.com"; /** DONT STORE THE REAL DATA ON SOURCE CODE VERSION CONTROL */
+    //public static final String CLIENT_ID = "636582694832-5j4ugc08d0usi1e9srmsr03m80lsbu0n.apps.googleusercontent.com";
     /** Google App Client Secret */
-    public static final String CLIENT_SECRET = "1fBedz_8UAKElxNrXJjWZJxC"; /** DONT STORE THE REAL DATA ON SOURCE CODE VERSION CONTROL */
+    //public static final String CLIENT_SECRET = "yJEfhZzkX257PcqR5JkBpf-n"; /** DONT STORE THE REAL DATA ON SOURCE CODE VERSION CONTROL */
     
     /** Google API User Info Address */
     public static final String URL_USER_INFO = "https://www.googleapis.com/oauth2/v1/userinfo";
     
     /** Google API All Calendar Info Address */
-    public static final String URL_ALL_CALENDARS = "https://www.google.com/calendar/feeds/default/allcalendars/full?alt=jsonc";
+    public static final String URL_ALL_CALENDARS = "https://www.googleapis.com/calendar/v3/users/me/calendarList";
+    
+    /** Google API All Calendar Info Address */
+    public static final String URL_CALENDAR = "https://www.googleapis.com/calendar/v3/calendars/";
    
     /** Google API Insert new event Address */
-    public static final String URL_INSERT_EVENT =  "https://www.google.com/calendar/feeds/default/private/full/";
+    //public static final String URL_INSERT_EVENT =  "https://www.google.com/calendar/feeds/default/private/full/";
  
     /** Google API Access Token Address */
     public static final String URL_ACCESS_TOKEN = "https://accounts.google.com/o/oauth2/token";
@@ -48,7 +51,7 @@ public class GoogleConstants {
     /** Response type (standard value for APP's */
     private static final String OAUTH_RESPONSE_TYPE = "code";
     /** Needed permissions */
-    private static final String OAUTH_CALENDAR_PERMS = "https://www.google.com/calendar/feeds/";
+    private static final String OAUTH_CALENDAR_PERMS = "https://www.googleapis.com/auth/calendar";
     /**  OAuth parameter mail */
     private static final String OAUTH_USERMAIL_PERMS = "https://www.googleapis.com/auth/userinfo.email";
     /**  OAuth parameter userinfo */
@@ -62,6 +65,6 @@ public class GoogleConstants {
                                                          "&response_type=" + OAUTH_RESPONSE_TYPE;
     /** URL OAuth reference */
     public static final String URL_OAUTH_REF =  URL_ACCESS_TOKEN + "?client_id=" + CLIENT_ID +
-                                                             "&client_secret=" + CLIENT_SECRET +                                                             
+                                                             //"&client_secret=" + CLIENT_SECRET +                                                             
                                                              "&grant_type=refresh_token&response_type=code";   
 }

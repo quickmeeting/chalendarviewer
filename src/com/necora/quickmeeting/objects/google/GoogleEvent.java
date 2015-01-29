@@ -27,25 +27,26 @@ import java.util.List;
 public class GoogleEvent extends Event{
 
     static public final String FIELD_ID = "id";
-    static public final String FIELD_SELF_LINK = "selfLink";
-    static public final String FIELD_CAN_EDIT = "canEdit";
-    static public final String FIELD_ALTERNATIVE_LINK = "alternateLink";
-    static public final String FIELD_TITLE = "title";
-    static public final String FIELD_DETAILS = "details";
+    static public final String FIELD_SELF_LINK = "htmlLink";
+    static public final String FIELD_ALTERNATIVE_LINK = "htmlLink";
+    static public final String FIELD_TITLE = "summary";
+    static public final String FIELD_DETAILS = "description";
     static public final String FIELD_STATUS = "status";
     static public final String FIELD_CREATOR = "creator";
     static public final String FIELD_LOCATION = "location";
     static public final String FIELD_ATTENDEES = "attendees";
     static public final String FIELD_BEGIN = "start";
     static public final String FIELD_END = "end";
-    public static final String FIELD_WHEN_LIST = "when";
+    //public static final String FIELD_WHEN_LIST = "when";
+    public static final String FIELD_DATE_TIME = "dateTime";
+    public static final String FIELD_TIME_ZONE = "timeZone";
+    public static final String FIELD_TEXT = "text";
+    public static final String FIELD_RECURRENCE = "recurrence";
 
     
     private String mSelfLink;
     
     private String mAlternateLink;
-    
-    private boolean mCanEdit;
 
     private String mStatus;
     
@@ -87,15 +88,7 @@ public class GoogleEvent extends Event{
     public void setAlternateLink(String alternateLink) {
         this.mAlternateLink = alternateLink;
     }
-
-    public boolean ismCanEdit() {
-        return mCanEdit;
-    }
-
-    public void setCanEdit(boolean canEdit) {
-        this.mCanEdit = canEdit;
-    }
-
+    
     public String getStatus() {
         return mStatus;
     }
