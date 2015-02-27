@@ -19,7 +19,12 @@
     </style>
   </head>
   <body>
-
+$ 1.2
+% Version 1.2
+  _ 2015-02-27
+   ! It was necessary!
+    * Adapted to Google Calendar API v3
+$ END_OF_CHANGE_LOG
 $ 1.1
 % Version 1.1
   _ 2012-09-31
