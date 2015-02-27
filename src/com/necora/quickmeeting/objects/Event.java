@@ -35,6 +35,8 @@ public class Event {
     protected Calendar mBegin;
     /** Ending date of event */
     protected Calendar mEnd;
+    /** Auto referece link */
+    protected String mSelfLink;
 
     /** Empty constructor */
     public Event(){
@@ -145,8 +147,16 @@ public class Event {
     	sb.append(formatter.format(this.mEnd.getTime()));
     	return sb.toString();
     }
+    
+    public String getSelfLink() {
+		return mSelfLink;
+	}
 
-    @Override
+	public void setSelfLink(String mSelfLink) {
+		this.mSelfLink = mSelfLink;
+	}
+
+	@Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("[EVENT] {");

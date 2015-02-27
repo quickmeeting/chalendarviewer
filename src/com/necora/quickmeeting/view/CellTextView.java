@@ -15,7 +15,7 @@
     along with QuickMeeting.  If not, see <http://www.gnu.org/licenses/>.    
 */
 
-package com.necora.quickmeeting;
+package com.necora.quickmeeting.view;
 
 import android.content.Context;
 import android.util.AttributeSet;

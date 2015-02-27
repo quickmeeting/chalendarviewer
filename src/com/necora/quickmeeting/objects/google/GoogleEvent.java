@@ -27,8 +27,6 @@ import java.util.List;
 public class GoogleEvent extends Event{
 
     static public final String FIELD_ID = "id";
-    static public final String FIELD_SELF_LINK = "htmlLink";
-    static public final String FIELD_ALTERNATIVE_LINK = "htmlLink";
     static public final String FIELD_TITLE = "summary";
     static public final String FIELD_DETAILS = "description";
     static public final String FIELD_STATUS = "status";
@@ -42,11 +40,6 @@ public class GoogleEvent extends Event{
     public static final String FIELD_TIME_ZONE = "timeZone";
     public static final String FIELD_TEXT = "text";
     public static final String FIELD_RECURRENCE = "recurrence";
-
-    
-    private String mSelfLink;
-    
-    private String mAlternateLink;
 
     private String mStatus;
     
@@ -70,23 +63,8 @@ public class GoogleEvent extends Event{
         this.mId = ev.getId();
         this.mTitle = ev.getTitle();
         this.mDetails = ev.getDetails();
+        this.mSelfLink = ev.getSelfLink();
         mAttendees = new ArrayList<User>();
-    }
-
-    public String getSelfLink() {
-        return mSelfLink;
-    }
-
-    public void setSelfLink(String selfLink) {
-        this.mSelfLink = selfLink;
-    }
-
-    public String getAlternateLink() {
-        return mAlternateLink;
-    }
-
-    public void setAlternateLink(String alternateLink) {
-        this.mAlternateLink = alternateLink;
     }
     
     public String getStatus() {

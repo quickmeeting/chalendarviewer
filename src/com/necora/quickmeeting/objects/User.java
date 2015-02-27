@@ -32,6 +32,10 @@ public class User {
     public static final String FIELD_NAME = "name";
     /** User's name to display */
     public static final String FIELD_DISPLAY_NAME = "displayName";
+    /** Is a resource */
+    public static final String FIELD_RESOURCE = "resource";
+    /** Indicates if the user has accept the invitation **/
+    public static final String FIELD_RESPONSE_STATUS = "responseStatus";
     
     /**
      * User's name

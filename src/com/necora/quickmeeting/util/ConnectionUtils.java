@@ -221,13 +221,13 @@ public class ConnectionUtils {
             }
             Log.d(TAG, "RESPONSE HTML => " + streamToString(response.getEntity().getContent()));
             
-            if(returnCode == HTTP_OK){
+            /*if(returnCode == HTTP_OK){
                 Log.d(TAG, "DELETION OF EVENT OK");
             }else{
                 result = false;
                 Log.e(TAG,"Delete response code is " + returnCode);
                
-            }
+            }*/
             
             
             

@@ -24,9 +24,10 @@ package com.necora.quickmeeting.service;
 public class GoogleConstants {
     
     /** Google App Client Identification */
-    public static final String CLIENT_ID = "636582694832-lapd7p0tlbfuio62s3ju08kllc2i1oi5.apps.googleusercontent.com"; /** DONT STORE THE REAL DATA ON SOURCE CODE VERSION CONTROL */
-    //public static final String CLIENT_ID = "636582694832-5j4ugc08d0usi1e9srmsr03m80lsbu0n.apps.googleusercontent.com";
-    /** Google App Client Secret */
+    //public static final String CLIENT_ID = "636582694832-lapd7p0tlbfuio62s3ju08kllc2i1oi5.apps.googleusercontent.com"; /** DONT STORE THE REAL DATA ON SOURCE CODE VERSION CONTROL */
+    public static final String CLIENT_ID = "636582694832-5j4ugc08d0usi1e9srmsr03m80lsbu0n.apps.googleusercontent.com";
+		
+	/** Google App Client Secret */
     //public static final String CLIENT_SECRET = "yJEfhZzkX257PcqR5JkBpf-n"; /** DONT STORE THE REAL DATA ON SOURCE CODE VERSION CONTROL */
     
     /** Google API User Info Address */

@@ -252,7 +252,7 @@ public class GoogleCalendarApiConnector {
             for (int j = 0; j < ilength; j++) {
                 jsonEvent = (JSONObject) jsonEventsList.get(j);
                 try {
-                	events.add( parseEvent(jsonEvent));
+                	events.add( parseEvent(jsonEvent) );
                 } catch (ParseException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -315,41 +315,43 @@ public class GoogleCalendarApiConnector {
      * @return returning event from Google with more data, like generated id
      */
     public GoogleEvent setEvent(CalendarResource calendar, GoogleEvent event) {
-        
         JSONObject data = new JSONObject();
-        //JSONObject attendee = new JSONObject();
-        //JSONArray attendeeList = new JSONArray();
+        JSONObject attendee = new JSONObject();
+        JSONArray attendeeList = new JSONArray();
         JSONObject begin = new JSONObject();
         JSONObject end = new JSONObject();
         boolean retValue = true;
         GoogleEvent gEvent = null;
         try {
-            //attendee.put(GoogleCalendar.FIELD_RESOURCE, true);
-            //attendee.put(User.FIELD_DISPLAY_NAME,calendar.getTitle());
-            //String email = getEmailFromCalendarID(calendar);
-            //attendee.put(User.FIELD_EMAIL, email);
-            //attendeeList.put(attendee);
+            attendee.put(GoogleCalendar.FIELD_RESOURCE, true);
+            attendee.put(User.FIELD_DISPLAY_NAME,calendar.getTitle());
+            String email = getEmailFromCalendarID(calendar);
+            attendee.put(User.FIELD_EMAIL, email);
+            attendeeList.put(attendee);
             
             begin.put(GoogleEvent.FIELD_DATE_TIME, mDateTimeFormatter.format(event.getBegin().getTime()));
             begin.put(GoogleEvent.FIELD_TIME_ZONE, "Europe/Madrid");
             end.put(GoogleEvent.FIELD_DATE_TIME,   mDateTimeFormatter.format(event.getEnd().getTime()));
             end.put(GoogleEvent.FIELD_TIME_ZONE, "Europe/Madrid");
             
-            data.put(GoogleEvent.FIELD_TEXT, event.getTitle());
-            /*data.put(GoogleEvent.FIELD_TITLE, event.getTitle());
+            
+            data.put(GoogleEvent.FIELD_TITLE, event.getTitle());
             data.put(GoogleEvent.FIELD_DETAILS, event.getDetails());
-            //data.put(GoogleEvent.FIELD_STATUS, event.getStatus());
+            data.put(GoogleEvent.FIELD_STATUS, event.getStatus());
             data.put(GoogleEvent.FIELD_LOCATION, calendar.getTitle());
-            //data.put(GoogleEvent.FIELD_ATTENDEES, attendeeList);
+            data.put(GoogleEvent.FIELD_ATTENDEES, attendeeList);
             data.put(GoogleEvent.FIELD_BEGIN, begin);
-            data.put(GoogleEvent.FIELD_END, end);*/
+            data.put(GoogleEvent.FIELD_END, end);
             
             String[] paramsKey =   {"Authorization"};
             String[] paramsValue = {"Bearer " + mSessionManager.getActiveUserAccessToken()};
             Log.d(TAG, data.toString());
             StringEntity stringEntity = new StringEntity(data.toString());
             stringEntity.setContentType("application/json");
-            String googleResponse =  ConnectionUtils.doHttpsPost(calendar.getEventFeedLink() + "/quickAdd", paramsKey, paramsValue, stringEntity);
+            
+            //Create event in user's calendar. The resource is passed in the attendees.
+            String url = GoogleConstants.URL_CALENDAR + mSessionManager.getActiveUserEmail() + "/events";
+            String googleResponse =  ConnectionUtils.doHttpsPost(url, paramsKey, paramsValue, stringEntity);
             
             Log.d(TAG, "RESPONSE => " + googleResponse);
             
@@ -358,7 +360,6 @@ public class GoogleCalendarApiConnector {
             Log.d(TAG, "MESSAGE => " + jsonData.toString());
 
             gEvent = parseEvent(jsonData);
-            
             
         } catch (JSONException e) {
             // TODO Auto-generated catch block
@@ -399,13 +400,12 @@ public class GoogleCalendarApiConnector {
         GoogleEvent ev = new GoogleEvent();
         
         Log.d(TAG, " ========> " +jsonEvent.toString());
-        ev.setAlternateLink(jsonEvent.optString(GoogleEvent.FIELD_ALTERNATIVE_LINK));
         ev.setDetails(jsonEvent.optString(GoogleEvent.FIELD_DETAILS));
         ev.setLocation(jsonEvent.optString(GoogleEvent.FIELD_LOCATION));
-        ev.setSelfLink(jsonEvent.optString(GoogleEvent.FIELD_SELF_LINK));
         ev.setStatus(jsonEvent.optString(GoogleEvent.FIELD_STATUS));
         ev.setTitle(jsonEvent.optString(GoogleEvent.FIELD_TITLE));
-       
+        ev.setId(jsonEvent.optString(GoogleEvent.FIELD_ID));
+        
         //JSONArray listWhen  = (JSONArray) jsonEvent.getJSONArray(GoogleEvent.FIELD_WHEN_LIST);
         
         //Calendar evBegin = parseGoogleDate(((JSONObject)listWhen.get(0)).getString(GoogleEvent.FIELD_BEGIN));
@@ -427,10 +427,14 @@ public class GoogleCalendarApiConnector {
         JSONObject jsonUser = (JSONObject) jsonEvent.getJSONObject(GoogleEvent.FIELD_CREATOR);
         ev.setCreator(new User(jsonUser.optString(User.FIELD_DISPLAY_NAME), jsonUser.optString(User.FIELD_EMAIL, "private")));
         
-        JSONArray listAttendees = (JSONArray) jsonEvent.getJSONArray(GoogleEvent.FIELD_ATTENDEES);
+        JSONArray listAttendees = (JSONArray) jsonEvent.optJSONArray(GoogleEvent.FIELD_ATTENDEES);
         if (listAttendees != null) {
             for (int indexAtendees = 0; indexAtendees < listAttendees.length();indexAtendees++) {
                 jsonUser = (JSONObject) listAttendees.get(indexAtendees);
+                if( jsonUser.optBoolean(User.FIELD_RESOURCE)
+                		&& "declined".equals(jsonUser.optString(User.FIELD_RESPONSE_STATUS))) {
+                	throw new ParseException("The Resource has not accept the event", indexAtendees);
+                }
                 ev.addAttendee(new User(jsonUser.optString(User.FIELD_DISPLAY_NAME), jsonUser.getString(User.FIELD_EMAIL)));
             }
         } 
@@ -455,7 +459,7 @@ public class GoogleCalendarApiConnector {
      * @param gEvent event to delete
      */
     public void deleteEvent(GoogleEvent gEvent){
-        String eventURL = gEvent.getSelfLink();//GoogleConstants.URL_INSERT_EVENT + gEvent.getId();
+        String eventURL = GoogleConstants.URL_CALENDAR + mSessionManager.getActiveUserEmail() + "/events/" + gEvent.getId();
         Log.d(TAG, eventURL);
         
         //If-Match: * header allow to delete an event, even if it was modified after its insertion

@@ -64,6 +64,8 @@ import com.necora.quickmeeting.service.UserManager;
 import com.necora.quickmeeting.service.exception.ResourceNotAvaiableException;
 import com.necora.quickmeeting.util.Observable;
 import com.necora.quickmeeting.util.Observer;
+import com.necora.quickmeeting.view.CellTextView;
+import com.necora.quickmeeting.view.EventTextView;
 
 import sheetrock.panda.changelog.ChangeLog;
 
